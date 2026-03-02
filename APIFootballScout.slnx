@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="APIFootballScout.AppHost/APIFootballScout.AppHost.csproj" />
+  <Project Path="APIFootballScout.ServiceDefaults/APIFootballScout.ServiceDefaults.csproj" />
+  <Project Path="APIFootballScout/APIFootballScout.csproj" />
+</Solution>
