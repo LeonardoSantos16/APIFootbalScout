@@ -1,7 +1,12 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var cache = builder.addRedis("cache");
+var mongodb = builder.AddMongoDB("mongodb")
+    .AddDatabase("scoutdb");
 
-builder.AddProject<Projects.APIFootballScout>("apifootballscout").withReference(cache);
+var cache = builder.AddRedis("cache");
+
+builder.AddProject<Projects.APIFootballScout>("apifootballscout")
+    .WithReference(mongodb)
+    .WithReference(cache);
 
 builder.Build().Run();
