@@ -35,8 +35,8 @@ namespace APIFootballScout.Services.Business
             var detailsTask = sofascoreClient.GetPlayerDetailsAsync(playerId);
             var transferTask = sofascoreClient.GetPlayerTransferHistoryAsync(playerId);
             var statsTask = sofascoreClient.GetPlayerHistoryStatsAsync(playerId);
-
-            await Task.WhenAll(detailsTask, transferTask, statsTask);
+            var nationalStatsTask = sofascoreClient.GetPlayerNationalTeamAsync(playerId);
+            await Task.WhenAll(detailsTask, transferTask, statsTask, nationalStatsTask);
 
             var details = detailsTask.Result.Content?.Player;
             
@@ -54,7 +54,9 @@ namespace APIFootballScout.Services.Business
             {
                 Details = details,
                 Stats = statsTask.Result.Content?.Seasons,
-                historyTransfer = transferTask.Result.Content?.Transfers
+                HistoryTransfer = transferTask.Result.Content?.Transfers,
+                NationalTeamStats = nationalStatsTask.Result.Content?.Statistics,
+                PlayerImage = $"https://api.sofascore.app/api/v1/player/{playerId}/image"
             };
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12) };

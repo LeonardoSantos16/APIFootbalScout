@@ -4,7 +4,13 @@ namespace APIFootballScout.Models.DTOs.Sofascore.player
 {
     public record SofaNationalTeamStatsResponse(
         [property: JsonPropertyName("statistics")] List<SofaNationalTeamStats> Statistics
-    );
+    )
+    {
+        public static implicit operator SofaNationalTeamStatsResponse?(List<SofaNationalTeamStats>? v)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public record SofaNationalTeamStats(
         [property: JsonPropertyName("team")] SofaNationalTeam Team,

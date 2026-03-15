@@ -2,9 +2,11 @@
 {
     public class PlayerFullProfileDto
     {
-        public object Details { get; set; }
-        public object Stats { get; set; }
-        public object historyTransfer { get; set; }
+        public SofaPlayerDetail? Details { get; set; }
+        public List<SofaSeasonStatisticItem>? Stats { get; set; }
+        public List<SofaTransfer>? HistoryTransfer { get; set; }
+        public List<SofaNationalTeamStats>? NationalTeamStats { get; set; }
+        public string? PlayerImage { get; set; }
 
     }
 }

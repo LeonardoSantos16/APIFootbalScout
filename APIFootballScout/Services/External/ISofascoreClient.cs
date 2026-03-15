@@ -13,13 +13,13 @@ namespace APIFootballScout.Services.External
         Task<IApiResponse<SofaPlayerDetailsResponse>> GetPlayerDetailsAsync([Query] int playerId);
 
         [Get("/players/get-image")]
-        Task<IApiResponse<HttpContent>> GetPlayerImageAsync([Query] string id);
+        Task<IApiResponse<HttpContent>> GetPlayerImageAsync([Query] int id);
 
         [Get("/players/get-statistics-seasons")]
         Task<IApiResponse<SofaSeasonStatsResponse>> GetPlayerStatisticsSeasonAsync([Query] int playerId, [Query] string tournamentId, [Query] string seasonId, [Query] string? type = "overall");
 
         [Get("/players/get-national-team-statistics")]
-        Task<IApiResponse<SofaNationalTeamStatsResponse>> GetPlayerNationalTeamAsync([Query] string id);
+        Task<IApiResponse<SofaNationalTeamStatsResponse>> GetPlayerNationalTeamAsync([Query] int playerId);
 
         [Get("/players/get-transfer-history")]
         Task<IApiResponse<SofaTransferHistoryResponse>> GetPlayerTransferHistoryAsync([Query] int playerId);
