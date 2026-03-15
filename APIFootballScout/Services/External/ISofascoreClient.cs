@@ -10,19 +10,19 @@ namespace APIFootballScout.Services.External
         Task<IApiResponse<SofaSearchResponse>> SearchPlayerAsync([Query] string q, [Query] string? type = "all", [Query] int? page = 0);
 
         [Get("/players/details")]
-        Task<IApiResponse<SofaPlayerDetailsResponse>> GetPlayerDetailsAsync([Query] string id);
+        Task<IApiResponse<SofaPlayerDetailsResponse>> GetPlayerDetailsAsync([Query] int id);
 
         [Get("/players/image")]
         Task<IApiResponse<HttpContent>> GetPlayerImageAsync([Query] string id);
 
-        [Get("/players/statistics")]
-        Task<IApiResponse<SofaSeasonStatsResponse>> GetPlayerStatisticsAsync([Query] string id, [Query] string tournamentId, [Query] string seasonId, [Query] string? type = "overall");
+        [Get("/players/get-statistics-seasons")]
+        Task<IApiResponse<SofaSeasonStatsResponse>> GetPlayerStatisticsSeasonAsync([Query] int id, [Query] string tournamentId, [Query] string seasonId, [Query] string? type = "overall");
 
         [Get("/players/national-team")]
         Task<IApiResponse<SofaNationalTeamStatsResponse>> GetPlayerNationalTeamAsync([Query] string id);
 
         [Get("/players/transfer-history")]
-        Task<IApiResponse<SofaTransferHistoryResponse>> GetPlayerTransferHistoryAsync([Query] string id);
+        Task<IApiResponse<SofaTransferHistoryResponse>> GetPlayerTransferHistoryAsync([Query] int id);
 
         [Get("/tournaments/standings")]
         Task<IApiResponse<SofaStandingsResponse>> GetTournamentStandingsAsync([Query] string tournamentId, [Query] string seasonId, [Query] string? type = "total");
@@ -35,5 +35,8 @@ namespace APIFootballScout.Services.External
 
         [Get("/tournaments/top-players")]
         Task<IApiResponse<SofaTopPlayersResponse>> GetTopPlayersAsync([Query] string tournamentId, [Query] string seasonId);
+
+        [Get("/players/get-statistics")]
+        Task<IApiResponse<SofaPlayerStatisticsSeasonsResponse>> GetPlayerHistoryStatsAsync([Query] int playerId);
     }
 }

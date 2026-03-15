@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace APIFootballScout.Models.DTOs
+namespace APIFootballScout.Models.DTOs.Sofascore.player
 {
     public record SofaPlayerDetailsResponse(
         [property: JsonPropertyName("player")] SofaPlayerDetail Player
