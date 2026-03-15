@@ -20,6 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
