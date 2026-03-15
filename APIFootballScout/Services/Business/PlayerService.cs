@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using APIFootballScout.Services.External;
 using APIFootballScout.Models.DTOs;
-using APIFootballScout.Data;
-using APIFootballScout.Models.Entities;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
 using APIFootballScout.Models.DTOs.Sofascore.player;
