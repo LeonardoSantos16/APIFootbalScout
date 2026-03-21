@@ -4,6 +4,7 @@ using APIFootballScout.Services.Business;
 using APIFootballScout.Services.External;
 using Microsoft.EntityFrameworkCore;
 using Refit;
+using APIFootballScout.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ builder.Services.AddRefitClient<ISofascoreClient>().ConfigureHttpClient(c =>
     c.DefaultRequestHeaders.Add("X-RapidAPI-Key", builder.Configuration["SofaScore:ApiKey"]);
     c.DefaultRequestHeaders.Add("X-RapidAPI-Host", "sofascore.p.rapidapi.com");
 });
+
+builder.Services.Configure<ScoutConfig>(builder.Configuration.GetSection("ScoutConfig"));
 
 var app = builder.Build();
 

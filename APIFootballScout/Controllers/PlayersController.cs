@@ -12,7 +12,6 @@ namespace APIFootballScout.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<SofaSearchResponse>> Search([FromQuery] string q)
         {
-            Console.WriteLine($"name {q}");
             if (string.IsNullOrWhiteSpace(q))
                 return BadRequest("Name is required");
 
