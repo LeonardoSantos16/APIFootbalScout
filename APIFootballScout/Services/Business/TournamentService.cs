@@ -15,7 +15,7 @@ namespace APIFootballScout.Services.Business
             var cacheKey = $"tournament_{tournamentId}_details";
             bool isPremium = scoutOptions.Value.IsPremiumTournament(tournamentId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(2) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetTournamentDetailsAsync(tournamentId), expiration);
+            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascoreTournamentDetailsAsync(tournamentId), expiration);
         }
 
         public async Task<SofaAllSeasonResponse?> GetSeasonsAsync(int tournamentId)
@@ -26,7 +26,7 @@ namespace APIFootballScout.Services.Business
 
             return await cache.GetOrFetchAsync(
                 cacheKey,
-                () => sofascoreClient.GetTournamentSeason(tournamentId),
+                () => sofascoreClient.GetSofascoreTournamentSeason(tournamentId),
                 expiration
                 );
         }
@@ -36,7 +36,7 @@ namespace APIFootballScout.Services.Business
             var cacheKey = $"standings_tournament_{tournamentId}_season_{seasonId}";
             bool isPremium = scoutOptions.Value.IsPremiumTournament(tournamentId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(5) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetTournamentStandingsAsync(tournamentId, seasonId, null), expiration);
+            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascoreTournamentStandingsAsync(tournamentId, seasonId, null), expiration);
         }
 
         public async Task<SofaTopPlayersResponse?> GetTopPlayersAsync(int tournamentId, int seasonId)
@@ -44,7 +44,7 @@ namespace APIFootballScout.Services.Business
             var cacheKey = $"topPlayer_tournament_{tournamentId}_season+{seasonId}";
             bool isPremium = scoutOptions.Value.IsPremiumTournament(tournamentId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(2) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetTopPlayersAsync(tournamentId, seasonId), expiration);
+            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascoreTopPlayersAsync(tournamentId, seasonId), expiration);
         }
 
         public async Task<SofaTournamentFullDTO> GetTournamentDetailAsync(int tournamentId, int? seasonId)
@@ -61,7 +61,7 @@ namespace APIFootballScout.Services.Business
 
             if (seasonId == null)
             {
-                var seasonsResponse = await sofascoreClient.GetTournamentSeason(tournamentId);
+                var seasonsResponse = await sofascoreClient.GetSofascoreTournamentSeason(tournamentId);
 
                 if (!seasonsResponse.IsSuccessStatusCode || seasonsResponse.Content?.Seasons == null || !seasonsResponse.Content.Seasons.Any())
                 {
@@ -75,9 +75,9 @@ namespace APIFootballScout.Services.Business
                 selectedSeasonId = seasonId.Value;
             }
 
-            var detailsTask = sofascoreClient.GetTournamentDetailsAsync(tournamentId);
-            var topPlayerTask = sofascoreClient.GetTopPlayersAsync(tournamentId, selectedSeasonId);
-            var standingTask = sofascoreClient.GetTournamentStandingsAsync(tournamentId, selectedSeasonId);
+            var detailsTask = sofascoreClient.GetSofascoreTournamentDetailsAsync(tournamentId);
+            var topPlayerTask = sofascoreClient.GetSofascoreTopPlayersAsync(tournamentId, selectedSeasonId);
+            var standingTask = sofascoreClient.GetSofascoreTournamentStandingsAsync(tournamentId, selectedSeasonId);
 
             await Task.WhenAll(detailsTask, topPlayerTask, standingTask);
 

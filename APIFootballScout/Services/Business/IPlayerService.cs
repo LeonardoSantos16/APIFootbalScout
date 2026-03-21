@@ -1,4 +1,6 @@
 ﻿using APIFootballScout.Models.DTOs.Sofascore.player;
+using APIFootballScout.Models.DTOs.Sofascore.Tournament;
+using Refit;
 
 namespace APIFootballScout.Services.Business
 {
@@ -6,5 +8,10 @@ namespace APIFootballScout.Services.Business
     {
         Task<SofaSearchResponse> SearchPlayersAsync(string name);
         Task<PlayerFullProfileDto> GetPlayerProfileAsync(int playerId);
+        Task<SofaPlayerDetailsResponse> GetPlayerDetailsAsync(int playerId);  
+        string GetPlayerImageAsync(int playerId);
+        Task<SofaSeasonStatsResponse> GetPlayerStatisticsSeasonAsync(int playerId, string tournamentId, string seasonId, string? type = "overall");
+        Task<SofaTransferHistoryResponse> GetPlayerTransferHistoryAsync(int playerId);
+        Task<SofaPlayerStatisticsSeasonsResponse> GetPlayerHistoryStatsAsync(int playerId);
     }
 }
