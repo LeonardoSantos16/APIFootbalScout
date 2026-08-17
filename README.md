@@ -6,7 +6,7 @@ O foco principal do projeto foi a criação de uma arquitetura resiliente, utili
 
 ## Stack Técnica
 
-* **Runtime:** .NET 9 (C# 12)
+* **Runtime:** .NET 10 (C# 12)
 * **Orquestração:** .NET Aspire (Gerenciamento de containers e Service Discovery)
 * **Comunicação:** Refit para consumo de API REST (Type-safe HTTP client)
 * **Cache:** Redis (IDistributedCache)
