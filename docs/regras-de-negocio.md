@@ -34,7 +34,7 @@ Regras que se decompõem recebem mais de uma categoria.
 **Notas**
 
 - R1.1 — o predicado responde se um jogador é acompanhável. É aplicado como guarda na abertura do dossiê e reaproveitável na exibição do resultado de busca.
-- R1.2 — unicidade que abrange múltiplas instâncias do agregado não pode ser garantida por nenhuma delas isoladamente. A classificação depende do mapeamento: se o olheiro for a raiz que detém os dossiês, a regra passa a ser invariante desse agregado.
+- R1.2 — unicidade que abrange múltiplas instâncias do agregado não pode ser garantida por nenhuma delas isoladamente. O mapeamento definiu que o olheiro não é raiz de agregado sobre os dossiês, o que mantém a classificação como domain service.
 - R1.3 — a imutabilidade é obtida modelando a linha de base como value object, sem operação de alteração exposta. Não há verificação em tempo de execução.
 - R1.5 — a regra restringe o conjunto de operações existentes, não o estado. Encerrado é um estado do dossiê, e não existe operação de exclusão. As invariantes R1.8 a R1.10 decorrem dessa decisão.
 - R1.7 — a existência do limite e seu respeito são invariante; o valor do limite é política.
@@ -77,8 +77,7 @@ Regras que se decompõem recebem mais de uma categoria.
 
 - R5.1 — o agregado recusa alteração quando está no estado finalizado. Condição verificável sobre o estado.
 - R5.2 — a exigência é invariante da transição; a definição do que constitui conteúdo mínimo é política.
-- R5.3 — não existe operação de edição de relatório finalizado. A correção é a criação de um novo agregado que referencia o anterior.
-- R5.5 — a observação e a redação ocorrem em momentos distintos. Registrar apenas a data de escrita impede aferir a atualidade do relatório e produz ordenação cronológica incorreta.
+- R5.3 — a observação e a redação ocorrem em momentos distintos. Registrar apenas a data de escrita impede aferir a atualidade do relatório e produz ordenação cronológica incorreta.
 - R5.6 — não existe operação de fusão. Cada relatório pertence a um autor e permanece separado.
 - R5.7 — a finalização exige parecer preenchido. O conjunto fechado de valores é definido pelo value object.
 
