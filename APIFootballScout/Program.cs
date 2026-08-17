@@ -1,10 +1,11 @@
 using Aspire.StackExchange.Redis;
-using APIFootballScout.Context;
-using APIFootballScout.Services.Business;
-using APIFootballScout.Services.External;
 using Microsoft.EntityFrameworkCore;
 using Refit;
 using APIFootballScout.Configuration;
+using APIFootballScout.Infrastructure.Context;
+using APIFootballScout.Infrastructure.External;
+using APIFootballScout.Application.UseCases.Interfaces;
+using APIFootballScout.Application.UseCases.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +21,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<IPlayerUseCase, PlayerUseCase>();
+builder.Services.AddScoped<ITournamentUseCase, TournamentUseCase>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

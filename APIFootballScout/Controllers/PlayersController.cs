@@ -1,13 +1,12 @@
-﻿using APIFootballScout.Models.DTOs.Sofascore.player;
-using APIFootballScout.Services.Business;
-using Microsoft.AspNetCore.Http;
+using APIFootballScout.Application.UseCases.Interfaces;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIFootballScout.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayersController(IPlayerService playerService) : ControllerBase
+    public class PlayersController(IPlayerUseCase playerService) : ControllerBase
     {
         [HttpGet("search")]
         public async Task<ActionResult<SofaSearchResponse>> Search([FromQuery] string q)
