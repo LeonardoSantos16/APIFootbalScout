@@ -150,8 +150,8 @@ Contexto: Priorização
 | Domain service | Contexto | Motivo |
 | --- | --- | --- |
 | Comparação de jogadores | Análise | Atravessa dois jogadores e não pertence a nenhum deles (F10) |
-| Conversão monetária | Análise, Acompanhamento | Depende de taxa externa ao modelo (R2.4) |
 | Verificação de unicidade de dossiê | Acompanhamento | Abrange todas as instâncias do agregado (R1.2) |
+| Verificação de limite de dossiês | Acompanhamento | Conta os dossiês ativos do olheiro, condição que nenhum dossiê verifica sozinho (R1.7) |
 
 | Specification | Contexto | Predicado |
 | --- | --- | --- |
@@ -193,6 +193,12 @@ Dois atos distintos vinham sendo chamados de observação:
 ### 6.4 Core domain
 
 O core registrado é Avaliação de jogador: o parecer é o produto entregue e não existe fora do sistema.
+
+### 6.5 Não há conversão monetária
+
+A fonte externa entrega todos os valores em euro. Não existe provedor de taxa de câmbio no escopo e nenhum é previsto, o que retira a conversão do mapa: não há domain service de câmbio.
+
+`Dinheiro` mantém a moeda e a recusa de operar entre moedas distintas (R2.4, R7.6). O campo não é redundante: é ele que transforma "tudo vem em euro" de suposição em fato verificável na fronteira. Valor em moeda diferente da esperada é recusado na tradução, e a mudança correspondente é reportada como indisponível pelo terceiro estado de `MudancaDetectada` (R2.6).
 
 ---
 

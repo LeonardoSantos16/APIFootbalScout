@@ -26,7 +26,7 @@ Regras que se decompõem recebem mais de uma categoria.
 | R1.4 | A linha de base registra a data em que foi medida | Invariante |
 | R1.5 | O encerramento do acompanhamento é uma transição de estado do dossiê | Decisão de modelagem |
 | R1.6 | Reacompanhar um jogador cria uma nova linha de base, sem restaurar a anterior | Decisão de modelagem |
-| R1.7 | Um olheiro tem limite de jogadores acompanhados simultaneamente *(opcional)* | Política + Invariante |
+| R1.7 | Um olheiro tem limite de jogadores acompanhados simultaneamente | Política + Domain service |
 | R1.8 | Um dossiê encerrado não aceita nova leitura nem nova comparação | Invariante |
 | R1.9 | Não se encerra um dossiê já encerrado | Invariante |
 | R1.10 | A data de encerramento é posterior à data de abertura | Invariante |
@@ -37,7 +37,7 @@ Regras que se decompõem recebem mais de uma categoria.
 - R1.2 — unicidade que abrange múltiplas instâncias do agregado não pode ser garantida por nenhuma delas isoladamente. O mapeamento definiu que o olheiro não é raiz de agregado sobre os dossiês, o que mantém a classificação como domain service.
 - R1.3 — a imutabilidade é obtida modelando a linha de base como value object, sem operação de alteração exposta. Não há verificação em tempo de execução.
 - R1.5 — a regra restringe o conjunto de operações existentes, não o estado. Encerrado é um estado do dossiê, e não existe operação de exclusão. As invariantes R1.8 a R1.10 decorrem dessa decisão.
-- R1.7 — a existência do limite e seu respeito são invariante; o valor do limite é política.
+- R1.7 — mesma forma de R1.2: a condição abrange todos os dossiês do olheiro e nenhuma instância do agregado consegue verificá-la sozinha. Como o olheiro não é raiz de agregado, a verificação é domain service. O valor do limite é política.
 - R1.8 — o dossiê encerrado preserva a linha de base e permanece consultável, mas deixa de ser alimentado.
 
 ## F2 — Detecção de mudança
@@ -47,7 +47,7 @@ Regras que se decompõem recebem mais de uma categoria.
 | R2.1 | Uma mudança quantitativa só é relevante quando ultrapassa um limiar | Specification |
 | R2.2 | O limiar varia conforme o tipo de mudança | Política |
 | R2.3 | Toda mudança categórica é relevante | Specification |
-| R2.4 | Valores em moedas distintas exigem conversão explícita. Sem taxa, não há comparação | Invariante + Domain service |
+| R2.4 | Valores em moedas distintas não se comparam | Invariante |
 | R2.5 | Não se compara estatística acumulada através da virada de temporada | Specification |
 | R2.6 | Dado atual indisponível produz resultado "indisponível", nunca "sem mudança" | Decisão de modelagem |
 | R2.7 | O intervalo de tempo decorrido integra o resultado da comparação | Invariante |
@@ -56,7 +56,7 @@ Regras que se decompõem recebem mais de uma categoria.
 
 - R2.1 e R2.3 são cláusulas de uma mesma specification, que julga a relevância de uma diferença. Os valores dos limiares são política (R2.2).
 - A distinção entre os dois tipos de mudança é o que sustenta as duas cláusulas. Mudança quantitativa tem magnitude e admite limiar: valor de mercado e minutagem. Mudança categórica não tem magnitude, e limiar é conceito inaplicável a ela: clube é o único caso no escopo atual.
-- R2.4 — a recusa de operar entre moedas distintas é invariante do value object monetário. A conversão em si é domain service, por depender de uma taxa externa ao modelo.
+- R2.4 — a recusa de operar entre moedas distintas é invariante do value object monetário. Não há conversão: a fonte externa entrega todos os valores em euro e nenhum provedor de câmbio está no escopo. Valor em moeda inesperada é recusado na tradução e a mudança correspondente é reportada como indisponível (R2.6).
 - R2.5 — as estatísticas de temporada da fonte externa são acumulativas e reiniciam a cada nova temporada. Comparar através da virada produz queda aparente de minutagem sem correspondência na realidade. O predicado responde se duas leituras são comparáveis, mesma família de R10.5.
 - R2.6 — a regra define que o resultado admite três estados distintos. É cumprida pelo tipo do retorno, não por verificação.
 - R2.7 — uma variação percentual sem o intervalo em que ocorreu não é interpretável. O resultado não é construível sem o intervalo.
@@ -71,7 +71,7 @@ Regras que se decompõem recebem mais de uma categoria.
 | R5.4 | A nota respeita uma faixa de valores válida | Invariante |
 | R5.5 | O relatório registra a data da observação, distinta da data de escrita | Invariante |
 | R5.6 | Relatórios de olheiros distintos sobre o mesmo jogador coexistem e não se fundem | Decisão de modelagem |
-| R5.7 | O relatório conclui em um parecer: contratar, monitorar, reavaliar ou descartar *(opcional)* | Invariante |
+| R5.7 | O relatório conclui em um parecer: contratar, monitorar, reavaliar ou descartar | Invariante |
 
 **Notas**
 
@@ -141,7 +141,7 @@ A operação de comparação é, em si, um domain service: atravessa dois jogado
 
 | Categoria | Ocorrências |
 | --- | --- |
-| Invariante | 19 |
+| Invariante | 18 |
 | Decisão de modelagem | 10 |
 | Specification | 8 |
 | Política | 7 |
