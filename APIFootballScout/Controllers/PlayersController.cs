@@ -1,13 +1,12 @@
-﻿using APIFootballScout.Models.DTOs.Sofascore.player;
-using APIFootballScout.Services.Business;
-using Microsoft.AspNetCore.Http;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIFootballScout.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayersController(IPlayerService playerService) : ControllerBase
+    public class PlayersController(ISofascorePlayerReader sofascorePlayerReader) : ControllerBase
     {
         [HttpGet("search")]
         public async Task<ActionResult<SofaSearchResponse>> Search([FromQuery] string q)
@@ -15,7 +14,7 @@ namespace APIFootballScout.Controllers
             if (string.IsNullOrWhiteSpace(q))
                 return BadRequest("Name is required");
 
-            var result = await playerService.SearchPlayersAsync(q);
+            var result = await sofascorePlayerReader.SearchPlayersAsync(q);
 
             return result;
         }
@@ -23,7 +22,7 @@ namespace APIFootballScout.Controllers
         [HttpGet("{id:int}/profile")]
         public async Task<ActionResult<PlayerFullProfileDto>> GetProfile (int id)
         {
-            var profile = await playerService.GetPlayerProfileAsync(id);
+            var profile = await sofascorePlayerReader.GetPlayerProfileAsync(id);
             Console.WriteLine($"profileprofile");
             if (profile.Details == null)
             {
