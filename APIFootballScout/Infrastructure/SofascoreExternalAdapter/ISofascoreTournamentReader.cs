@@ -1,8 +1,8 @@
-using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
+﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
 
-namespace APIFootballScout.Application.UseCases.Interfaces
+namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
-    public interface ITournamentUseCase
+    public interface ISofascoreTournamentReader
     {
         Task<SofaTournamentFullDTO> GetTournamentDetailAsync(int tournamentId, int? seasonId);
         Task<SofaTournamentDetailResponse?> GetDetailsAsync(int tournamentId);

@@ -2,7 +2,7 @@
 using Refit;
 using System.Text.Json;
 
-namespace APIFootballScout.Extensions
+namespace APIFootballScout.Infrastructure.Extensions
 {
     public static class DistributedCacheExtensions
     {

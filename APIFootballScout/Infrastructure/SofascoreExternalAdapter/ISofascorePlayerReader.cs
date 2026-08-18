@@ -1,9 +1,8 @@
-using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
-using Refit;
+﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 
-namespace APIFootballScout.Application.UseCases.Interfaces
+namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
-    public interface IPlayerUseCase
+    public interface ISofascorePlayerReader
     {
         Task<SofaSearchResponse> SearchPlayersAsync(string name);
         Task<PlayerFullProfileDto> GetPlayerProfileAsync(int playerId);

@@ -1,11 +1,12 @@
-using Aspire.StackExchange.Redis;
-using Microsoft.EntityFrameworkCore;
-using Refit;
-using APIFootballScout.Configuration;
+using APIFootballScout.Application;
+using APIFootballScout.Application.Configuration;
+using APIFootballScout.Domain.Specifications;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
-using APIFootballScout.Application.UseCases.Interfaces;
-using APIFootballScout.Application.UseCases.Implementations;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
+using Microsoft.EntityFrameworkCore;
+using Refit;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +22,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<IPlayerUseCase, PlayerUseCase>();
-builder.Services.AddScoped<ITournamentUseCase, TournamentUseCase>();
+builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
+builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,7 +42,7 @@ builder.Services.AddRefitClient<ISofascoreClient>().ConfigureHttpClient(c =>
 });
 
 builder.Services.Configure<ScoutConfig>(builder.Configuration.GetSection("ScoutConfig"));
-
+builder.Services.AddSingleton<ScoutSpecificationFactory>();
 var app = builder.Build();
 
 

@@ -1,8 +1,8 @@
-using APIFootballScout.Application.UseCases.Interfaces;
-using APIFootballScout.Configuration;
+﻿using APIFootballScout.Application;
 using APIFootballScout.Domain;
-using APIFootballScout.Extensions;
+using APIFootballScout.Domain.Specifications;
 using APIFootballScout.Infrastructure.Context;
+using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +12,11 @@ using MongoDB.Driver;
 using Refit;
 using System.Text.Json;
 
-namespace APIFootballScout.Application.UseCases.Implementations
+namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
-    public class PlayerUseCase
-    (ISofascoreClient sofascoreClient, AppDbContext context, IDistributedCache cache, IConfiguration config, IOptions<ScoutConfig> scoutOptions) : IPlayerUseCase
+    public class SofascorePlayerReader
+        (ISofascoreClient sofascoreClient, AppDbContext context, IDistributedCache cache,  ScoutSpecificationFactory specsScout) : ISofascorePlayerReader
     {
-        private readonly string _apiKey = config["SofaScore:ApiKey"] ?? string.Empty;
 
         public async Task<SofaSearchResponse> SearchPlayersAsync(string name)
         {
@@ -49,7 +48,7 @@ namespace APIFootballScout.Application.UseCases.Implementations
                 var existsPlayerInDB = await context.Players.AnyAsync(player => player.ExternalId == playerId);
                 if (!existsPlayerInDB)
                 {
-                    context.Players.Add(new Player { ExternalId = playerId, Name= details.Name, TeamName=details.Team.Name, Position= details.Position, CreatedAt= DateTime.UtcNow});
+                    context.Players.Add(new Player { ExternalId = playerId, Name = details.Name, TeamName = details.Team.Name, Position = details.Position, CreatedAt = DateTime.UtcNow });
                     await context.SaveChangesAsync();
                 }
             }
@@ -65,7 +64,7 @@ namespace APIFootballScout.Application.UseCases.Implementations
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12) };
 
-            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(profile),cacheOptions);
+            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(profile), cacheOptions);
 
             return profile;
         }
@@ -73,7 +72,7 @@ namespace APIFootballScout.Application.UseCases.Implementations
         public async Task<SofaPlayerDetailsResponse> GetPlayerDetailsAsync(int playerId)
         {
             var cacheKey = $"playerId_{playerId}_details";
-            bool isPremium = scoutOptions.Value.IsPremiumPlayer(playerId);
+            bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
             return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerDetailsAsync(playerId), expiration);
         }
@@ -86,7 +85,7 @@ namespace APIFootballScout.Application.UseCases.Implementations
         public async Task<SofaSeasonStatsResponse> GetPlayerStatisticsSeasonAsync(int playerId, string tournamentId, string seasonId, [Query] string? type = "overall")
         {
             var cacheKey = $"playerId_{playerId}_statistics_season";
-            bool isPremium = scoutOptions.Value.IsPremiumPlayer(playerId);
+            bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
             return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerStatisticsSeasonAsync(playerId, tournamentId, seasonId), expiration);
         }
@@ -94,7 +93,7 @@ namespace APIFootballScout.Application.UseCases.Implementations
         public async Task<SofaTransferHistoryResponse> GetPlayerTransferHistoryAsync(int playerId)
         {
             var cacheKey = $"playerId_{playerId}_transfer_history";
-            bool isPremium = scoutOptions.Value.IsPremiumPlayer(playerId);
+            bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(20) : null;
             return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerTransferHistoryAsync(playerId), expiration);
         }
@@ -102,10 +101,10 @@ namespace APIFootballScout.Application.UseCases.Implementations
         public async Task<SofaPlayerStatisticsSeasonsResponse> GetPlayerHistoryStatsAsync(int playerId)
         {
             var cacheKey = $"playerId_{playerId}_history_stats";
-            bool isPremium = scoutOptions.Value.IsPremiumPlayer(playerId);
+            bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(1) : null;
             return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerHistoryStatsAsync(playerId), expiration);
         }
+    
     }
-
 }
