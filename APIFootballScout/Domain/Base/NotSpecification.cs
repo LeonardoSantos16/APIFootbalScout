@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.Specifications.Base
+﻿namespace APIFootballScout.Domain.Base
 {
     internal sealed class NotSpecification<T>(ISpecification<T> inner) : Specification<T>
     {

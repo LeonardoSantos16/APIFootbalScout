@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.Specifications.Base
+﻿namespace APIFootballScout.Domain.Base
 {
     public interface ISpecification<in T>
     {

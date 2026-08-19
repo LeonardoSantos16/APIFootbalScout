@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.Specifications.Base
+﻿namespace APIFootballScout.Domain.Base
 {
     internal sealed class OrSpecification<T>(ISpecification<T> left, ISpecification<T> right) : Specification<T>
     {

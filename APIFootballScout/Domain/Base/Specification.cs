@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.Specifications.Base
+﻿namespace APIFootballScout.Domain.Base
 {
     public abstract class Specification<T> : ISpecification<T>
     {
