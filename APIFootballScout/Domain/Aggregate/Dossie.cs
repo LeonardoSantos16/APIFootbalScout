@@ -25,7 +25,7 @@ namespace APIFootballScout.Domain.Aggregate
         public void Encerrar(DateTime encerradoEm)
         {
             if (Status is StatusDossie.Encerrado)
-                throw new InvalidOperationException("Não se encerra um dossiê já encerrado."); 
+                throw new InvalidOperationException("Não se encerra um dossiê já encerrado.");
 
             if (encerradoEm <= AbertoEm)
                 throw new ArgumentException(
@@ -35,5 +35,12 @@ namespace APIFootballScout.Domain.Aggregate
             Status = StatusDossie.Encerrado;
             EncerradoEm = encerradoEm;
         }
+
+        public void ValidarApenasLeitura(StatusDossie statusDossie)
+        {
+            if (Status is StatusDossie.Encerrado)
+                throw new InvalidOperationException("Não é possivel alterar informações ou criar uma nova comparação de dossies já encerrado.");
+        }
+
     }
 }
