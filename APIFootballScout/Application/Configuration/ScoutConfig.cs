@@ -4,5 +4,6 @@
     {
         public int[] PrincipaisTorneios { get; init; } = [];
         public int[] PrincipaisJogadores { get; init; } = [];
+        public int LimiteObservacoesJogadores { get; init; }
     }
 }
