@@ -19,8 +19,23 @@ namespace APIFootballScout.Domain.Aggregate
             OlheiroId = olheiroId;
             AbertoEm = abertoEm;
             LinhaDeBase = linhaDeBase;
+            EncerradoEm = null;
             Status = StatusDossie.Ativo;
         }
+
+        private Dossie(Guid id, int jogadorId, Guid olheiroId, DateTime abertoEm, StatusDossie status, LinhaDeBase linhaDeBase, DateTime? encerradoEm)
+            : base(id)
+        {
+            JogadorId = jogadorId;
+            OlheiroId = olheiroId;
+            AbertoEm = abertoEm;
+            Status = status;
+            LinhaDeBase = linhaDeBase;
+            EncerradoEm = encerradoEm;
+        }
+
+        public static Dossie Restaurar(Guid id, int jogadorId, Guid olheiroId, DateTime abertoEm, StatusDossie status, LinhaDeBase linhaDeBase, DateTime? encerradoEm)
+            => new(id, jogadorId, olheiroId, abertoEm, status, linhaDeBase, encerradoEm);
 
         public void Encerrar(DateTime encerradoEm)
         {

@@ -16,7 +16,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
         [BsonElement("aberto_em")]
         public DateTime AbertoEm { get; set; } = DateTime.UtcNow;
         [BsonElement("encerrado_em")]
-        public DateTime EncerradoEm { get; set; }
+        public DateTime? EncerradoEm { get; set; }
         [BsonElement("linhaDeBase")]
         public LinhaDeBaseDocument LinhaDeBase { get; set; } = default!;
     }

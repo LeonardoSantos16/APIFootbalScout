@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.Specifications.Base;
+﻿using APIFootballScout.Domain.Base;
 
 namespace APIFootballScout.Domain.Specifications
 {
