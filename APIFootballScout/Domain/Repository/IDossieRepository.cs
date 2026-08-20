@@ -1,4 +1,5 @@
-﻿using APIFootballScout.Domain.Aggregate;
+﻿
+using APIFootballScout.Domain.Acompanhamento.Aggregate;
 
 namespace APIFootballScout.Domain.Repository
 {

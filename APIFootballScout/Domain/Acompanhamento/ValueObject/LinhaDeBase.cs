@@ -1,6 +1,6 @@
 ﻿using APIFootballScout.Domain.SharedKernel;
 
-namespace APIFootballScout.Domain.Dossie.ValueObject
+namespace APIFootballScout.Domain.Acompanhamento.ValueObject
 {
     public sealed record LinhaDeBase(
         DateTime MedidaEm,

@@ -1,7 +1,7 @@
 ﻿using APIFootballScout.Domain.Base;
-using APIFootballScout.Domain.Dossie.ValueObject;
+using APIFootballScout.Domain.Acompanhamento.ValueObject;
 
-namespace APIFootballScout.Domain.Dossie.Aggregate
+namespace APIFootballScout.Domain.Acompanhamento.Aggregate
 {
     public sealed class Dossie : AggregateRootBase<Guid>
     {

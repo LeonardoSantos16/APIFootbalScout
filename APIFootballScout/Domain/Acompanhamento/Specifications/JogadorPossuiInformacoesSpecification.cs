@@ -1,7 +1,7 @@
 ﻿using APIFootballScout.Domain.Base;
-using APIFootballScout.Domain.Dossie.Aggregate;
+using APIFootballScout.Domain.Acompanhamento.Aggregate;
 
-namespace APIFootballScout.Domain.Dossie.Specifications
+namespace APIFootballScout.Domain.Acompanhamento.Specifications
 {
     public sealed class JogadorPossuiInformacoesSpecification : Specification<JogadorDoPerfil>
     {

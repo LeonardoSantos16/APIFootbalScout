@@ -1,7 +1,7 @@
-﻿using APIFootballScout.Domain.Aggregate;
+﻿using APIFootballScout.Domain.Acompanhamento.Aggregate;
 using APIFootballScout.Domain.Repository;
 
-namespace APIFootballScout.Domain.Dossie.Services
+namespace APIFootballScout.Domain.Acompanhamento.Services
 {
     public class DossieService
     {

@@ -1,7 +1,7 @@
 using APIFootballScout.Application;
 using APIFootballScout.Application.Configuration;
+using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Repository;
-using APIFootballScout.Domain.Services;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.Persistence.Repositories;

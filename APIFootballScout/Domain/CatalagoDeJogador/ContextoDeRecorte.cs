@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.ValueObject
+﻿namespace APIFootballScout.Domain.CatalagoDeJogador
 {
     public enum ContextoDeRecorte
     {

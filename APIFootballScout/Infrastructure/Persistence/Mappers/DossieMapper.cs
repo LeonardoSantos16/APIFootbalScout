@@ -1,6 +1,7 @@
 ﻿using APIFootballScout.Domain.CatalagoDeJogador;
-using APIFootballScout.Domain.Dossie.Aggregate;
-using APIFootballScout.Domain.ValueObject;
+using APIFootballScout.Domain.Acompanhamento.Aggregate;
+using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 
 namespace APIFootballScout.Infrastructure.Persistence.Mappers

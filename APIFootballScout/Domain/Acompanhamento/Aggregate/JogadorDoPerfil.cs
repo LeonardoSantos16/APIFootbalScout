@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.Dossie.Aggregate
+﻿namespace APIFootballScout.Domain.Acompanhamento.Aggregate
 {
     public struct JogadorDoPerfil
     {
