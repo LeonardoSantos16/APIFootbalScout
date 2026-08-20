@@ -26,4 +26,8 @@
     <ProjectReference Include="..\APIFootballScout.ServiceDefaults\APIFootballScout.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Abstractions\Scouting\" />
+  </ItemGroup>
+
 </Project>

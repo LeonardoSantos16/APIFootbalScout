@@ -49,9 +49,9 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             var filter = Builders<DossieDocument>.Filter.Eq(d => d.OlheiroId, olheiroId) 
                 & Builders<DossieDocument>.Filter.Eq(d => d.JogadorId, jogadorId);
 
-            var document = await _colecaoDossie.CountDocumentsAsync(filter, options: null, cancellationToken);
-
-            return document > 0;
+            var document = await _colecaoDossie.FindAsync(filter, options: null, cancellationToken);
+          
+            return document != null;
         }
     }
 }

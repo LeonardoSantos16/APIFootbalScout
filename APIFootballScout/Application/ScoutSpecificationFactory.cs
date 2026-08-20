@@ -1,5 +1,5 @@
 ﻿using APIFootballScout.Application.Configuration;
-using APIFootballScout.Domain.Specifications;
+using APIFootballScout.Domain.Dossie.Specifications;
 using Microsoft.Extensions.Options;
 
 namespace APIFootballScout.Application

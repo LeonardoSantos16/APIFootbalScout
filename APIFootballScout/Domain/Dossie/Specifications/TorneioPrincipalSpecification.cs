@@ -1,6 +1,6 @@
 ﻿using APIFootballScout.Domain.Base;
 
-namespace APIFootballScout.Domain.Specifications
+namespace APIFootballScout.Domain.Dossie.Specifications
 {
     public sealed class TorneioPrincipalSpecification : Specification<int>
     {

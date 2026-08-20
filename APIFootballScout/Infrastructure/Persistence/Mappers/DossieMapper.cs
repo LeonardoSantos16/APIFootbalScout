@@ -1,4 +1,5 @@
-﻿using APIFootballScout.Domain.Aggregate;
+﻿using APIFootballScout.Domain.CatalagoDeJogador;
+using APIFootballScout.Domain.Dossie.Aggregate;
 using APIFootballScout.Domain.ValueObject;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 
