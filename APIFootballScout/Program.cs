@@ -1,10 +1,13 @@
 using APIFootballScout.Application;
 using APIFootballScout.Application.Configuration;
-using APIFootballScout.Domain.Specifications;
+using APIFootballScout.Domain.Repository;
+using APIFootballScout.Domain.Services;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
+using APIFootballScout.Infrastructure.Persistence.Repositories;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Refit;
 
 
@@ -25,6 +28,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
 
+builder.Services.AddScoped(sp => new DossieService(
+    sp.GetRequiredService<IDossieRepository>(),
+    sp.GetRequiredService<IOptions<ScoutConfig>>().Value.LimiteObservacoesJogadores));
+
+builder.Services.AddScoped<IDossieRepository, DossieRepositoryMongo>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
