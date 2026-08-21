@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.CatalagoDeJogador;
+﻿using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Domain.Acompanhamento.ValueObject
 {

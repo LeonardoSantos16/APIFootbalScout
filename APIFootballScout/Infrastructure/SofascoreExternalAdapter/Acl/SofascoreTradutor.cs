@@ -1,24 +1,33 @@
-﻿using APIFootballScout.Domain.CatalagoDeJogador;
+using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
-using Refit;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
 {
-    public static class SofascoreTradutor
+    internal static class SofascoreTradutor
     {
-        public static PerfilDoJogador TraduzirParaPerfilDoJogador(SofaPlayerDetailsResponse sofaPlayer, int competicaoId, int temporadaId, SofaSeasonStatsResponse statsPlayer)
+        private const string MoedaEsperada = "EUR";
+
+        /// <summary>
+        /// R9.6 — a fonte não identifica o recorte no retorno. O recorte pedido
+        /// é carimbado aqui, de volta no dado traduzido.
+        /// </summary>
+        public static PerfilDoJogador TraduzirParaPerfilDoJogador(
+            SofaPlayerDetailsResponse sofaPlayer,
+            SofaSeasonStatsResponse statsPlayer,
+            Recorte recorte,
+            DateTime lidoEm)
         {
-            var jogador = new PerfilDoJogador(
+            return new PerfilDoJogador(
                 JogadorId: sofaPlayer.Player.Id,
                 Nome: sofaPlayer.Player.Name,
                 Posicao: sofaPlayer.Player.Position,
-                Clube: sofaPlayer.Player.Team.Name,
-                ReceitaEstimada: new Dinheiro(sofaPlayer.Player.ProposedMarketValue, "EUR"),
+                Clube: sofaPlayer.Player.Team?.Name,
+                ValorDeMercado: new Dinheiro(sofaPlayer.Player.ProposedMarketValue, MoedaEsperada),
                 MinutosJogados: statsPlayer.Statistics.MinutesPlayed,
-                Recorte: new Recorte(competicaoId, temporadaId, (ContextoDeRecorte)1)
+                Recorte: recorte,
+                LidoEm: lidoEm
             );
-            return jogador;
         }
     }
 }

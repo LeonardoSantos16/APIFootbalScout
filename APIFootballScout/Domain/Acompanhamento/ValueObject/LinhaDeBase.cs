@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.SharedKernel;
+using APIFootballScout.Domain.SharedKernel;
 
 namespace APIFootballScout.Domain.Acompanhamento.ValueObject
 {
@@ -6,9 +6,5 @@ namespace APIFootballScout.Domain.Acompanhamento.ValueObject
         DateTime MedidaEm,
         string Clube,
         Dinheiro ValorDeMercado,
-        Minutagem Minutagem)
-    {
-        public LinhaDeBase(string Clube, Dinheiro ValorDeMercado, Minutagem Minutagem)
-            : this(DateTime.UtcNow, Clube, ValorDeMercado, Minutagem) { }
-    }
+        Minutagem Minutagem);
 }

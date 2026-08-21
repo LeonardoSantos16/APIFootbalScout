@@ -1,15 +1,15 @@
-﻿using APIFootballScout.Domain.Base;
-using APIFootballScout.Domain.Acompanhamento.Aggregate;
+using APIFootballScout.Domain.Base;
+using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Domain.Acompanhamento.Specifications
 {
-    public sealed class JogadorPossuiInformacoesSpecification : Specification<JogadorDoPerfil>
+    public sealed class JogadorPossuiInformacoesSpecification : Specification<PerfilDoJogador>
     {
-        public override bool IsSatisfiedBy(JogadorDoPerfil jogador)
+        public override bool IsSatisfiedBy(PerfilDoJogador perfil)
         {
-            return !string.IsNullOrWhiteSpace(jogador.Nome)
-                    && jogador.Posicao is not null
-                    && jogador.Clube is not null;
+            return !string.IsNullOrWhiteSpace(perfil.Nome)
+                && !string.IsNullOrWhiteSpace(perfil.Posicao)
+                && !string.IsNullOrWhiteSpace(perfil.Clube);
         }
     }
 }

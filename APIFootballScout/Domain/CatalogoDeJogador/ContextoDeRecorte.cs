@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.CatalagoDeJogador
+﻿namespace APIFootballScout.Domain.CatalogoDeJogador
 {
     public enum ContextoDeRecorte
     {

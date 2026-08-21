@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.CatalagoDeJogador;
+﻿using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Acompanhamento.Aggregate;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.SharedKernel;

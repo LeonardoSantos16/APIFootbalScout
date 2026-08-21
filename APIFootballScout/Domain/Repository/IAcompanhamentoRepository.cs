@@ -3,7 +3,7 @@ using APIFootballScout.Domain.Acompanhamento.Aggregate;
 
 namespace APIFootballScout.Domain.Repository
 {
-    public interface IDossieRepository
+    public interface IAcompanhamentoRepository
     {
         Task<bool> VerificarAcompanhamentoJogador(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default);
         Task<int> ContarDossiesAtivosAsync(Guid olheiroId, CancellationToken cancellationToken = default);
