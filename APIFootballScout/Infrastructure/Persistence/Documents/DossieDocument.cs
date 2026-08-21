@@ -8,6 +8,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Guid Id { get; set; }
         [BsonElement("olheiro_id")]
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Guid OlheiroId { get; set; }
         [BsonElement("jogador_id")]
         public int JogadorId { get; set; }

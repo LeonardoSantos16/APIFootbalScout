@@ -10,13 +10,13 @@ namespace APIFootballScout.Infrastructure.External
         Task<IApiResponse<SofaSearchResponse>> SofascoreSearchPlayerAsync([Query] string q, [Query] string? type = "player-team-persons", [Query] int? page = 0);
 
         [Get("/players/detail")]
-        Task<IApiResponse<SofaPlayerDetailsResponse>> GetSofascorePlayerDetailsAsync([Query] int playerId);
+        Task<IApiResponse<SofaPlayerDetailsResponse>> GetSofascorePlayerDetailsAsync([Query] int playerId, CancellationToken cancellationToken);
 
         [Get("/players/get-image")]
         Task<IApiResponse<HttpContent>> GetSofascorePlayerImageAsync([Query] int id);
 
-        [Get("/players/get-statistics-seasons")]
-        Task<IApiResponse<SofaSeasonStatsResponse>> GetSofascorePlayerStatisticsSeasonAsync([Query] int playerId, [Query] string tournamentId, [Query] string seasonId, [Query] string? type = "overall");
+        [Get("/players/get-statistics")]
+        Task<IApiResponse<SofaSeasonStatsResponse>> GetSofascorePlayerStatisticsSeasonAsync([Query] int playerId, [Query] string tournamentId, [Query] string seasonId, CancellationToken cancelationToken, [Query] string? type = "overall");
 
         [Get("/players/get-national-team-statistics")]
         Task<IApiResponse<SofaNationalTeamStatsResponse>> GetSofascorePlayerNationalTeamAsync([Query] int playerId);

@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.Aggregate
+﻿namespace APIFootballScout.Domain.Acompanhamento.Aggregate
 {
 
     public enum StatusDossie

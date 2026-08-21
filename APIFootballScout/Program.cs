@@ -1,7 +1,11 @@
 using APIFootballScout.Application;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
+using MongoDB.Driver;
+using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
+using APIFootballScout.Domain.Acompanhamento.Services;
+using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
-using APIFootballScout.Domain.Services;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.Persistence.Repositories;
@@ -28,11 +32,16 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
 
-builder.Services.AddScoped(sp => new DossieService(
-    sp.GetRequiredService<IDossieRepository>(),
-    sp.GetRequiredService<IOptions<ScoutConfig>>().Value.LimiteObservacoesJogadores));
+builder.Services.AddScoped(sp => new AbrirAcompanhamentoUseCase(
+    sp.GetRequiredService<IAcompanhamentoRepository>(),
+    sp.GetRequiredService<IOptions<ScoutConfig>>().Value.LimiteObservacoesJogadores,
+    sp.GetRequiredService<IAcompanhamentoService>(),
+    sp.GetRequiredService<ICatalogoDeJogador>()
+));
 
-builder.Services.AddScoped<IDossieRepository, DossieRepositoryMongo>();
+builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMongo>();
+builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();
+builder.Services.AddScoped<ICatalogoDeJogador, FonteDeDadosSofascore>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -71,6 +80,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+
+    // R1.2 - indice unico parcial em (olheiro_id, jogador_id) restrito a status Ativo.
+    var mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
+    await AcompanhamentoRepositoryMongo.GarantirIndicesAsync(mongoClient);
 }
 
 app.MapControllers();

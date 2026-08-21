@@ -1,6 +1,6 @@
 ﻿using APIFootballScout.Domain.Base;
 
-namespace APIFootballScout.Domain.Specifications
+namespace APIFootballScout.Domain.Acompanhamento.Specifications
 {
     public sealed class JogadorPrincipalSpecification : Specification<int>
     {

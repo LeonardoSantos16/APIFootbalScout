@@ -18,7 +18,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
         [property: JsonPropertyName("dateOfBirth")] DateTime DateOfBirth,
         [property: JsonPropertyName("preferredFoot")] string? PreferredFoot,
         [property: JsonPropertyName("userCount")] int UserCount,
-        [property: JsonPropertyName("proposedMarketValue")] long? ProposedMarketValue,
+        [property: JsonPropertyName("proposedMarketValue")] long ProposedMarketValue,
         [property: JsonPropertyName("proposedMarketValueRaw")] SofaMarketValue? ProposedMarketValueRaw
     );
 

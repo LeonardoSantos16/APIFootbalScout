@@ -1,13 +1,11 @@
 ﻿using APIFootballScout.Application;
 using APIFootballScout.Domain;
-using APIFootballScout.Domain.Specifications;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Refit;
 using System.Text.Json;
@@ -25,7 +23,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             return response.Content ?? new SofaSearchResponse(new List<SofaSearchResult>());
         }
 
-        public async Task<PlayerFullProfileDto> GetPlayerProfileAsync(int playerId)
+        public async Task<PlayerFullProfileDto> GetPlayerProfileAsync(int playerId, CancellationToken cancellationToken = default)
         {
             var cacheKey = $"player_profile_{playerId}";
             var cachedData = await cache.GetStringAsync(cacheKey);
@@ -35,7 +33,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
                 return JsonSerializer.Deserialize<PlayerFullProfileDto>(cachedData)!;
             }
 
-            var detailsTask = sofascoreClient.GetSofascorePlayerDetailsAsync(playerId);
+            var detailsTask = sofascoreClient.GetSofascorePlayerDetailsAsync(playerId, cancellationToken);
             var transferTask = sofascoreClient.GetSofascorePlayerTransferHistoryAsync(playerId);
             var statsTask = sofascoreClient.GetSofascorePlayerHistoryStatsAsync(playerId);
             var nationalStatsTask = sofascoreClient.GetSofascorePlayerNationalTeamAsync(playerId);
@@ -69,12 +67,12 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             return profile;
         }
 
-        public async Task<SofaPlayerDetailsResponse> GetPlayerDetailsAsync(int playerId)
+        public async Task<SofaPlayerDetailsResponse> GetPlayerDetailsAsync(int playerId, CancellationToken cancellationToken = default)
         {
             var cacheKey = $"playerId_{playerId}_details";
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerDetailsAsync(playerId), expiration);
+            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerDetailsAsync(playerId, cancellationToken), expiration);
         }
 
         public string GetPlayerImageAsync(int playerId)
@@ -82,12 +80,12 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             return $"https://api.sofascore.app/api/v1/player/{playerId}/image";
         }
 
-        public async Task<SofaSeasonStatsResponse> GetPlayerStatisticsSeasonAsync(int playerId, string tournamentId, string seasonId, [Query] string? type = "overall")
+        public async Task<SofaSeasonStatsResponse> GetPlayerStatisticsSeasonAsync(int playerId, string tournamentId, string seasonId, CancellationToken cancellationToken, [Query] string? type = "overall")
         {
             var cacheKey = $"playerId_{playerId}_statistics_season";
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerStatisticsSeasonAsync(playerId, tournamentId, seasonId), expiration);
+            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerStatisticsSeasonAsync(playerId, tournamentId, seasonId, cancellationToken, type), expiration);
         }
 
         public async Task<SofaTransferHistoryResponse> GetPlayerTransferHistoryAsync(int playerId)
