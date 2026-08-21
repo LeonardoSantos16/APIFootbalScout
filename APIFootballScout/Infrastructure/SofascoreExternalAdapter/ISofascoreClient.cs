@@ -15,7 +15,7 @@ namespace APIFootballScout.Infrastructure.External
         [Get("/players/get-image")]
         Task<IApiResponse<HttpContent>> GetSofascorePlayerImageAsync([Query] int id);
 
-        [Get("/players/get-statistics-seasons")]
+        [Get("/players/get-statistics")]
         Task<IApiResponse<SofaSeasonStatsResponse>> GetSofascorePlayerStatisticsSeasonAsync([Query] int playerId, [Query] string tournamentId, [Query] string seasonId, CancellationToken cancelationToken, [Query] string? type = "overall");
 
         [Get("/players/get-national-team-statistics")]

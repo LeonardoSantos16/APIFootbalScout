@@ -19,8 +19,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             var playerProfile = await _sofascoreApiClient.GetSofascorePlayerDetailsAsync(jogadorId, cancellationToken);
             var statsPlayer = await _sofascoreApiClient.GetSofascorePlayerStatisticsSeasonAsync(
                 jogadorId,
-                recorte.TemporadaId.ToString(),
                 recorte.CompeticaoId.ToString(),
+                recorte.TemporadaId.ToString(),
                 cancellationToken);
 
             if (playerProfile?.Content == null || statsPlayer?.Content == null)
