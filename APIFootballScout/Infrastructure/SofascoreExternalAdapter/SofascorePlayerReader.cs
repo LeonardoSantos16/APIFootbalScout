@@ -72,7 +72,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             var cacheKey = $"playerId_{playerId}_details";
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerDetailsAsync(playerId, cancellationToken), expiration);
+            var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerDetailsAsync(playerId, cancellationToken), expiration);
+            return result == null ? throw new Exception($"No details found for playerId: {playerId}") : result;
         }
 
         public string GetPlayerImageAsync(int playerId)
@@ -85,7 +86,10 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             var cacheKey = $"playerId_{playerId}_statistics_season";
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerStatisticsSeasonAsync(playerId, tournamentId, seasonId, cancellationToken, type), expiration);
+            var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerStatisticsSeasonAsync(playerId, tournamentId, seasonId, cancellationToken, type), expiration);
+            return result == null
+                ? throw new Exception($"No statistics found for playerId: {playerId}, tournamentId: {tournamentId}, seasonId: {seasonId}")
+                : result;
         }
 
         public async Task<SofaTransferHistoryResponse> GetPlayerTransferHistoryAsync(int playerId)
@@ -93,7 +97,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             var cacheKey = $"playerId_{playerId}_transfer_history";
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(20) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerTransferHistoryAsync(playerId), expiration);
+            var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerTransferHistoryAsync(playerId), expiration);
+            return result == null ? throw new Exception($"No transfer history found for playerId: {playerId}") : result;
         }
 
         public async Task<SofaPlayerStatisticsSeasonsResponse> GetPlayerHistoryStatsAsync(int playerId)
@@ -101,7 +106,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             var cacheKey = $"playerId_{playerId}_history_stats";
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(1) : null;
-            return await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerHistoryStatsAsync(playerId), expiration);
+            var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerHistoryStatsAsync(playerId), expiration);
+            return result == null ? throw new Exception($"No history stats found for playerId: {playerId}") : result;
         }
     
     }

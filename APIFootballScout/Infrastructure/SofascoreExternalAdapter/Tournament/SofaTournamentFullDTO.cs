@@ -2,9 +2,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament
 {
     public class SofaTournamentFullDTO
     {
-        public SofaUniqueTournament Details { get; set; }
-        public SofaTopPlayers TopPlayers { get; set; }
-        public List<SofaStandingGroup> Stading { get; set; }
-        public string Image { get; set; }
+        public required SofaUniqueTournament? Details { get; set; }
+        public required SofaTopPlayers? TopPlayers { get; set; }
+        public required List<SofaStandingGroup>? Stading { get; set; }
+        public required string Image { get; set; }
     }
 }
