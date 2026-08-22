@@ -8,7 +8,7 @@ namespace APIFootballScout.Infrastructure.Extensions
     {
         public static async Task<T?> GetOrFetchAsync<T>(
         this IDistributedCache cache,
-        string? key,
+        string key,
         Func<Task<IApiResponse<T>>> fetch,
         TimeSpan? expiration = null) where T : class
         {
