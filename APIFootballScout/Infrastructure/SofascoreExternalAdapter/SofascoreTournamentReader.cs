@@ -64,7 +64,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 
                 if (!seasonsResponse.IsSuccessStatusCode || seasonsResponse.Content?.Seasons == null || !seasonsResponse.Content.Seasons.Any())
                 {
-                    throw new Exception("Não foi possível encontrar temporadas para este torneio.");
+                    throw new FonteExternaIndisponivelException(
+                        "sofascore.temporadas_do_torneio_indisponiveis",
+                        "Could not retrieve the seasons for this tournament from Sofascore.");
                 }
 
                 selectedSeasonId = seasonsResponse.Content.Seasons.First().Id;

@@ -1,3 +1,5 @@
+using APIFootballScout.Domain.Base.Exceptions;
+using APIFootballScout.Infrastructure.External;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,8 @@ namespace APIFootballScout
         ILogger<ExceptionHandlerGlobal> logger,
         IProblemDetailsService problemDetailsService) : IExceptionHandler
     {
+        private const string DetalheGenerico = "An unexpected error occurred while processing the request.";
+
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
@@ -28,28 +32,34 @@ namespace APIFootballScout
 
             httpContext.Response.StatusCode = status;
 
+            var erroConhecido = exception as ICodigoDeErro;
+
+            var problemDetails = new ProblemDetails
+            {
+                Status = status,
+                Title = titulo,
+                Detail = erroConhecido is null ? DetalheGenerico : exception.Message,
+                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
+            };
+
+            if (erroConhecido is not null)
+                problemDetails.Extensions["code"] = erroConhecido.Codigo;
+
             return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
             {
                 HttpContext = httpContext,
                 Exception = exception,
-                ProblemDetails = new ProblemDetails
-                {
-                    Status = status,
-                    Title = titulo,
-                    Detail = status == StatusCodes.Status500InternalServerError
-                        ? "An unexpected error occurred while processing the request."
-                        : exception.Message,
-                    Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
-                }
+                ProblemDetails = problemDetails
             });
         }
 
         private static (int status, string titulo) MapearStatus(Exception exception) => exception switch
         {
-            KeyNotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
-            InvalidOperationException => (StatusCodes.Status409Conflict, "Operation conflict"),
-            ArgumentNullException => (StatusCodes.Status500InternalServerError, "Internal Server Error"),
-            ArgumentException => (StatusCodes.Status400BadRequest, "Invalid request"),
+            RecursoNaoEncontradoException => (StatusCodes.Status404NotFound, "Resource not found"),
+            ConflitoDeDominioException => (StatusCodes.Status409Conflict, "Operation conflict"),
+            RegraDeNegocioException => (StatusCodes.Status422UnprocessableEntity, "Business rule violation"),
+            ValorInvalidoException => (StatusCodes.Status400BadRequest, "Invalid request"),
+            FonteExternaIndisponivelException => (StatusCodes.Status502BadGateway, "External data source unavailable"),
             _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
         };
 

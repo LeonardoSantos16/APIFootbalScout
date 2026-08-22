@@ -1,5 +1,6 @@
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Domain.CatalogoDeJogador;
+using APIFootballScout.Domain.Base.Exceptions;
 
 namespace APIFootballScout.Contracts.Acompanhamento
 {
@@ -19,7 +20,9 @@ namespace APIFootballScout.Contracts.Acompanhamento
         {
             ContextoDeRecorteDto.Clube => ContextoDeRecorte.Clube,
             ContextoDeRecorteDto.Selecao => ContextoDeRecorte.Selecao,
-            _ => throw new ArgumentOutOfRangeException(nameof(contexto), contexto, "Contexto de recorte invalido.")
+            _ => throw new ValorInvalidoException(
+                "recorte.contexto_invalido",
+                $"Invalid scope context: {contexto}.")
         };
     }
 }
