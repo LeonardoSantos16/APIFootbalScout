@@ -1,6 +1,5 @@
+using APIFootballScout;
 using APIFootballScout.Application;
-using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
-using MongoDB.Driver;
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Domain.Acompanhamento.Services;
@@ -9,11 +8,17 @@ using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.Persistence.Repositories;
+using APIFootballScout.Infrastructure.Security;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 using Refit;
-using APIFootballScout;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +34,47 @@ builder.AddRedisClient("cache");
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<IValidateOptions<JwtOptions>, JwtOptionsValidator>();
+builder.Services.AddOptions<JwtOptions>()
+    .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
+    .ValidateOnStart();
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer();
+
+builder.Services
+    .AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+    .Configure<IOptions<JwtOptions>, IHostEnvironment>((bearer, jwtOptions, environment) =>
+    {
+        var jwt = jwtOptions.Value;
+
+        bearer.MapInboundClaims = false;
+        bearer.RequireHttpsMetadata = !environment.IsDevelopment();
+        bearer.SaveToken = true;
+        bearer.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwt.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwt.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(300),
+            ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
+            NameClaimType = JwtRegisteredClaimNames.Sub,
+            RoleClaimType = TokenService.RoleClaimType
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
@@ -77,6 +123,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
