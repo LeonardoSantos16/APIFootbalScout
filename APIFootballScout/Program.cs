@@ -13,6 +13,7 @@ using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Refit;
+using APIFootballScout;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,9 +61,11 @@ builder.Services.AddRefitClient<ISofascoreClient>().ConfigureHttpClient(c =>
 
 builder.Services.Configure<ScoutConfig>(builder.Configuration.GetSection("ScoutConfig"));
 builder.Services.AddSingleton<ScoutSpecificationFactory>();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ExceptionHandlerGlobal>();
 var app = builder.Build();
 
-
+app.UseExceptionHandler();
 app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.

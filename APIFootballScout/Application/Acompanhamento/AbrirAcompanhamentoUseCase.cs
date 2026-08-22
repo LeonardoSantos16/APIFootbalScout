@@ -3,6 +3,7 @@ using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
+using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Application.Acompanhamento
@@ -35,7 +36,9 @@ namespace APIFootballScout.Application.Acompanhamento
 
             if (jogadorAcompanhado)
             {
-                throw new InvalidOperationException("O jogador já está sendo acompanhado pelo olheiro.");
+                throw new ConflitoDeDominioException(
+                    "acompanhamento.jogador_ja_acompanhado",
+                    "The player is already being tracked by this scout.");
             }
 
             var limiteAtingido = await _acompanhamentoService.VerificarLimiteDeAcompanhamentosAsync(
@@ -43,7 +46,9 @@ namespace APIFootballScout.Application.Acompanhamento
 
             if (limiteAtingido)
             {
-                throw new InvalidOperationException("Limite de jogadores em observação atingido.");
+                throw new RegraDeNegocioException(
+                    "acompanhamento.limite_atingido",
+                    "The scout has reached the maximum number of players under observation.");
             }
 
             var recorte = new Recorte(request.CompeticaoId, request.TemporadaId, request.Contexto);
@@ -52,12 +57,16 @@ namespace APIFootballScout.Application.Acompanhamento
 
             if (perfilDoJogador is null)
             {
-                throw new InvalidOperationException("Perfil do jogador não encontrado.");
+                throw new RecursoNaoEncontradoException(
+                    "jogador.perfil_nao_encontrado",
+                    "Player profile not found.");
             }
 
             if (!_jogadorAcompanhavel.IsSatisfiedBy(perfilDoJogador))
             {
-                throw new InvalidOperationException("O jogador não possui as informações mínimas para servir de base comparável.");
+                throw new RegraDeNegocioException(
+                    "jogador.informacoes_insuficientes",
+                    "The player does not have the minimum information required to serve as a comparison baseline.");
             }
 
             var dossie = CriarDossie(request, perfilDoJogador);

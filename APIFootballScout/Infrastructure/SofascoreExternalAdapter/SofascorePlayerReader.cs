@@ -73,7 +73,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
             var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerDetailsAsync(playerId, cancellationToken), expiration);
-            return result == null ? throw new Exception($"No details found for playerId: {playerId}") : result;
+            return result == null ? throw new FonteExternaIndisponivelException(
+                "sofascore.detalhes_do_jogador_indisponiveis",
+                $"No details found for playerId: {playerId}.") : result;
         }
 
         public string GetPlayerImageAsync(int playerId)
@@ -88,7 +90,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(7) : null;
             var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerStatisticsSeasonAsync(playerId, tournamentId, seasonId, cancellationToken, type), expiration);
             return result == null
-                ? throw new Exception($"No statistics found for playerId: {playerId}, tournamentId: {tournamentId}, seasonId: {seasonId}")
+                ? throw new FonteExternaIndisponivelException(
+                    "sofascore.estatisticas_do_jogador_indisponiveis",
+                    $"No statistics found for playerId: {playerId}, tournamentId: {tournamentId}, seasonId: {seasonId}.")
                 : result;
         }
 
@@ -98,7 +102,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(20) : null;
             var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerTransferHistoryAsync(playerId), expiration);
-            return result == null ? throw new Exception($"No transfer history found for playerId: {playerId}") : result;
+            return result == null ? throw new FonteExternaIndisponivelException(
+                "sofascore.historico_de_transferencias_indisponivel",
+                $"No transfer history found for playerId: {playerId}.") : result;
         }
 
         public async Task<SofaPlayerStatisticsSeasonsResponse> GetPlayerHistoryStatsAsync(int playerId)
@@ -107,7 +113,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             bool isPremium = specsScout.JogadorPrincipal().IsSatisfiedBy(playerId);
             TimeSpan? expiration = isPremium ? TimeSpan.FromDays(1) : null;
             var result = await cache.GetOrFetchAsync(cacheKey, () => sofascoreClient.GetSofascorePlayerHistoryStatsAsync(playerId), expiration);
-            return result == null ? throw new Exception($"No history stats found for playerId: {playerId}") : result;
+            return result == null ? throw new FonteExternaIndisponivelException(
+                "sofascore.historico_de_estatisticas_indisponivel",
+                $"No history stats found for playerId: {playerId}.") : result;
         }
     
     }

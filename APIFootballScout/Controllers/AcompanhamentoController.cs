@@ -10,7 +10,12 @@ namespace APIFootballScout.Controllers
     {
         [HttpPost]
         [ProducesResponseType(typeof(AbrirAcompanhamentoResult), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status502BadGateway)]
         public async Task<ActionResult<AbrirAcompanhamentoResult>> Abrir(
             [FromBody] AbrirAcompanhamentoRequestDto dto,
             CancellationToken cancellationToken)

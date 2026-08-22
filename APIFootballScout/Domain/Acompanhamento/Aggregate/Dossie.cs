@@ -1,5 +1,6 @@
 ﻿using APIFootballScout.Domain.Base;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.Base.Exceptions;
 
 namespace APIFootballScout.Domain.Acompanhamento.Aggregate
 {
@@ -40,12 +41,14 @@ namespace APIFootballScout.Domain.Acompanhamento.Aggregate
         public void Encerrar(DateTime encerradoEm)
         {
             if (Status is StatusDossie.Encerrado)
-                throw new InvalidOperationException("Não se encerra um dossiê já encerrado.");
+                throw new ConflitoDeDominioException(
+                    "dossie.ja_encerrado",
+                    "The dossier has already been closed.");
 
             if (encerradoEm <= AbertoEm)
-                throw new ArgumentException(
-                    "A data de encerramento deve ser posterior à data de abertura.",
-                    nameof(encerradoEm));
+                throw new ValorInvalidoException(
+                    "dossie.data_de_encerramento_invalida",
+                    "The closing date must be later than the opening date.");
 
             Status = StatusDossie.Encerrado;
             EncerradoEm = encerradoEm;
@@ -54,7 +57,9 @@ namespace APIFootballScout.Domain.Acompanhamento.Aggregate
         public void ValidarApenasLeitura(StatusDossie statusDossie)
         {
             if (Status is StatusDossie.Encerrado)
-                throw new InvalidOperationException("Não é possivel alterar informações ou criar uma nova comparação de dossies já encerrado.");
+                throw new ConflitoDeDominioException(
+                    "dossie.encerrado_somente_leitura",
+                    "A closed dossier cannot be modified or used as the basis for a new comparison.");
         }
 
     }

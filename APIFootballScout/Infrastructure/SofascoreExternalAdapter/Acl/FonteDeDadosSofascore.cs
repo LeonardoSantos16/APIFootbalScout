@@ -1,3 +1,4 @@
+using System.Net;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Infrastructure.External;
 
@@ -12,7 +13,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             _sofascoreApiClient = sofascoreApiClient;
         }
 
-        public async Task<PerfilDoJogador> ObterPerfilDoJogador(int jogadorId, Recorte recorte, CancellationToken cancellationToken = default)
+        public async Task<PerfilDoJogador?> ObterPerfilDoJogador(int jogadorId, Recorte recorte, CancellationToken cancellationToken = default)
         {
             var lidoEm = DateTime.UtcNow;
 
@@ -23,9 +24,17 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 recorte.TemporadaId.ToString(),
                 cancellationToken);
 
+            if (playerProfile?.StatusCode == HttpStatusCode.NotFound
+                || statsPlayer?.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
             if (playerProfile?.Content == null || statsPlayer?.Content == null)
             {
-                throw new Exception("Erro ao obter perfil do jogador ou estatísticas do jogador.");
+                throw new FonteExternaIndisponivelException(
+                    "sofascore.perfil_do_jogador_indisponivel",
+                    "Could not retrieve the player profile or season statistics from Sofascore.");
             }
 
             return SofascoreTradutor.TraduzirParaPerfilDoJogador(
