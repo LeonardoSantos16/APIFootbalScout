@@ -21,11 +21,15 @@ namespace APIFootballScout.Application.User
 
             if (armazenado.RevokedAtUtc is not null)
             {
-                logger.LogWarning(
-                    "Reuse of a revoked refresh token detected for user {UserId}; revoking every active session.",
-                    armazenado.UserId);
+                if (armazenado.ReplacedByHash is not null)
+                {
+                    logger.LogWarning(
+                        "Reuse of a rotated refresh token detected for user {UserId}; revoking every active session.",
+                        armazenado.UserId);
 
-                await refreshTokenRepository.RevogarTodosDoUsuarioAsync(armazenado.UserId, agora, cancellationToken);
+                    await refreshTokenRepository.RevogarTodosDoUsuarioAsync(armazenado.UserId, agora, cancellationToken);
+                }
+
                 throw TokenInvalido();
             }
 
