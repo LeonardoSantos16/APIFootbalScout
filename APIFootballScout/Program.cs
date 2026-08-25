@@ -2,6 +2,7 @@ using APIFootballScout;
 using APIFootballScout.Application;
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
+using APIFootballScout.Application.User;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
@@ -75,6 +76,15 @@ builder.Services
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+builder.Services.AddScoped<IUserRepository, UserRepositoryMongo>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepositoryMongo>();
+builder.Services.AddScoped<AuthSessionIssuer>();
+builder.Services.AddScoped<SignUpUserUseCase>();
+builder.Services.AddScoped<SignInUserUseCase>();
+builder.Services.AddScoped<RefreshTokenUseCase>();
+builder.Services.AddScoped<SignOutUserUseCase>();
+builder.Services.AddScoped<DeleteUserUseCase>();
 
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
