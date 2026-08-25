@@ -29,6 +29,16 @@ namespace APIFootballScout.Contracts.Auth
         public string Password { get; init; } = string.Empty;
     }
 
+    public sealed record ChangePasswordRequestDto
+    {
+        [Required]
+        public string CurrentPassword { get; init; } = string.Empty;
+
+        [Required]
+        [StringLength(72, MinimumLength = 8)]
+        public string NewPassword { get; init; } = string.Empty;
+    }
+
     public sealed record RefreshTokenRequestDto
     {
         [Required]

@@ -85,6 +85,7 @@ builder.Services.AddScoped<SignUpUserUseCase>();
 builder.Services.AddScoped<SignInUserUseCase>();
 builder.Services.AddScoped<RefreshTokenUseCase>();
 builder.Services.AddScoped<SignOutUserUseCase>();
+builder.Services.AddScoped<ChangePasswordUseCase>();
 builder.Services.AddScoped<DeleteUserUseCase>();
 
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();

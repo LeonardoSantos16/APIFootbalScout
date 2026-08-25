@@ -13,6 +13,7 @@ namespace APIFootballScout.Controllers
         SignInUserUseCase signInUserUseCase,
         RefreshTokenUseCase refreshTokenUseCase,
         SignOutUserUseCase signOutUserUseCase,
+        ChangePasswordUseCase changePasswordUseCase,
         DeleteUserUseCase deleteUserUseCase) : ControllerBase
     {
         [HttpPost("signup")]
@@ -80,6 +81,22 @@ namespace APIFootballScout.Controllers
             await signOutUserUseCase.ExecuteTodasSessoes(User.ObterUserId(), cancellationToken);
 
             return NoContent();
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<ActionResult<AuthResponseDto>> ChangePassword(
+            [FromBody] ChangePasswordRequestDto dto,
+            CancellationToken cancellationToken)
+        {
+            var result = await changePasswordUseCase.Execute(
+                User.ObterUserId(), dto.CurrentPassword, dto.NewPassword, cancellationToken);
+
+            return Ok(AuthResponseDto.De(result));
         }
 
         [HttpGet("me")]
