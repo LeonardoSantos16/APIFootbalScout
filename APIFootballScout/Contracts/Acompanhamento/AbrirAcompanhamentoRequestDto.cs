@@ -4,9 +4,6 @@ namespace APIFootballScout.Contracts.Acompanhamento
 {
     public sealed record AbrirAcompanhamentoRequestDto
     {
-        [Required]
-        public Guid OlheiroId { get; init; }
-
         [Range(1, int.MaxValue)]
         public int JogadorId { get; init; }
 

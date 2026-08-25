@@ -1,11 +1,13 @@
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIFootballScout.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TournamentController(ISofascoreTournamentReader tournamentReader) : ControllerBase
     {
         [HttpGet("tournament")]

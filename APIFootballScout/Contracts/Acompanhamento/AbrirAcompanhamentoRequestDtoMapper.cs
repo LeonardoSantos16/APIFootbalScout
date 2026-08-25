@@ -6,10 +6,10 @@ namespace APIFootballScout.Contracts.Acompanhamento
 {
     public static class AbrirAcompanhamentoRequestDtoMapper
     {
-        public static AbrirAcompanhamentoRequest ParaRequest(this AbrirAcompanhamentoRequestDto dto)
+        public static AbrirAcompanhamentoRequest ParaRequest(this AbrirAcompanhamentoRequestDto dto, Guid olheiroId)
         {
             return new AbrirAcompanhamentoRequest(
-                OlheiroId: dto.OlheiroId,
+                OlheiroId: olheiroId,
                 JogadorId: dto.JogadorId,
                 CompeticaoId: dto.CompeticaoId,
                 TemporadaId: dto.TemporadaId,

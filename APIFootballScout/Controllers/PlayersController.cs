@@ -1,11 +1,13 @@
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIFootballScout.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PlayersController(ISofascorePlayerReader sofascorePlayerReader) : ControllerBase
     {
         [HttpGet("search")]
