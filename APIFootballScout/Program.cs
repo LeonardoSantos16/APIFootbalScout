@@ -77,7 +77,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+builder.Services.AddSingleton<IPasswordHasher>(new BCryptPasswordHasher(builder.Configuration));
 builder.Services.AddScoped<IUserRepository, UserRepositoryMongo>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepositoryMongo>();
 builder.Services.AddScoped<AuthSessionIssuer>();
