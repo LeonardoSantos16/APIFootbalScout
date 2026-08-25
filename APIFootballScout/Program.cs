@@ -68,7 +68,7 @@ builder.Services
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromSeconds(300),
+            ClockSkew = TimeSpan.FromSeconds(30),
             ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
             NameClaimType = JwtRegisteredClaimNames.Sub,
             RoleClaimType = TokenService.RoleClaimType
