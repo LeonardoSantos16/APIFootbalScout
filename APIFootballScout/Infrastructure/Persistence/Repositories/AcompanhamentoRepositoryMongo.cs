@@ -19,11 +19,6 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
         private static IMongoCollection<DossieDocument> ObterColecao(IMongoClient mongoClient)
             => mongoClient.GetDatabase("scoutdb").GetCollection<DossieDocument>("dossies");
 
-        /// <summary>
-        /// R1.2 — a unicidade abrange todas as instâncias do agregado e só o
-        /// índice a garante sob concorrência. A verificação prévia serve para
-        /// produzir mensagem de recusa, não para garantir a invariante.
-        /// </summary>
         public static Task GarantirIndicesAsync(IMongoClient mongoClient, CancellationToken cancellationToken = default)
         {
             var colecao = ObterColecao(mongoClient);
@@ -49,6 +44,9 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             var dossieDocument = DossieMapper.MapToEntity(dossie);
             await _colecaoDossie.InsertOneAsync(dossieDocument, options: null, cancellationToken);
         }
+
+        public Task RemoverTodosDoOlheiroAsync(Guid olheiroId, CancellationToken cancellationToken = default)
+            => _colecaoDossie.DeleteManyAsync(d => d.OlheiroId == olheiroId, cancellationToken);
 
         public async Task AtualizarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
@@ -77,10 +75,6 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             return (int)total;
         }
 
-        /// <summary>
-        /// R1.2 — "duas vezes simultaneamente": só dossiê ativo bloqueia. Dossiê
-        /// encerrado permanece consultável e não impede reacompanhar (R1.6).
-        /// </summary>
         public async Task<bool> VerificarAcompanhamentoJogador(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default)
         {
             var filter = Builders<DossieDocument>.Filter.Eq(d => d.OlheiroId, olheiroId)

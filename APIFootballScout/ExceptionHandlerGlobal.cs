@@ -55,6 +55,7 @@ namespace APIFootballScout
 
         private static (int status, string titulo) MapearStatus(Exception exception) => exception switch
         {
+            NaoAutenticadoException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
             RecursoNaoEncontradoException => (StatusCodes.Status404NotFound, "Resource not found"),
             ConflitoDeDominioException => (StatusCodes.Status409Conflict, "Operation conflict"),
             RegraDeNegocioException => (StatusCodes.Status422UnprocessableEntity, "Business rule violation"),

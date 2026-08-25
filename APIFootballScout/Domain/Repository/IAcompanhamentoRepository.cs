@@ -10,5 +10,6 @@ namespace APIFootballScout.Domain.Repository
         Task AtualizarAsync(Dossie dossie, CancellationToken cancellationToken = default);
         Task<Dossie?> ObterPorIdAsync(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default);
         Task AdicionarAsync(Dossie dossie, CancellationToken cancellationToken = default);
+        Task RemoverTodosDoOlheiroAsync(Guid olheiroId, CancellationToken cancellationToken = default);
     }
 }

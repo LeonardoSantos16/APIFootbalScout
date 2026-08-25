@@ -1,19 +1,26 @@
+using APIFootballScout;
 using APIFootballScout.Application;
-using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
-using MongoDB.Driver;
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
+using APIFootballScout.Application.User;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.Persistence.Repositories;
+using APIFootballScout.Infrastructure.Security;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using MongoDB.Driver;
 using Refit;
-using APIFootballScout;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +37,57 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddSingleton<IValidateOptions<JwtOptions>, JwtOptionsValidator>();
+builder.Services.AddOptions<JwtOptions>()
+    .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
+    .ValidateOnStart();
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer();
+
+builder.Services
+    .AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+    .Configure<IOptions<JwtOptions>, IHostEnvironment>((bearer, jwtOptions, environment) =>
+    {
+        var jwt = jwtOptions.Value;
+
+        bearer.MapInboundClaims = false;
+        bearer.RequireHttpsMetadata = !environment.IsDevelopment();
+        bearer.SaveToken = true;
+        bearer.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwt.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwt.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30),
+            ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
+            NameClaimType = JwtRegisteredClaimNames.Sub,
+            RoleClaimType = TokenService.RoleClaimType
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPasswordHasher>(new BCryptPasswordHasher(builder.Configuration));
+builder.Services.AddScoped<IUserRepository, UserRepositoryMongo>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepositoryMongo>();
+builder.Services.AddScoped<AuthSessionIssuer>();
+builder.Services.AddScoped<SignUpUserUseCase>();
+builder.Services.AddScoped<SignInUserUseCase>();
+builder.Services.AddScoped<RefreshTokenUseCase>();
+builder.Services.AddScoped<SignOutUserUseCase>();
+builder.Services.AddScoped<ChangePasswordUseCase>();
+builder.Services.AddScoped<DeleteUserUseCase>();
+
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
 
@@ -44,7 +102,23 @@ builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMo
 builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();
 builder.Services.AddScoped<ICatalogoDeJogador, FonteDeDadosSofascore>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Informe apenas o access token; o prefixo Bearer e adicionado automaticamente.",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, document)] = []
+    });
+});
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -77,6 +151,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())

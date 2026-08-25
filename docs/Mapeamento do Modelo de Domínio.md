@@ -17,7 +17,7 @@ Subdomínio é área de conhecimento do negócio, não funcionalidade. Features 
 | Priorização de alvos | F7 | Supporting | Ordenação de alvos de transferência. Regras próprias de ordem, sem interseção com as demais |
 | Análise estatística | F9, F10 | Supporting | Interpretação das estatísticas: normalização, recusa e comparação. O critério de recusa e o de compatibilidade são definidos pelo negócio |
 | Aquisição de dados de jogador | — | Generic | Obtenção de estatísticas, valor de mercado e dados cadastrais. Resolvido pela API SofaScore, que é a fonte de verdade |
-| Identidade e acesso | — | Generic | Autenticação e criação do usuário. Resolvido pelo ASP.NET Core Identity |
+| Identidade e acesso | — | Generic | Autenticação e criação do usuário. Implementado à mão sobre JWT, conforme 6.6 |
 
 ---
 
@@ -171,11 +171,11 @@ Os valores parametrizados dessas specifications — limiares, mínimos e o mapa 
 
 ### 6.1 Olheiro é domínio; autenticação não é
 
-Autenticação, criação de usuário e recuperação de senha são infraestrutura e ficam no ASP.NET Core Identity. O **olheiro**, porém, é conceito de domínio: é dono do dossiê, autor do relatório e discriminador de quatro regras — R1.2, R1.7, R5.6 e a decisão de titularidade do dossiê registrada em `features.md`.
+Autenticação, criação de usuário e recuperação de senha são infraestrutura e ficam fora do domínio, no contexto de Identidade. O **olheiro**, porém, é conceito de domínio: é dono do dossiê, autor do relatório e discriminador de quatro regras — R1.2, R1.7, R5.6 e a decisão de titularidade do dossiê registrada em `features.md`.
 
 Retirar o olheiro do mapa deixaria essas regras sem lugar onde valer. O que sai do mapa é o usuário autenticado, não o olheiro.
 
-Consequência prática: `OlheiroId` é um value object opaco. O domínio sabe apenas que existe um identificador de olheiro. Não há foreign key entre os contextos nem referência a `Microsoft.AspNetCore.Identity` no projeto de domínio.
+Consequência prática: `OlheiroId` é um value object opaco. O domínio sabe apenas que existe um identificador de olheiro. Não há foreign key entre os contextos nem referência a tipo de autenticação no projeto de domínio.
 
 ### 6.2 O contexto de Análise não tem agregados
 
@@ -199,6 +199,18 @@ O core registrado é Avaliação de jogador: o parecer é o produto entregue e n
 A fonte externa entrega todos os valores em euro. Não existe provedor de taxa de câmbio no escopo e nenhum é previsto, o que retira a conversão do mapa: não há domain service de câmbio.
 
 `Dinheiro` mantém a moeda e a recusa de operar entre moedas distintas (R2.4, R7.6). O campo não é redundante: é ele que transforma "tudo vem em euro" de suposição em fato verificável na fronteira. Valor em moeda diferente da esperada é recusado na tradução, e a mudança correspondente é reportada como indisponível pelo terceiro estado de `MudancaDetectada` (R2.6).
+
+### 6.6 Autenticação implementada à mão, sem ASP.NET Core Identity
+
+O caminho padrão para o contexto de Identidade seria o ASP.NET Core Identity, e a versão anterior deste documento o registrava como solução. A persistência do projeto é MongoDB, e o Identity não tem suporte a banco não relacional: os stores que a Microsoft entrega são de Entity Framework sobre banco relacional.
+
+Restavam duas saídas. Uma era adotar um provider de terceiros para ligar o Identity ao Mongo — dependência fora do suporte da Microsoft, com ciclo de vida próprio e risco de ficar para trás a cada versão do .NET. A outra era implementar o necessário à mão.
+
+A escolha foi implementar à mão. O que o escopo exige é pequeno e bem delimitado: cadastro, login, renovação de sessão, logout, troca de senha e exclusão de conta. Nada disso depende das partes do Identity que dariam trabalho para reescrever, e o custo de manter esse conjunto é menor que o de carregar uma dependência de terceiros no caminho de autenticação.
+
+O que foi construído no lugar: hash de senha com BCrypt atrás de `IPasswordHasher`, emissão e validação de JWT em `TokenService`, refresh tokens opacos persistidos por hash com rotação e detecção de reuso, e casos de uso próprios em `Application/User`.
+
+O custo assumido está no que o Identity traria pronto e agora é responsabilidade do projeto: bloqueio por tentativas, confirmação de e-mail, recuperação de senha e autenticação em dois fatores. Nenhum deles está implementado.
 
 ---
 
@@ -248,7 +260,7 @@ Acompanhamento, Avaliação e Priorização consomem o formato que o Catálogo j
 
 ### 7.4 Identidade e os contextos de domínio — anticorruption layer
 
-O contexto de Identidade é genérico e tem modelo próprio, com conceitos que não pertencem à linguagem de scouting. A tradução reduz esse modelo a um único value object opaco, `OlheiroId`, conforme 6.1.
+O contexto de Identidade é genérico e tem modelo próprio, com conceitos que não pertencem à linguagem de scouting. A tradução reduz esse modelo a um único value object opaco, `OlheiroId`, conforme 6.1. A implementação desse contexto é descrita em 6.6.
 
 ### 7.5 Tipos que atravessam fronteira
 
