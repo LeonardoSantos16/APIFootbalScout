@@ -63,7 +63,6 @@ public sealed class TokenService : ITokenService
             new(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
             new(JwtRegisteredClaimNames.Email, Require(usuario.Email, nameof(usuario.Email))),
-            new("tenant_id", Require(usuario.TenantId, nameof(usuario.TenantId))),
             new("sec_stamp", Require(usuario.SecurityStamp, nameof(usuario.SecurityStamp))),
             new(TokenTypeClaim, AccessTokenType)
         };

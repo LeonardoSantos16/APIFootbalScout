@@ -11,8 +11,6 @@ namespace APIFootballScout.Application.User
         AuthSessionIssuer sessionIssuer,
         TimeProvider timeProvider)
     {
-        private const string TenantPadrao = "default";
-
         private const string RolePadrao = "olheiro";
 
         public async Task<AuthResult> Execute(SignUpUserRequest request, CancellationToken cancellationToken = default)
@@ -32,7 +30,6 @@ namespace APIFootballScout.Application.User
                 Name = request.Name.Trim(),
                 Email = email,
                 PasswordHash = passwordHasher.Hash(request.Password),
-                TenantId = TenantPadrao,
                 SecurityStamp = Guid.NewGuid().ToString("N"),
                 Roles = [RolePadrao],
                 CreatedAtUtc = timeProvider.GetUtcNow().UtcDateTime

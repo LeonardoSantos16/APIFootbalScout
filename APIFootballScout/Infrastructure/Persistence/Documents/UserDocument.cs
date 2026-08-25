@@ -18,9 +18,6 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
         [BsonElement("name")]
         public required string Name { get; set; }
 
-        [BsonElement("tenant_id")]
-        public required string TenantId { get; set; }
-
         [BsonElement("security_stamp")]
         public required string SecurityStamp { get; set; }
 

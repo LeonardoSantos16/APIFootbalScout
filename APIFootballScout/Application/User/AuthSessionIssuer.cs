@@ -14,7 +14,6 @@ namespace APIFootballScout.Application.User
             var tokens = tokenService.GenerateTokens(new TokenSubject(
                 user.Id,
                 user.Email,
-                user.TenantId,
                 user.SecurityStamp,
                 user.Roles));
 
