@@ -50,6 +50,9 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             await _colecaoDossie.InsertOneAsync(dossieDocument, options: null, cancellationToken);
         }
 
+        public Task RemoverTodosDoOlheiroAsync(Guid olheiroId, CancellationToken cancellationToken = default)
+            => _colecaoDossie.DeleteManyAsync(d => d.OlheiroId == olheiroId, cancellationToken);
+
         public async Task AtualizarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
             var dossieDocument = DossieMapper.MapToEntity(dossie);
