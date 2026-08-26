@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Agent skills: fonte versionada em .agents/skills, o .claude/skills e' apenas
+# um espelho local gerado pela CLI `skills` (links com caminho absoluto).
+.claude/skills/
