@@ -27,7 +27,7 @@ Contexto é fronteira de significado: dentro dele, cada termo tem um sentido ún
 
 | Contexto | Subdomínio | Conteúdo |
 | --- | --- | --- |
-| **Acompanhamento** | Acompanhamento de jogador | Agregado `Dossiê`. Leitura de mudança como operação sobre o dossiê |
+| **Acompanhamento** | Acompanhamento de jogador | Agregado `Dossiê`. `Dossie.AferirMudanca` como operação sobre o dossiê |
 | **Avaliação** | Avaliação de jogador | Agregado `Relatório` |
 | **Priorização** | Priorização de alvos | Agregado `Shortlist` |
 | **Análise** | Análise estatística | Sem agregados. Value objects e domain services |
@@ -140,7 +140,10 @@ Contexto: Priorização
 | `JogadorId` | os três agregados | Identificador do jogador na fonte externa |
 | `Prioridade` | `Shortlist` | Inteiro positivo, único dentro da lista |
 | `MetricaPor90` | Contexto de Análise | Valor calculado ou recusa justificada, nunca zero nem nulo. Declara o tamanho da amostra (R9.3, R9.5) |
-| `MudancaDetectada` | Contexto de Acompanhamento | Três resultados possíveis: com mudança, sem mudança e indisponível. Intervalo decorrido obrigatório (R2.6, R2.7) |
+| `LeituraDeMudanca` | Contexto de Acompanhamento | Resultado inteiro da consulta a um dossiê: uma aferição por tipo de mudança e a janela do confronto. Calculado na leitura, nunca persistido (F2, R2.7) |
+| `AfericaoDeMudanca` | Contexto de Acompanhamento | Hierarquia selada com três resultados e apenas três: `ComMudanca`, `SemMudancaRelevante` e `Indisponivel`. `ComMudanca` ramifica em `MudancaQuantitativa` e `MudancaCategorica`, e só a primeira admite limiar (R2.1, R2.3, R2.6) |
+| `JanelaDaComparacao` | Contexto de Acompanhamento | As duas pontas do intervalo confrontado, da medição da linha de base à leitura atual. O resultado não é construível sem ela (R2.7) |
+| `LimiarDeRelevancia` | Contexto de Acompanhamento | Valor a partir do qual a mudança quantitativa é apresentada. O conjunto por tipo é política, em `ScoutConfig` (R2.1, R2.2) |
 | `ResultadoDeComparacao` | Contexto de Análise | Declara os atributos excluídos por recusa (R10.3) |
 
 ---
@@ -156,8 +159,8 @@ Contexto: Priorização
 | Specification | Contexto | Predicado |
 | --- | --- | --- |
 | Jogador acompanhável | Acompanhamento | Possui as informações mínimas para servir de base (R1.1) |
-| Mudança relevante | Acompanhamento | Quantitativa acima do limiar, ou categórica (R2.1, R2.3) |
-| Leituras comparáveis | Acompanhamento | Não atravessam a virada de temporada (R2.5) |
+| `MudancaRelevanteSpecification` | Acompanhamento | Sobre `ComMudanca`: quantitativa acima do limiar, ou categórica (R2.1, R2.3) |
+| `LeiturasComparaveisSpecification` | Acompanhamento | Sobre um par de `Recorte`: não atravessam a virada de temporada. Governa apenas a minutagem (R2.5) |
 | Amostra suficiente | Análise | Minutos acima do mínimo (R9.1) |
 | Posições compatíveis | Análise | Compatibilidade não é igualdade (R10.1) |
 | Atributos suficientes | Análise | Número de atributos comparáveis acima do mínimo (R10.4) |
@@ -198,7 +201,7 @@ O core registrado é Avaliação de jogador: o parecer é o produto entregue e n
 
 A fonte externa entrega todos os valores em euro. Não existe provedor de taxa de câmbio no escopo e nenhum é previsto, o que retira a conversão do mapa: não há domain service de câmbio.
 
-`Dinheiro` mantém a moeda e a recusa de operar entre moedas distintas (R2.4, R7.6). O campo não é redundante: é ele que transforma "tudo vem em euro" de suposição em fato verificável na fronteira. Valor em moeda diferente da esperada é recusado na tradução, e a mudança correspondente é reportada como indisponível pelo terceiro estado de `MudancaDetectada` (R2.6).
+`Dinheiro` mantém a moeda e a recusa de operar entre moedas distintas (R2.4, R7.6). O campo não é redundante: é ele que transforma "tudo vem em euro" de suposição em fato verificável na fronteira. Valor em moeda diferente da esperada é recusado na tradução, e a mudança correspondente é reportada como `AfericaoDeMudanca.Indisponivel`, com motivo `MoedaInesperada` (R2.6).
 
 ### 6.6 Autenticação implementada à mão, sem ASP.NET Core Identity
 
