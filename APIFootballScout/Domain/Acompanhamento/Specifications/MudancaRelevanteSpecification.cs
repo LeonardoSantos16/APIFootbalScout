@@ -11,6 +11,7 @@ namespace APIFootballScout.Domain.Acompanhamento.Specifications
         {
             MudancaDeValorDeMercado m => m.VariacaoPercentualAbsoluta > valorDeMercado.Percentual,
             MudancaDeMinutagem m => (m.VariacaoAbsoluta()) > minutagem.Minutos,
+            MudancaCategorica m => m.Anterior != m.Atual,
             _ => false
         };
     }
