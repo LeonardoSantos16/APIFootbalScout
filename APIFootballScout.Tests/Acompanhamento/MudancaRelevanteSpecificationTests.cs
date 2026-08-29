@@ -55,5 +55,27 @@ namespace APIFootballScout.Tests.Acompanhamento
 
             Assert.True(relevante);
         }
+
+        [Fact]
+        public void Minutagem_que_cai_acima_do_limiar_e_relevante()
+        {
+            var relevante = Especificacao().IsSatisfiedBy(
+                new MudancaDeMinutagem(Anterior: Minutos(700), Atual: Minutos(400)));
+
+            Assert.True(relevante);
+        }
+
+        [Theory]
+        [InlineData(400, 580)] 
+        [InlineData(400, 220)] 
+        [InlineData(400, 450)] 
+        [InlineData(400, 400)] 
+        public void Minutagem_que_nao_ultrapassa_o_limiar_nao_e_relevante(int anterior, int atual)
+        {
+            var relevante = Especificacao().IsSatisfiedBy(
+                new MudancaDeMinutagem(Minutos(anterior), Minutos(atual)));
+
+            Assert.False(relevante);
+        }
     }
 }

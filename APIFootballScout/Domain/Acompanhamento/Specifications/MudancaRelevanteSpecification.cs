@@ -9,8 +9,8 @@ namespace APIFootballScout.Domain.Acompanhamento.Specifications
     {
         public override bool IsSatisfiedBy(MudancaQuantitativa mudanca) => mudanca switch
         {
-            MudancaDeValorDeMercado m => Math.Abs(m.VariacaoPercentual) > valorDeMercado.Percentual,
-            MudancaDeMinutagem m => m.VariacaoAbsoluta() >= minutagem.Minutos,
+            MudancaDeValorDeMercado m => m.VariacaoPercentualAbsoluta > valorDeMercado.Percentual,
+            MudancaDeMinutagem m => (m.VariacaoAbsoluta()) > minutagem.Minutos,
             _ => false
         };
     }

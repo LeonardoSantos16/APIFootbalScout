@@ -4,7 +4,7 @@ namespace APIFootballScout.Domain.Acompanhamento.ValueObject
     {
         public int VariacaoAbsoluta()
         {
-            return Atual.Minutos - Anterior.Minutos;
+            return Math.Abs(Atual.Minutos - Anterior.Minutos);
         }
     }
 }
