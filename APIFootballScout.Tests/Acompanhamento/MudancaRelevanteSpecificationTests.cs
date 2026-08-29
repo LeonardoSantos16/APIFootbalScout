@@ -77,5 +77,23 @@ namespace APIFootballScout.Tests.Acompanhamento
 
             Assert.False(relevante);
         }
+
+        [Fact]
+        public void Mudanca_de_clube_e_relevante()
+        {
+            var relevante = Especificacao().IsSatisfiedBy(
+                new MudancaDeClube(Anterior: "Santos", Atual: "Al-Hilal"));
+
+            Assert.True(relevante);
+        }
+
+        [Fact]
+        public void Clube_igual_dos_dois_lados_nao_e_relevante()
+        {
+            var relevante = Especificacao().IsSatisfiedBy(
+                new MudancaDeClube(Anterior: "Santos", Atual: "Santos"));
+
+            Assert.False(relevante);
+        }
     }
 }
