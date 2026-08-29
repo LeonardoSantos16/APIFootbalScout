@@ -6,7 +6,6 @@ namespace APIFootballScout.Domain.Acompanhamento.ValueObject
     : MudancaQuantitativa
     {
         public decimal VariacaoPercentualAbsoluta =>
-            Math.Abs((Atual.QuantiaEmCentavos - Anterior.QuantiaEmCentavos) * 100m
-            / Anterior.QuantiaEmCentavos);
+            Atual.VariacaoPercentualAbsolutaEmRelacaoA(Anterior);
     }
 }
