@@ -8,10 +8,23 @@ namespace APIFootballScout.Domain.Acompanhamento.Services
         MudancaRelevanteSpecification relevante,
         LeiturasComparaveisSpecification comparaveis)
     {
-        public AfericaoDeMudanca Aferir(ComMudanca mudanca) =>
-            throw new NotImplementedException();
+        public AfericaoDeMudanca Aferir(ComMudanca mudanca)
+        {
+            if (!comparaveis.IsSatisfiedBy(mudanca))
+                return new Indisponivel(MotivoDeIndisponibilidade.TemporadaVirada);
 
-        public AfericaoDeMudanca AferirValorDeMercado(Dinheiro anterior, Dinheiro? atual) =>
-            throw new NotImplementedException();
+            if (!relevante.IsSatisfiedBy(mudanca))
+                return new SemMudancaRelevante();
+
+            return mudanca;
+        }
+
+        public AfericaoDeMudanca AferirValorDeMercado(Dinheiro anterior, Dinheiro? atual)
+        {
+            if (atual is null)
+                return new Indisponivel(MotivoDeIndisponibilidade.MoedaInesperada);
+
+            return Aferir(new MudancaDeValorDeMercado(anterior, atual));
+        }
     }
 }
