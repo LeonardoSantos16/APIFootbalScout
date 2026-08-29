@@ -1,3 +1,5 @@
+using APIFootballScout.Domain.Base.Exceptions;
+
 namespace APIFootballScout.Domain.Acompanhamento.ValueObject
 {
     public sealed record JanelaDaComparacao
@@ -7,10 +9,15 @@ namespace APIFootballScout.Domain.Acompanhamento.ValueObject
 
         public JanelaDaComparacao(DateTime de, DateTime ate)
         {
+            if (de >= ate)
+            {
+                throw new ValorInvalidoException("janela_da_comparacao.intervalo_invalido", "Data invalida");
+            }
+
             De = de;
             Ate = ate;
         }
 
-        public TimeSpan Duracao() => throw new NotImplementedException();
+        public TimeSpan Duracao() => Ate - De;
     }
 }
