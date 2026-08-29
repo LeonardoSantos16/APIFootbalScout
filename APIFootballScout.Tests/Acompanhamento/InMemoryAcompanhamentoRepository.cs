@@ -7,6 +7,7 @@ namespace APIFootballScout.Tests.Acompanhamento
     {
         private readonly List<Dossie> _dossies = [];
         public IReadOnlyList<Dossie> Todos => _dossies;
+        public int Atualizacoes { get; private set; }
 
         public Task AdicionarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
@@ -16,6 +17,8 @@ namespace APIFootballScout.Tests.Acompanhamento
 
         public Task AtualizarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
+            Atualizacoes++;
+
             int indice = _dossies.FindIndex(d => d.Id == dossie.Id);
 
             if (indice != -1)
