@@ -54,7 +54,7 @@ namespace APIFootballScout.Domain.Acompanhamento.Aggregate
             EncerradoEm = encerradoEm;
         }
 
-        public void ValidarApenasLeitura(StatusDossie statusDossie)
+        public void ValidarApenasLeitura()
         {
             if (Status is StatusDossie.Encerrado)
                 throw new ConflitoDeDominioException(

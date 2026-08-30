@@ -21,7 +21,7 @@ namespace APIFootballScout.Domain.Acompanhamento.Services
 
         public AfericaoDeMudanca AferirValorDeMercado(Dinheiro anterior, Dinheiro? atual)
         {
-            if (atual is null)
+            if (atual is null || atual.Moeda != anterior.Moeda)
                 return new Indisponivel(MotivoDeIndisponibilidade.MoedaInesperada);
 
             return Aferir(new MudancaDeValorDeMercado(anterior, atual));

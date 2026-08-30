@@ -33,6 +33,16 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
                 document.EncerradoEm
             );
         }
+
+        public static List<Dossie> MapToListDomain(List<DossieDocument> documents)
+        {
+            var list = new List<Dossie>();
+            foreach (DossieDocument document in documents) {
+                list.Add(MapToDomain(document));
+            }
+
+            return list;
+        }
         public static DossieDocument MapToEntity(Dossie dossie) => new()
         {
             Id = dossie.Id,

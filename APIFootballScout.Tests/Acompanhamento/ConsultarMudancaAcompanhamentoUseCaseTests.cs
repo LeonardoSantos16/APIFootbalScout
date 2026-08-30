@@ -322,6 +322,25 @@ namespace APIFootballScout.Tests.Acompanhamento
         }
 
         [Fact]
+        public async Task Perfil_sem_informacoes_minimas_recusa_a_consulta()
+        {
+            // Arrange
+            var ctx = new AcompanhamentoTestContext();
+            ctx.SeedPerfil();
+            await ctx.AbrirDossie().AbrirAcompanhamento(ctx.Pedido(), CancellationToken.None);
+
+            ctx.Catalogo.Perfil = ctx.PerfilValido(lidoEm: ctx.Agora) with { Clube = "   " };
+
+            // Act
+            var excecao = await Assert.ThrowsAsync<RegraDeNegocioException>(
+                () => ctx.ConsultarMudanca()
+                    .ConsultarMudancaAcompanhamento(ctx.Consulta(), CancellationToken.None));
+
+            // Assert
+            Assert.Equal("jogador.informacoes_insuficientes", excecao.Codigo);
+        }
+
+        [Fact]
         public async Task A_consulta_nao_altera_o_dossie()
         {
             // F2 - a comparacao e calculada na leitura e nada persiste.

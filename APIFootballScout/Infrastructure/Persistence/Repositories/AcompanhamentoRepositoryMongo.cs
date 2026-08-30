@@ -55,14 +55,16 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             await _colecaoDossie.ReplaceOneAsync(filter, dossieDocument, new ReplaceOptions { IsUpsert = false }, cancellationToken);
         }
 
-        public async Task<Dossie?> ObterPorIdAsync(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default)
+        public async Task<List<Dossie>> ObterPorIdAsync(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default)
         {
             var filter = Builders<DossieDocument>.Filter.Eq(d => d.OlheiroId, olheiroId)
                 & Builders<DossieDocument>.Filter.Eq(d => d.JogadorId, jogadorId);
 
-            var dossieDocument = await _colecaoDossie.Find(filter).FirstOrDefaultAsync(cancellationToken);
+            var documents = await _colecaoDossie
+               .Find(filter)
+               .ToListAsync(cancellationToken);
 
-            return dossieDocument is not null ? DossieMapper.MapToDomain(dossieDocument) : null;
+            return DossieMapper.MapToListDomain(documents);
         }
 
         public async Task<int> ContarDossiesAtivosAsync(Guid olheiroId, CancellationToken cancellationToken = default)
