@@ -4,6 +4,7 @@ using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Application.User;
 using APIFootballScout.Domain.Acompanhamento.Services;
+using APIFootballScout.Domain.Acompanhamento.Specifications;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Context;
@@ -97,6 +98,14 @@ builder.Services.AddScoped(sp => new AbrirAcompanhamentoUseCase(
     sp.GetRequiredService<IAcompanhamentoService>(),
     sp.GetRequiredService<ICatalogoDeJogador>()
 ));
+
+builder.Services.AddScoped(sp => new ConsultarMudancaAcompanhamentoUseCase(
+    sp.GetRequiredService<IAcompanhamentoRepository>(),
+    sp.GetRequiredService<ICatalogoDeJogador>(),
+    new AferidorDeMudanca(
+        sp.GetRequiredService<ScoutSpecificationFactory>().MudancaRelevante(),
+        new LeiturasComparaveisSpecification())
+    ));
 
 builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();

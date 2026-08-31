@@ -7,6 +7,7 @@ namespace APIFootballScout.Tests.Acompanhamento
     {
         private readonly List<Dossie> _dossies = [];
         public IReadOnlyList<Dossie> Todos => _dossies;
+        public int Atualizacoes { get; private set; }
 
         public Task AdicionarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
@@ -16,6 +17,8 @@ namespace APIFootballScout.Tests.Acompanhamento
 
         public Task AtualizarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
+            Atualizacoes++;
+
             int indice = _dossies.FindIndex(d => d.Id == dossie.Id);
 
             if (indice != -1)
@@ -33,11 +36,11 @@ namespace APIFootballScout.Tests.Acompanhamento
             return Task.FromResult(contDossie);
         }
 
-        public Task<Dossie?> ObterPorIdAsync(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default)
+        public Task<List<Dossie>> ObterPorIdAsync(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default)
         {
-            var dossie = _dossies.Find(d => d.OlheiroId == olheiroId && d.JogadorId == jogadorId);
+            var dossies = _dossies.FindAll(d => d.OlheiroId == olheiroId && d.JogadorId == jogadorId);
 
-            return Task.FromResult(dossie);
+            return Task.FromResult(dossies);
         }
 
         public Task RemoverTodosDoOlheiroAsync(Guid olheiroId, CancellationToken cancellationToken = default)
