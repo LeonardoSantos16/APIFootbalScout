@@ -7,5 +7,8 @@
         public int LimiteObservacoesJogadores { get; init; }
         public int LimiarValorDeMercadoPercentual { get; init; }
         public int LimiarMinutagemMinutos { get; init; }
+        public int MinimoDePros { get; init; }
+        public int MinimoDeContras { get; init; }
+        public int MinimoDeCaracteresDaObservacao { get; init; }
     }
 }

@@ -1,6 +1,7 @@
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.RelatorioScouting.Specifications;
 using Microsoft.Extensions.Options;
 
 namespace APIFootballScout.Application
@@ -18,5 +19,8 @@ namespace APIFootballScout.Application
         public MudancaRelevanteSpecification MudancaRelevante()
         => new(new LimiarPercentual(_config.LimiarValorDeMercadoPercentual),
                new LimiarAbsoluto(_config.LimiarMinutagemMinutos));
+
+        public RelatorioComConteudoMinimoSpecification ConteudoMinimoDoRelatorio()
+        => new(_config.MinimoDePros, _config.MinimoDeContras, _config.MinimoDeCaracteresDaObservacao);
     }
 }

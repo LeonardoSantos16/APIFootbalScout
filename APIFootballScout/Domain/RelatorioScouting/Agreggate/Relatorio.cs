@@ -82,6 +82,16 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
         {
             GarantirEditavel();
 
+            if (Nota is null || Parecer is null)
+                throw new RegraDeNegocioException(
+                    "relatorio.conclusao_ausente",
+                    "não é possível finalizar o relatório sem nota e parecer");
+
+            if (!conteudoMinimo.IsSatisfiedBy(this))
+                throw new RegraDeNegocioException(
+                    "relatorio.conteudo_minimo_nao_atendido",
+                    "o relatório não atende ao conteúdo mínimo exigido para a finalização");
+
             Status = StatusRelatorio.Finalizado;
             EscritoEm = escritoEm;
         }
