@@ -156,6 +156,23 @@ namespace APIFootballScout.Tests.Relatorios
             Assert.Equal("Finalizado", finalizado.Status);
         }
 
+        [Fact]
+        public void A_correcao_preserva_a_referencia_ao_relatorio_anterior()
+        {
+            // Arrange
+            var original = Finalizado();
+            var correcao = Relatorio.AbrirCorrecao(original, "Revisto: erra a saida de bola.", AbertoEm.AddDays(1));
+
+            // Act
+            var documento = RelatorioMapper.MapToEntity(correcao);
+            var restaurada = RelatorioMapper.MapToDomain(documento);
+
+            // Assert
+            Assert.Equal(original.Id, documento.CorrigeRelatorioId);
+            Assert.Equal(original.Id, restaurada.CorrigeRelatorioId);
+            Assert.Equal(StatusRelatorio.Rascunho, restaurada.Status);
+        }
+
         [Theory]
         [InlineData("5")]
         [InlineData("99")]

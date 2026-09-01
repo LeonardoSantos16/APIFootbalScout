@@ -26,6 +26,10 @@ namespace APIFootballScout.Contracts.RelatorioScouting
                 PontosNegativos: dto.PontosNegativos,
                 Parecer: dto.Parecer.ParaDominio()));
 
+        public static CorrigirRelatorioRequest ParaRequest(
+            this CorrigirRelatorioRequestDto dto, Guid olheiroId, Guid relatorioId)
+            => throw new NotImplementedException();
+
         private static ParecerDto? ParaDto(this Parecer? parecer) => parecer switch
         {
             null => null,

@@ -31,6 +31,8 @@ namespace APIFootballScout.Tests.Relatorios
 
         public FinalizarRelatorioUseCase Finalizar() => new(Relatorios, Especificacoes(), Time);
 
+        public CorrigirRelatorioUseCase Corrigir() => new(Relatorios, Time);
+
         private ScoutSpecificationFactory Especificacoes()
             => new(Options.Create(new ScoutConfig
             {
@@ -70,6 +72,18 @@ namespace APIFootballScout.Tests.Relatorios
         public FinalizarRelatorioRequest PedidoDeFinalizacao(Guid relatorioId, Guid? olheiroId = null)
             => new(OlheiroId: olheiroId ?? OlheiroId, RelatorioId: relatorioId);
 
+        public const string TextoDaCorrecao = "Revisto: erra a saida de bola.";
+
+        public CorrigirRelatorioRequest PedidoDeCorrecao(
+            Guid relatorioId, Guid? olheiroId = null, string? texto = null)
+            => new(
+                OlheiroId: olheiroId ?? OlheiroId,
+                RelatorioId: relatorioId,
+                Texto: texto ?? TextoDaCorrecao);
+
+        public Relatorio Achar(Guid relatorioId)
+            => Assert.Single(Relatorios.Todos, r => r.Id == relatorioId);
+
         /// <summary>
         /// Percorre o fluxo pelos use cases ate o relatorio ficar pronto para a
         /// finalizacao: abre o rascunho e o conclui com nota, pontos e parecer.
@@ -100,6 +114,25 @@ namespace APIFootballScout.Tests.Relatorios
                 PedidoDeFinalizacao(relatorioId, olheiroId), CancellationToken.None);
 
             return relatorioId;
+        }
+
+        /// <summary>
+        /// Conclui um rascunho que ja existe (nota, pontos e parecer) e o finaliza.
+        /// </summary>
+        public async Task ConcluirEFinalizar(Guid relatorioId, Guid? olheiroId = null)
+        {
+            await EditarRascunho().EditarRascunho(
+                PedidoDeEdicao(
+                    relatorioId,
+                    olheiroId,
+                    nota: 8.5m,
+                    pontosPositivos: ["Leitura de jogo"],
+                    pontosNegativos: ["Fragilidade defensiva"],
+                    parecer: Parecer.Contratar),
+                CancellationToken.None);
+
+            await Finalizar().FinalizarRelatorio(
+                PedidoDeFinalizacao(relatorioId, olheiroId), CancellationToken.None);
         }
 
         public Relatorio Unico() => Assert.Single(Relatorios.Todos);

@@ -91,6 +91,50 @@ namespace APIFootballScout.Tests.Contracts
             Assert.Equal(esperado, request.Parecer);
         }
 
+        [Fact]
+        public void Dto_de_correcao_vira_request_com_o_olheiro_e_o_relatorio_corrigido()
+        {
+            // O DTO so carrega a redacao nova: jogador, olheiro e data da observacao
+            // vem do relatorio corrigido (R5.3), nao do cliente.
+
+            // Arrange
+            var dto = new CorrigirRelatorioRequestDto { Texto = "Revisto: erra a saida de bola." };
+
+            // Act
+            var request = dto.ParaRequest(OlheiroId, RelatorioId);
+
+            // Assert
+            Assert.Equal(OlheiroId, request.OlheiroId);
+            Assert.Equal(RelatorioId, request.RelatorioId);
+            Assert.Equal("Revisto: erra a saida de bola.", request.Texto);
+        }
+
+        [Fact]
+        public void A_resposta_da_correcao_declara_o_relatorio_corrigido()
+        {
+            // Arrange
+            var corrigido = Guid.Parse("44444444-4444-4444-4444-444444444444");
+            var resultado = Rascunho() with { CorrigeRelatorioId = corrigido };
+
+            // Act
+            var response = resultado.ParaResponse();
+            var json = JsonSerializer.Serialize(response, OpcoesDaApi);
+
+            // Assert
+            Assert.Equal(corrigido, response.CorrigeRelatorioId);
+            Assert.Contains($"\"corrigeRelatorioId\":\"{corrigido}\"", json);
+        }
+
+        [Fact]
+        public void A_resposta_do_relatorio_que_nao_corrige_ninguem_omite_o_elo()
+        {
+            // Act
+            var json = JsonSerializer.Serialize(Rascunho().ParaResponse(), OpcoesDaApi);
+
+            // Assert
+            Assert.DoesNotContain("corrigeRelatorioId", json);
+        }
+
         public static TheoryData<Parecer> PareceresDoDominio => [.. Enum.GetValues<Parecer>()];
 
         public static TheoryData<StatusRelatorio> StatusDoDominio => [.. Enum.GetValues<StatusRelatorio>()];
