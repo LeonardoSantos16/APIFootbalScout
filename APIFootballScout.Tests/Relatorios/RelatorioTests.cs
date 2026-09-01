@@ -24,7 +24,7 @@ namespace APIFootballScout.Tests.Relatorios
             var relatorio = NovoRascunho();
             relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.AdicionarPontoPositivo("Leitura de jogo");
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
             relatorio.Finalizar(SemExigenciaDeConteudo, EscritoEm);
 
             return relatorio;
@@ -36,7 +36,7 @@ namespace APIFootballScout.Tests.Relatorios
             { "AtribuirNota", r => r.AtribuirNota(new Nota(9m)) },
             { "AdicionarPontoPositivo", r => r.AdicionarPontoPositivo("Finalizacao") },
             { "AdicionarPontoNegativo", r => r.AdicionarPontoNegativo("Fragilidade defensiva") },
-            { "DefinirParecer", r => r.DefinirParecer("Monitorar") },
+            { "DefinirParecer", r => r.DefinirParecer(Parecer.Monitorar) },
             { "Finalizar", r => r.Finalizar(SemExigenciaDeConteudo, EscritoEm.AddDays(1)) }
         };
 
@@ -68,7 +68,7 @@ namespace APIFootballScout.Tests.Relatorios
             // Assert
             Assert.Equal("Bom posicionamento sem bola.", relatorio.Texto);
             Assert.Equal(new Nota(8.5m), relatorio.Nota);
-            Assert.Equal("Contratar", relatorio.Parecer);
+            Assert.Equal(Parecer.Contratar, relatorio.Parecer);
             Assert.Equal(StatusRelatorio.Finalizado, relatorio.Status);
             Assert.Equal(new DateTimeOffset(EscritoEm), relatorio.EscritoEm);
         }
@@ -134,10 +134,10 @@ namespace APIFootballScout.Tests.Relatorios
             var relatorio = NovoRascunho();
 
             // Act
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
 
             // Assert
-            Assert.Equal("Contratar", relatorio.Parecer);
+            Assert.Equal(Parecer.Contratar, relatorio.Parecer);
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace APIFootballScout.Tests.Relatorios
             var relatorio = NovoRascunho();
             relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.AdicionarPontoPositivo("Leitura de jogo");
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
 
             // Act
             relatorio.Finalizar(SemExigenciaDeConteudo, EscritoEm);

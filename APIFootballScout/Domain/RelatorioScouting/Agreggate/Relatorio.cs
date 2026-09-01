@@ -16,7 +16,7 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
         public IReadOnlyList<string> PontosPositivos => _pontosPositivos;
         public IReadOnlyList<string> PontosNegativos => _pontosNegativos;
         public string Texto { get; private set; }
-        public string? Parecer { get; private set; }
+        public Parecer? Parecer { get; private set; }
         public DateTimeOffset ObservadoEm { get; private set; }
         public DateTimeOffset EscritoEm { get; private set; }
         public DateTimeOffset? FinalizadoEm { get; private set; }
@@ -82,11 +82,13 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             _pontosNegativos.Add(ponto);
         }
 
-        public void DefinirParecer(string parecer)
+        public void DefinirParecer(Parecer parecer)
         {
+            if (!Enum.IsDefined(parecer))
+                throw new ValorInvalidoException(
+                    "relatorio.parecer_invalido",
+                    "o parecer informado não é um valor válido");
             GarantirEditavel();
-            if (string.IsNullOrWhiteSpace(parecer))
-                throw new ConflitoDeDominioException("relatorio.parecer_obrigatorio", "parecer é obrigatório");
             Parecer = parecer;
         }
 

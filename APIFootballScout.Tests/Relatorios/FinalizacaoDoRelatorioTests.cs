@@ -24,7 +24,7 @@ namespace APIFootballScout.Tests.Relatorios
                 agora: AbertoEm);
 
             relatorio.AtribuirNota(new Nota(8.5m));
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
 
             return relatorio;
         }
@@ -95,7 +95,7 @@ namespace APIFootballScout.Tests.Relatorios
         {
             // Arrange
             var relatorio = Relatorio.AbrirRascunho(42, Guid.NewGuid(), "Observado no classico.", ObservadoEm, AbertoEm);
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(

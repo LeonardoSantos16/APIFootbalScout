@@ -32,7 +32,7 @@ namespace APIFootballScout.Tests.Relatorios
         {
             var relatorio = NovoRascunho();
             relatorio.AtribuirNota(new Nota(8.5m));
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
             relatorio.Finalizar(SemExigenciaDeConteudo, em ?? FinalizadoEm);
 
             return relatorio;

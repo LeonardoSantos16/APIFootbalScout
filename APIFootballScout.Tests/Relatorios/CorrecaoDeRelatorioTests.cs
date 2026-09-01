@@ -29,7 +29,7 @@ namespace APIFootballScout.Tests.Relatorios
 
             relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.AdicionarPontoPositivo("Leitura de jogo");
-            relatorio.DefinirParecer("Contratar");
+            relatorio.DefinirParecer(Parecer.Contratar);
             relatorio.Finalizar(SemExigenciaDeConteudo, EscritoEm);
 
             return relatorio;
@@ -117,7 +117,7 @@ namespace APIFootballScout.Tests.Relatorios
             Assert.Equal(StatusRelatorio.Finalizado, original.Status);
             Assert.Equal("Bom posicionamento sem bola.", original.Texto);
             Assert.Equal(new Nota(8.5m), original.Nota);
-            Assert.Equal("Contratar", original.Parecer);
+            Assert.Equal(Parecer.Contratar, original.Parecer);
             Assert.Null(original.CorrigeRelatorioId);
         }
 
