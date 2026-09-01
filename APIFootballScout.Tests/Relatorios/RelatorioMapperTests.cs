@@ -155,5 +155,37 @@ namespace APIFootballScout.Tests.Relatorios
             Assert.Equal("Rascunho", rascunho.Status);
             Assert.Equal("Finalizado", finalizado.Status);
         }
+
+        [Theory]
+        [InlineData("5")]
+        [InlineData("99")]
+        [InlineData("Encerrado")]
+        [InlineData("")]
+        public void Documento_com_status_desconhecido_e_recusado(string status)
+        {
+            // Um status que nao existe nao pode virar um relatorio: como a
+            // edicao so olha para Finalizado, um valor indefinido devolveria um
+            // relatorio finalizado editavel (R5.1).
+
+            // Arrange
+            var documento = RelatorioMapper.MapToEntity(Finalizado());
+            documento.Status = status;
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => RelatorioMapper.MapToDomain(documento));
+        }
+
+        [Theory]
+        [InlineData("7")]
+        [InlineData("Vender")]
+        public void Documento_com_parecer_desconhecido_e_recusado(string parecer)
+        {
+            // Arrange
+            var documento = RelatorioMapper.MapToEntity(Finalizado());
+            documento.Parecer = parecer;
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => RelatorioMapper.MapToDomain(documento));
+        }
     }
 }

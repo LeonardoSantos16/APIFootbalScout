@@ -41,6 +41,11 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             CorrigeRelatorioId = corrigeRelatorioId;
         }
 
+        private Relatorio(Guid id) : base(id)
+        {
+            Texto = string.Empty;
+        }
+
         public static Relatorio AbrirRascunho(int jogadorId, Guid olheiroId, string texto,
             DateTimeOffset observadoEm, DateTimeOffset agora)
             => new(jogadorId, olheiroId, texto, observadoEm, agora, null);
@@ -61,13 +66,32 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             Nota? nota, IEnumerable<string> pontosPositivos, IEnumerable<string> pontosNegativos,
             Parecer? parecer, DateTimeOffset observadoEm, DateTimeOffset escritoEm,
             DateTimeOffset? finalizadoEm, Guid? corrigeRelatorioId)
-            => throw new NotImplementedException();
+        {
+            var relatorio = new Relatorio(id)
+            {
+                JogadorId = jogadorId,
+                OlheiroId = olheiroId,
+                Status = status,
+                Texto = texto,
+                Nota = nota,
+                Parecer = parecer,
+                ObservadoEm = observadoEm,
+                EscritoEm = escritoEm,
+                FinalizadoEm = finalizadoEm,
+                CorrigeRelatorioId = corrigeRelatorioId
+            };
+
+            relatorio._pontosPositivos.AddRange(pontosPositivos);
+            relatorio._pontosNegativos.AddRange(pontosNegativos);
+
+            return relatorio;
+        }
 
         public void AlterarTexto(string texto)
         {
             GarantirEditavel();
             if (string.IsNullOrWhiteSpace(texto))
-                throw new ConflitoDeDominioException("relatorio.texto_obrigatorio", "texto é obrigatório");
+                throw new ValorInvalidoException("relatorio.texto_obrigatorio", "texto é obrigatório");
             Texto = texto;
         }
 
@@ -124,6 +148,20 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
                 throw new ConflitoDeDominioException(
                     "relatorio.ja_finalizado",
                     "relatório finalizado é imutável; emita um relatório de correção");
+        }
+
+        public void SubstituirPontosPositivos(IEnumerable<string> pontos)
+        {
+            GarantirEditavel();
+            _pontosPositivos.Clear();
+            _pontosPositivos.AddRange(pontos);
+        }
+
+        public void SubstituirPontosNegativos(IEnumerable<string> pontos)
+        {
+            GarantirEditavel();
+            _pontosNegativos.Clear();
+            _pontosNegativos.AddRange(pontos);
         }
     }
 }

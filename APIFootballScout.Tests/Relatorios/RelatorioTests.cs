@@ -37,6 +37,8 @@ namespace APIFootballScout.Tests.Relatorios
             { "AdicionarPontoPositivo", r => r.AdicionarPontoPositivo("Finalizacao") },
             { "AdicionarPontoNegativo", r => r.AdicionarPontoNegativo("Fragilidade defensiva") },
             { "DefinirParecer", r => r.DefinirParecer(Parecer.Monitorar) },
+            { "SubstituirPontosPositivos", r => r.SubstituirPontosPositivos(["Finalizacao"]) },
+            { "SubstituirPontosNegativos", r => r.SubstituirPontosNegativos(["Cabeceio"]) },
             { "Finalizar", r => r.Finalizar(SemExigenciaDeConteudo, EscritoEm.AddDays(1)) }
         };
 

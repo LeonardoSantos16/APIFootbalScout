@@ -91,6 +91,50 @@ namespace APIFootballScout.Tests.Contracts
             Assert.Equal(esperado, request.Parecer);
         }
 
+        public static TheoryData<Parecer> PareceresDoDominio => [.. Enum.GetValues<Parecer>()];
+
+        public static TheoryData<StatusRelatorio> StatusDoDominio => [.. Enum.GetValues<StatusRelatorio>()];
+
+        [Theory]
+        [MemberData(nameof(PareceresDoDominio))]
+        public void Todo_parecer_do_dominio_tem_forma_no_contrato(Parecer parecer)
+        {
+            // O enum do contrato existe para poder divergir do dominio. Enquanto
+            // nao divergir, a resposta precisa nomear o parecer, nunca numera-lo.
+
+            // Act
+            var response = Rascunho(nota: 8.5m, parecer: parecer).ParaResponse();
+
+            // Assert
+            Assert.True(Enum.IsDefined(response.Parecer!.Value), $"{parecer} nao tem forma no contrato");
+            Assert.Equal(parecer.ToString(), response.Parecer.Value.ToString());
+        }
+
+        [Theory]
+        [MemberData(nameof(StatusDoDominio))]
+        public void Todo_status_do_dominio_tem_forma_no_contrato(StatusRelatorio status)
+        {
+            // Act
+            var response = Rascunho(status: status).ParaResponse();
+
+            // Assert
+            Assert.True(Enum.IsDefined(response.Status), $"{status} nao tem forma no contrato");
+            Assert.Equal(status.ToString(), response.Status.ToString());
+        }
+
+        [Fact]
+        public void Parecer_do_dominio_desconhecido_e_recusado_na_resposta()
+        {
+            // Arrange
+            var resultado = Rascunho(nota: 8.5m, parecer: (Parecer)99);
+
+            // Act
+            var erro = Assert.Throws<ValorInvalidoException>(() => resultado.ParaResponse());
+
+            // Assert
+            Assert.Equal("relatorio.parecer_invalido", erro.Codigo);
+        }
+
         [Fact]
         public void Parecer_invalido_no_dto_e_recusado()
         {

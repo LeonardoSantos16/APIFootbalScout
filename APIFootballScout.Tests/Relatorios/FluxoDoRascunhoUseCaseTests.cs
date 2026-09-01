@@ -22,7 +22,7 @@ namespace APIFootballScout.Tests.Relatorios
             var aberto = await ctx.AbrirRascunho().AbrirRascunho(
                 ctx.PedidoDeAbertura(), CancellationToken.None);
 
-            await ctx.EditarRascunho().EditarRascunho(
+            var editado = await ctx.EditarRascunho().EditarRascunho(
                 ctx.PedidoDeEdicao(
                     aberto.RelatorioId,
                     texto: "Reavaliado apos o classico.",
@@ -45,6 +45,13 @@ namespace APIFootballScout.Tests.Relatorios
 
             Assert.Equal(StatusRelatorio.Rascunho, aberto.Status);
             Assert.Null(aberto.FinalizadoEm);
+
+            Assert.Equal(aberto.RelatorioId, editado.RelatorioId);
+            Assert.Equal(StatusRelatorio.Rascunho, editado.Status);
+            Assert.Equal("Reavaliado apos o classico.", editado.Texto);
+            Assert.Equal(8.5m, editado.Nota);
+            Assert.Equal(Parecer.Contratar, editado.Parecer);
+            Assert.Null(editado.FinalizadoEm);
 
             Assert.Equal(StatusRelatorio.Finalizado, persistido.Status);
             Assert.Equal("Reavaliado apos o classico.", persistido.Texto);

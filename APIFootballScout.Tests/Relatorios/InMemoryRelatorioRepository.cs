@@ -16,8 +16,8 @@ namespace APIFootballScout.Tests.Relatorios
             return Task.CompletedTask;
         }
 
-        public Task<Relatorio?> ObterPorIdAsync(Guid relatorioId, CancellationToken cancellationToken = default)
-            => Task.FromResult(_relatorios.Find(r => r.Id == relatorioId));
+        public Task<Relatorio?> ObterPorIdAsync(Guid relatorioId, Guid olheiroId, CancellationToken cancellationToken = default)
+            => Task.FromResult(_relatorios.Find(r => r.Id == relatorioId && r.OlheiroId == olheiroId));
 
         public Task AtualizarAsync(Relatorio relatorio, CancellationToken cancellationToken = default)
         {
