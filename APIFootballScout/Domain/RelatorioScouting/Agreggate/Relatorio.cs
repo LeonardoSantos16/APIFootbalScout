@@ -45,21 +45,53 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             => new(jogadorId, olheiroId, texto, observadoEm, agora, null);
 
         public void AlterarTexto(string texto)
-            => throw new NotImplementedException();
+        {
+            GarantirEditavel();
+            if (string.IsNullOrWhiteSpace(texto))
+                throw new ConflitoDeDominioException("relatorio.texto_obrigatorio", "texto é obrigatório");
+            Texto = texto;
+        }
 
         public void AtribuirNota(decimal nota)
-            => throw new NotImplementedException();
+        {
+            GarantirEditavel();
+            Nota = nota;
+        }
 
         public void AdicionarPontoPositivo(string ponto)
-            => throw new NotImplementedException();
+        {
+            GarantirEditavel();
+            _pontosPositivos.Add(ponto);
+        }
 
         public void AdicionarPontoNegativo(string ponto)
-            => throw new NotImplementedException();
+        {
+            GarantirEditavel();
+            _pontosNegativos.Add(ponto);
+        }
 
         public void DefinirParecer(string parecer)
-            => throw new NotImplementedException();
+        {
+            GarantirEditavel();
+            if (string.IsNullOrWhiteSpace(parecer))
+                throw new ConflitoDeDominioException("relatorio.parecer_obrigatorio", "parecer é obrigatório");
+            Parecer = parecer;
+        }
 
         public void Finalizar(ISpecification<Relatorio> conteudoMinimo, DateTime escritoEm)
-            => throw new NotImplementedException();
+        {
+            GarantirEditavel();
+
+            Status = StatusRelatorio.Finalizado;
+            EscritoEm = escritoEm;
+        }
+
+        private void GarantirEditavel()
+        {
+            if (Status is StatusRelatorio.Finalizado)
+                throw new ConflitoDeDominioException(
+                    "relatorio.ja_finalizado",
+                    "relatório finalizado é imutável; emita um relatório de correção");
+        }
     }
 }
