@@ -1,5 +1,6 @@
 using APIFootballScout.Domain.RelatorioScouting.Agreggate;
 using APIFootballScout.Domain.RelatorioScouting.Specifications;
+using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 namespace APIFootballScout.Tests.Relatorios
 {
@@ -26,7 +27,7 @@ namespace APIFootballScout.Tests.Relatorios
                 observadoEm: ObservadoEm,
                 agora: AbertoEm);
 
-            relatorio.AtribuirNota(8.5m);
+            relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.AdicionarPontoPositivo("Leitura de jogo");
             relatorio.DefinirParecer("Contratar");
             relatorio.Finalizar(SemExigenciaDeConteudo, EscritoEm);
@@ -115,7 +116,7 @@ namespace APIFootballScout.Tests.Relatorios
             // Assert
             Assert.Equal(StatusRelatorio.Finalizado, original.Status);
             Assert.Equal("Bom posicionamento sem bola.", original.Texto);
-            Assert.Equal(8.5m, original.Nota);
+            Assert.Equal(new Nota(8.5m), original.Nota);
             Assert.Equal("Contratar", original.Parecer);
             Assert.Null(original.CorrigeRelatorioId);
         }

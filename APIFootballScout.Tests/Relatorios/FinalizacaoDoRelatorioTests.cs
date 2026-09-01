@@ -1,6 +1,7 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.RelatorioScouting.Agreggate;
 using APIFootballScout.Domain.RelatorioScouting.Specifications;
+using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 namespace APIFootballScout.Tests.Relatorios
 {
@@ -22,7 +23,7 @@ namespace APIFootballScout.Tests.Relatorios
                 observadoEm: ObservadoEm,
                 agora: AbertoEm);
 
-            relatorio.AtribuirNota(8.5m);
+            relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.DefinirParecer("Contratar");
 
             return relatorio;
@@ -109,7 +110,7 @@ namespace APIFootballScout.Tests.Relatorios
         {
             // Arrange
             var relatorio = Relatorio.AbrirRascunho(42, Guid.NewGuid(), "Observado no classico.", ObservadoEm, AbertoEm);
-            relatorio.AtribuirNota(8.5m);
+            relatorio.AtribuirNota(new Nota(8.5m));
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(

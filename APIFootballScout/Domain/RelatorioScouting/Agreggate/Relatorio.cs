@@ -1,5 +1,6 @@
 using APIFootballScout.Domain.Base;
 using APIFootballScout.Domain.Base.Exceptions;
+using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
 {
@@ -11,7 +12,7 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
         public int JogadorId { get; private set; }
         public Guid OlheiroId { get; private set; }
         public StatusRelatorio Status { get; private set; }
-        public decimal? Nota { get; private set; }
+        public Nota? Nota { get; private set; }
         public IReadOnlyList<string> PontosPositivos => _pontosPositivos;
         public IReadOnlyList<string> PontosNegativos => _pontosNegativos;
         public string Texto { get; private set; }
@@ -63,7 +64,7 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             Texto = texto;
         }
 
-        public void AtribuirNota(decimal nota)
+        public void AtribuirNota(Nota nota)
         {
             GarantirEditavel();
             Nota = nota;

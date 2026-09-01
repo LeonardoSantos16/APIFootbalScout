@@ -1,6 +1,7 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.RelatorioScouting.Agreggate;
 using APIFootballScout.Domain.RelatorioScouting.Specifications;
+using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 namespace APIFootballScout.Tests.Relatorios
 {
@@ -21,7 +22,7 @@ namespace APIFootballScout.Tests.Relatorios
         private static Relatorio RelatorioFinalizado()
         {
             var relatorio = NovoRascunho();
-            relatorio.AtribuirNota(8.5m);
+            relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.AdicionarPontoPositivo("Leitura de jogo");
             relatorio.DefinirParecer("Contratar");
             relatorio.Finalizar(SemExigenciaDeConteudo, EscritoEm);
@@ -32,7 +33,7 @@ namespace APIFootballScout.Tests.Relatorios
         public static TheoryData<string, Action<Relatorio>> Mutadores => new()
         {
             { "AlterarTexto", r => r.AlterarTexto("Reavaliado apos o classico.") },
-            { "AtribuirNota", r => r.AtribuirNota(9m) },
+            { "AtribuirNota", r => r.AtribuirNota(new Nota(9m)) },
             { "AdicionarPontoPositivo", r => r.AdicionarPontoPositivo("Finalizacao") },
             { "AdicionarPontoNegativo", r => r.AdicionarPontoNegativo("Fragilidade defensiva") },
             { "DefinirParecer", r => r.DefinirParecer("Monitorar") },
@@ -66,7 +67,7 @@ namespace APIFootballScout.Tests.Relatorios
 
             // Assert
             Assert.Equal("Bom posicionamento sem bola.", relatorio.Texto);
-            Assert.Equal(8.5m, relatorio.Nota);
+            Assert.Equal(new Nota(8.5m), relatorio.Nota);
             Assert.Equal("Contratar", relatorio.Parecer);
             Assert.Equal(StatusRelatorio.Finalizado, relatorio.Status);
             Assert.Equal(new DateTimeOffset(EscritoEm), relatorio.EscritoEm);
@@ -86,16 +87,29 @@ namespace APIFootballScout.Tests.Relatorios
         }
 
         [Fact]
+        public void Rascunho_nasce_sem_nota()
+        {
+            // R5.4 - a nota e opcional enquanto o relatorio e rascunho. So a
+            // finalizacao a exige (R5.7, relatorio.conclusao_ausente).
+
+            // Arrange & Act
+            var relatorio = NovoRascunho();
+
+            // Assert
+            Assert.Null(relatorio.Nota);
+        }
+
+        [Fact]
         public void Rascunho_aceita_nota()
         {
             // Arrange
             var relatorio = NovoRascunho();
 
             // Act
-            relatorio.AtribuirNota(7.5m);
+            relatorio.AtribuirNota(new Nota(7.5m));
 
             // Assert
-            Assert.Equal(7.5m, relatorio.Nota);
+            Assert.Equal(new Nota(7.5m), relatorio.Nota);
         }
 
         [Fact]
@@ -131,7 +145,7 @@ namespace APIFootballScout.Tests.Relatorios
         {
             // Arrange
             var relatorio = NovoRascunho();
-            relatorio.AtribuirNota(8.5m);
+            relatorio.AtribuirNota(new Nota(8.5m));
             relatorio.AdicionarPontoPositivo("Leitura de jogo");
             relatorio.DefinirParecer("Contratar");
 
