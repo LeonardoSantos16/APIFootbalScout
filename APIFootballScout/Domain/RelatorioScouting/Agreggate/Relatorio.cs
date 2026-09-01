@@ -44,6 +44,9 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             DateTimeOffset observadoEm, DateTimeOffset agora)
             => new(jogadorId, olheiroId, texto, observadoEm, agora, null);
 
+        public static Relatorio AbrirCorrecao(Relatorio original, string texto, DateTimeOffset agora)
+            => throw new NotImplementedException();
+
         public void AlterarTexto(string texto)
         {
             GarantirEditavel();
