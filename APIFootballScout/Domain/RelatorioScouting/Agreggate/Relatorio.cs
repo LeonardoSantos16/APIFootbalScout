@@ -45,7 +45,15 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             => new(jogadorId, olheiroId, texto, observadoEm, agora, null);
 
         public static Relatorio AbrirCorrecao(Relatorio original, string texto, DateTimeOffset agora)
-            => throw new NotImplementedException();
+        {
+            if (original.Status is not StatusRelatorio.Finalizado)
+                throw new ConflitoDeDominioException(
+                    "relatorio.correcao_de_rascunho",
+                    "só relatório finalizado pode ser corrigido");
+
+            return new Relatorio(original.JogadorId, original.OlheiroId, texto,
+                                 original.ObservadoEm, agora, original.Id);
+        }
 
         public void AlterarTexto(string texto)
         {
