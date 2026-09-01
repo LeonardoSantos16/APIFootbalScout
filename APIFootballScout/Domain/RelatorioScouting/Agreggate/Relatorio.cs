@@ -90,7 +90,7 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
             Parecer = parecer;
         }
 
-        public void Finalizar(ISpecification<Relatorio> conteudoMinimo, DateTime escritoEm)
+        public void Finalizar(ISpecification<Relatorio> conteudoMinimo, DateTime finalizadoEm)
         {
             GarantirEditavel();
 
@@ -105,7 +105,8 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
                     "o relatório não atende ao conteúdo mínimo exigido para a finalização");
 
             Status = StatusRelatorio.Finalizado;
-            EscritoEm = escritoEm;
+            EscritoEm = finalizadoEm;
+            FinalizadoEm = finalizadoEm;
         }
 
         private void GarantirEditavel()
