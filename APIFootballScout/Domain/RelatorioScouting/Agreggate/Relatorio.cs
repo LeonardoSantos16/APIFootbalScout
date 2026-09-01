@@ -56,6 +56,13 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
                                  original.ObservadoEm, agora, original.Id);
         }
 
+        public static Relatorio Restaurar(
+            Guid id, int jogadorId, Guid olheiroId, StatusRelatorio status, string texto,
+            Nota? nota, IEnumerable<string> pontosPositivos, IEnumerable<string> pontosNegativos,
+            Parecer? parecer, DateTimeOffset observadoEm, DateTimeOffset escritoEm,
+            DateTimeOffset? finalizadoEm, Guid? corrigeRelatorioId)
+            => throw new NotImplementedException();
+
         public void AlterarTexto(string texto)
         {
             GarantirEditavel();
