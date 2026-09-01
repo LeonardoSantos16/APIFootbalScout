@@ -13,7 +13,6 @@ namespace APIFootballScout.Infrastructure.Context
         }
 
         public DbSet<Player> Players { get; set; }
-        public DbSet<ScoutingReporter> Reports { get; set; }
         public DbSet<Shortlist> Shortlist { get; set; }
 
 
@@ -23,7 +22,6 @@ namespace APIFootballScout.Infrastructure.Context
             base.OnModelCreating(mb);
 
             mb.Entity<Player>().ToCollection("players");
-            mb.Entity<ScoutingReporter>().ToCollection("reports");
             mb.Entity<Shortlist>().ToCollection("shortlist");
         }
     }
