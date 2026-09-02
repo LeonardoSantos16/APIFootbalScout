@@ -30,7 +30,7 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
             return shortlist;
         }
 
-        public void AdicionarAlvo(int jogadorId, Dinheiro custoEstimado, ISpecification<Shortlist> comVaga)
+        public void AdicionarAlvo(int jogadorId, Prioridade prioridade, Dinheiro custoEstimado, ISpecification<Shortlist> comVaga)
         {
             VerificarDuplicidade(jogadorId);
 
