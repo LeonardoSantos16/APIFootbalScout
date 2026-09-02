@@ -252,5 +252,42 @@ namespace APIFootballScout.Tests.Contracts
             Assert.Contains("\"parecer\":\"Contratar\"", json);
             Assert.Contains("finalizadoEm", json);
         }
+
+        [Fact]
+        public void A_listagem_vira_respostas_na_mesma_ordem()
+        {
+            // A ordem e decisao do caso de uso (R5.5); o contrato apenas nao a
+            // embaralha ao traduzir.
+
+            // Arrange
+            var outroId = Guid.Parse("44444444-4444-4444-4444-444444444444");
+            IReadOnlyList<RelatorioResult> resultados =
+            [
+                Rascunho(),
+                Rascunho() with { RelatorioId = outroId }
+            ];
+
+            // Act
+            var resposta = resultados.ParaResponse();
+
+            // Assert
+            Assert.Equal([RelatorioId, outroId], resposta.Select(r => r.RelatorioId));
+        }
+
+        [Fact]
+        public void A_listagem_vazia_serializa_como_array_e_nao_como_nulo()
+        {
+            // Nenhum relatorio e uma lista vazia, nao a ausencia de resposta: o
+            // cliente itera sem checar nulo.
+
+            // Arrange
+            IReadOnlyList<RelatorioResult> resultados = [];
+
+            // Act
+            var json = JsonSerializer.Serialize(resultados.ParaResponse(), OpcoesDaApi);
+
+            // Assert
+            Assert.Equal("[]", json);
+        }
     }
 }
