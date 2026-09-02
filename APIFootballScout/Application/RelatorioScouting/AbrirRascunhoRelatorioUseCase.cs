@@ -1,5 +1,4 @@
 using APIFootballScout.Domain.RelatorioScouting.Agreggate;
-using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Application.RelatorioScouting
@@ -14,8 +13,7 @@ namespace APIFootballScout.Application.RelatorioScouting
                 request.OlheiroId,
                 request.Texto,
                 request.ObservadoEm,
-                tempo.GetUtcNow()
-                );
+                tempo.GetUtcNow());
 
             await relatorioRepository.AdicionarAsync(relatorio, cancellationToken);
 

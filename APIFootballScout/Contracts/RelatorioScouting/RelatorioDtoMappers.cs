@@ -28,7 +28,10 @@ namespace APIFootballScout.Contracts.RelatorioScouting
 
         public static CorrigirRelatorioRequest ParaRequest(
             this CorrigirRelatorioRequestDto dto, Guid olheiroId, Guid relatorioId)
-            => throw new NotImplementedException();
+            => new CorrigirRelatorioRequest(
+                OlheiroId: olheiroId,
+                RelatorioId: relatorioId,
+                Texto: dto.Texto);
 
         private static ParecerDto? ParaDto(this Parecer? parecer) => parecer switch
         {

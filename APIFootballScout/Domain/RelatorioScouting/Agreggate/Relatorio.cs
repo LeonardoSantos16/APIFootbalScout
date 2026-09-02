@@ -48,7 +48,7 @@ namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
 
         public static Relatorio AbrirRascunho(int jogadorId, Guid olheiroId, string texto,
             DateTimeOffset observadoEm, DateTimeOffset agora)
-            => new(jogadorId, olheiroId, texto, observadoEm, agora, null);
+            => new(jogadorId, olheiroId, texto, observadoEm, agora, corrigeRelatorioId: null);
 
         public static Relatorio AbrirCorrecao(Relatorio original, string texto, DateTimeOffset agora)
         {
