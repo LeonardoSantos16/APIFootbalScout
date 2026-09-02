@@ -1,3 +1,4 @@
+using APIFootballScout.Application.RelatorioScouting;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -42,7 +43,6 @@ namespace APIFootballScout.Contracts.RelatorioScouting
 
     public sealed record CorrigirRelatorioRequestDto
     {
-        // A correcao fala da mesma observacao do original (R5.3): so a redacao e nova.
         [Required]
         public string Texto { get; init; } = string.Empty;
     }

@@ -13,15 +13,11 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
 
         public AcompanhamentoRepositoryMongo(IMongoClient mongoClient)
         {
-            _colecaoDossie = ObterColecao(mongoClient);
+            _colecaoDossie = HelperObterColecao.ObterColecao<DossieDocument>(mongoClient, "dossies");
         }
-
-        private static IMongoCollection<DossieDocument> ObterColecao(IMongoClient mongoClient)
-            => mongoClient.GetDatabase("scoutdb").GetCollection<DossieDocument>("dossies");
-
         public static Task GarantirIndicesAsync(IMongoClient mongoClient, CancellationToken cancellationToken = default)
         {
-            var colecao = ObterColecao(mongoClient);
+            var colecao = HelperObterColecao.ObterColecao<DossieDocument>(mongoClient, "dossies");
 
             var chave = Builders<DossieDocument>.IndexKeys
                 .Ascending(d => d.OlheiroId)

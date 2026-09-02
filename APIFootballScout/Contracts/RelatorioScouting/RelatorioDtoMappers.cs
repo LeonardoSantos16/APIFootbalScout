@@ -53,7 +53,6 @@ namespace APIFootballScout.Contracts.RelatorioScouting
                 "relatorio.status_invalido",
                 "o status do relatório não é um valor válido")
         };
-
         private static Parecer? ParaDominio(this ParecerDto? dto) => dto switch
         {
             null => null,
