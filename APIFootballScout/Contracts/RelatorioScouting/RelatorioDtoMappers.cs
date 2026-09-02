@@ -67,8 +67,8 @@ namespace APIFootballScout.Contracts.RelatorioScouting
         };
 
         public static IReadOnlyList<RelatorioResponseDto> ParaResponse(
-            this IReadOnlyList<RelatorioResult> resultados)
-            => throw new NotImplementedException();
+            this IEnumerable<RelatorioResult> resultados)
+            => [.. resultados.Select(r => r.ParaResponse())];
 
         public static RelatorioResponseDto ParaResponse(this RelatorioResult result)
         {
