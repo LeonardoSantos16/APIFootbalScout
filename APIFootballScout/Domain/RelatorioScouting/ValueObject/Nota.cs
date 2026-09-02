@@ -24,5 +24,8 @@ namespace APIFootballScout.Domain.RelatorioScouting.ValueObject
 
             Valor = valor;
         }
+
+        public static Nota? FromDecimal(decimal? valor)
+            => valor.HasValue ? new Nota(valor.Value) : null;
     }
 }

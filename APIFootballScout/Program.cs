@@ -2,6 +2,7 @@ using APIFootballScout;
 using APIFootballScout.Application;
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
+using APIFootballScout.Application.RelatorioScouting;
 using APIFootballScout.Application.User;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
@@ -88,6 +89,14 @@ builder.Services.AddScoped<RefreshTokenUseCase>();
 builder.Services.AddScoped<SignOutUserUseCase>();
 builder.Services.AddScoped<ChangePasswordUseCase>();
 builder.Services.AddScoped<DeleteUserUseCase>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<AbrirRascunhoRelatorioUseCase>();
+builder.Services.AddScoped<EditarRascunhoRelatorioUseCase>();
+builder.Services.AddScoped<FinalizarRelatorioUseCase>();
+builder.Services.AddScoped<CorrigirRelatorioUseCase>();
+builder.Services.AddScoped<ObterRelatorioUseCase>();
+builder.Services.AddScoped<ListarRelatoriosDoJogadorUseCase>();
+
 
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
@@ -107,6 +116,7 @@ builder.Services.AddScoped(sp => new ConsultarMudancaAcompanhamentoUseCase(
         new LeiturasComparaveisSpecification())
     ));
 
+builder.Services.AddScoped<IRelatorioRepository, RelatorioRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();
 builder.Services.AddScoped<ICatalogoDeJogador, FonteDeDadosSofascore>();

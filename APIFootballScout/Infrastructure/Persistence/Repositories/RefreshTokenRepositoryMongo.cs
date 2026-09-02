@@ -9,11 +9,8 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
 
         public RefreshTokenRepositoryMongo(IMongoClient mongoClient)
         {
-            _colecaoTokens = ObterColecao(mongoClient);
+            _colecaoTokens = HelperObterColecao.ObterColecao<RefreshTokenDocument>(mongoClient, "refresh_tokens");
         }
-
-        private static IMongoCollection<RefreshTokenDocument> ObterColecao(IMongoClient mongoClient)
-            => mongoClient.GetDatabase("scoutdb").GetCollection<RefreshTokenDocument>("refresh_tokens");
 
         public Task AdicionarAsync(RefreshTokenDocument token, CancellationToken cancellationToken = default)
             => _colecaoTokens.InsertOneAsync(token, options: null, cancellationToken);

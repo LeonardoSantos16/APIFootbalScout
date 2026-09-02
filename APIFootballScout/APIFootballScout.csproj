@@ -30,7 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="APIFootballScout.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Application\Abstractions\Scouting\" />
+    <Folder Include="Domain\RelatorioScouting\ValueObject\" />
   </ItemGroup>
 
 </Project>

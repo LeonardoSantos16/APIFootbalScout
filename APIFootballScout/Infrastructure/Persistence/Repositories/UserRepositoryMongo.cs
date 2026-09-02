@@ -10,11 +10,8 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
 
         public UserRepositoryMongo(IMongoClient mongoClient)
         {
-            _colecaoUsuarios = ObterColecao(mongoClient);
+            _colecaoUsuarios = HelperObterColecao.ObterColecao<UserDocument>(mongoClient, "users");
         }
-
-        private static IMongoCollection<UserDocument> ObterColecao(IMongoClient mongoClient)
-            => mongoClient.GetDatabase("scoutdb").GetCollection<UserDocument>("users");
 
         public async Task AdicionarAsync(UserDocument user, CancellationToken cancellationToken = default)
         {

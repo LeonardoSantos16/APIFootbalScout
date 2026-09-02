@@ -1,3 +1,4 @@
+using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.RelatorioScouting.Agreggate;
 using APIFootballScout.Domain.RelatorioScouting.Specifications;
 using APIFootballScout.Domain.RelatorioScouting.ValueObject;
@@ -119,6 +120,24 @@ namespace APIFootballScout.Tests.Relatorios
             Assert.Equal(new Nota(8.5m), original.Nota);
             Assert.Equal(Parecer.Contratar, original.Parecer);
             Assert.Null(original.CorrigeRelatorioId);
+        }
+
+        [Fact]
+        public void O_rascunho_nao_pode_ser_corrigido()
+        {
+            // Nao ha o que corrigir num relatorio ainda editavel: a correcao existe
+            // porque o finalizado e imutavel (R5.1). Rascunho se edita.
+
+            // Arrange
+            var rascunho = Relatorio.AbrirRascunho(
+                JogadorObservado, Olheiro, "Observado no classico.", ObservadoEm, AbertoEm);
+
+            // Act
+            var erro = Assert.Throws<ConflitoDeDominioException>(
+                () => Relatorio.AbrirCorrecao(rascunho, "Revisto: erra a saida de bola.", CorrigidoEm));
+
+            // Assert
+            Assert.Equal("relatorio.correcao_de_rascunho", erro.Codigo);
         }
 
         [Fact]
