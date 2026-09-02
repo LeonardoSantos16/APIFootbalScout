@@ -6,6 +6,6 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Specifications
     public sealed class ShortlistComVagaSpecification(int limiteDeAlvos) : Specification<Shortlist>
     {
         public override bool IsSatisfiedBy(Shortlist candidate)
-            => throw new NotImplementedException();
+            => candidate.Alvos.Count < limiteDeAlvos;
     }
 }

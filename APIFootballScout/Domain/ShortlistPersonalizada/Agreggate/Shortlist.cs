@@ -1,5 +1,7 @@
 using APIFootballScout.Domain.Base;
+using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
+using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
 {
@@ -29,6 +31,13 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
         }
 
         public void AdicionarAlvo(int jogadorId, Dinheiro custoEstimado, ISpecification<Shortlist> comVaga)
-            => throw new NotImplementedException();
+        {
+            if (!comVaga.IsSatisfiedBy(this))
+            {
+                throw new RegraDeNegocioException("shortlist.limite_de_alvos_atingido", "N�o h� vagas dispon�veis na shortlist.");
+            }
+
+            _alvos.Add(new Alvo(jogadorId, new Prioridade(1), custoEstimado));
+        }
     }
 }
