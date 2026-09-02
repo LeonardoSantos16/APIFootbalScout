@@ -32,12 +32,22 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
 
         public void AdicionarAlvo(int jogadorId, Dinheiro custoEstimado, ISpecification<Shortlist> comVaga)
         {
+            VerificarDuplicidade(jogadorId);
+
             if (!comVaga.IsSatisfiedBy(this))
             {
                 throw new RegraDeNegocioException("shortlist.limite_de_alvos_atingido", "N�o h� vagas dispon�veis na shortlist.");
             }
 
+
             _alvos.Add(new Alvo(jogadorId, new Prioridade(1), custoEstimado));
+        }
+
+        private void VerificarDuplicidade(int jogadorId)
+        {
+            if (_alvos.Any(a => a.JogadorId == jogadorId))
+                throw new RegraDeNegocioException("shortlist.jogador_ja_na_lista", "O jogador já está presente na shortlist.");
+
         }
     }
 }
