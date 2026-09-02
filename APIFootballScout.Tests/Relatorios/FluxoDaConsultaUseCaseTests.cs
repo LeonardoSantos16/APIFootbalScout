@@ -148,14 +148,16 @@ namespace APIFootballScout.Tests.Relatorios
             // Arrange
             var ctx = new RelatorioTestContext();
 
-            var observadoDepois = await ctx.AbrirRascunho().AbrirRascunho(
-                ctx.PedidoDeAbertura(observadoEm: new DateTimeOffset(2026, 8, 22, 15, 0, 0, TimeSpan.Zero)),
+            // A ordem de escrita e a inversa da esperada, de proposito: sem isso o
+            // teste passaria so pela ordem de insercao do repositorio.
+            var observadoAntes = await ctx.AbrirRascunho().AbrirRascunho(
+                ctx.PedidoDeAbertura(observadoEm: new DateTimeOffset(2026, 8, 18, 15, 0, 0, TimeSpan.Zero)),
                 CancellationToken.None);
 
             ctx.Time.Advance(TimeSpan.FromDays(1));
 
-            var observadoAntes = await ctx.AbrirRascunho().AbrirRascunho(
-                ctx.PedidoDeAbertura(observadoEm: new DateTimeOffset(2026, 8, 18, 15, 0, 0, TimeSpan.Zero)),
+            var observadoDepois = await ctx.AbrirRascunho().AbrirRascunho(
+                ctx.PedidoDeAbertura(observadoEm: new DateTimeOffset(2026, 8, 22, 15, 0, 0, TimeSpan.Zero)),
                 CancellationToken.None);
 
             // Act
