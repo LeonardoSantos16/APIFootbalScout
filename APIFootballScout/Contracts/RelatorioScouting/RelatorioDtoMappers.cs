@@ -66,6 +66,10 @@ namespace APIFootballScout.Contracts.RelatorioScouting
                 "o parecer informado não é um valor válido")
         };
 
+        public static IReadOnlyList<RelatorioResponseDto> ParaResponse(
+            this IReadOnlyList<RelatorioResult> resultados)
+            => throw new NotImplementedException();
+
         public static RelatorioResponseDto ParaResponse(this RelatorioResult result)
         {
             return (new RelatorioResponseDto(

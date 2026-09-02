@@ -33,6 +33,10 @@ namespace APIFootballScout.Tests.Relatorios
 
         public CorrigirRelatorioUseCase Corrigir() => new(Relatorios, Time);
 
+        public ObterRelatorioUseCase Obter() => new(Relatorios);
+
+        public ListarRelatoriosDoJogadorUseCase Listar() => new(Relatorios);
+
         private ScoutSpecificationFactory Especificacoes()
             => new(Options.Create(new ScoutConfig
             {
@@ -80,6 +84,13 @@ namespace APIFootballScout.Tests.Relatorios
                 OlheiroId: olheiroId ?? OlheiroId,
                 RelatorioId: relatorioId,
                 Texto: texto ?? TextoDaCorrecao);
+
+        public ObterRelatorioRequest PedidoDeConsulta(Guid relatorioId, Guid? olheiroId = null)
+            => new(OlheiroId: olheiroId ?? OlheiroId, RelatorioId: relatorioId);
+
+        public ListarRelatoriosDoJogadorRequest PedidoDeListagem(
+            Guid? olheiroId = null, int? jogadorId = null)
+            => new(OlheiroId: olheiroId ?? OlheiroId, JogadorId: jogadorId ?? JogadorId);
 
         public Relatorio Achar(Guid relatorioId)
             => Assert.Single(Relatorios.Todos, r => r.Id == relatorioId);
