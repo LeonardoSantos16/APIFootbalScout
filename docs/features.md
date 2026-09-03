@@ -36,7 +36,7 @@ Não exige acompanhamento prévio do jogador.
 
 Lista ordenada de alvos de transferência, com número máximo de posições e ordem de prioridade explícita.
 
-A ordenação é total: não há empate de prioridade, remoções não deixam lacunas e inserções deslocam os alvos subsequentes.
+A ordenação é total: não há empate de prioridade, remoções não deixam lacunas, e inserções e repriorizações deslocam os alvos subsequentes.
 
 Não exige acompanhamento prévio do jogador.
 

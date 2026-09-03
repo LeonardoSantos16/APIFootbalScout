@@ -40,5 +40,55 @@ namespace APIFootballScout.Tests.SharedKernel
             Assert.Throws<ValorInvalidoException>(
                 () => Euros(60).VariacaoPercentualAbsolutaEmRelacaoA(Libras(50)));
         }
+
+        [Fact]
+        public void Quantias_da_mesma_moeda_se_somam()
+        {
+            // Act
+            var total = Euros(50).Somar(Euros(30));
+
+            // Assert
+            Assert.Equal(Euros(80), total);
+        }
+
+        [Fact]
+        public void A_soma_preserva_a_moeda()
+        {
+            // Act
+            var total = Libras(2).Somar(Libras(3));
+
+            // Assert
+            Assert.Equal("GBP", total.Moeda);
+        }
+
+        [Fact]
+        public void Quantias_em_moedas_distintas_nao_se_somam()
+        {
+            // Act
+            var erro = Assert.Throws<ValorInvalidoException>(() => Euros(50).Somar(Libras(30)));
+
+            // Assert
+            Assert.Equal("dinheiro.moedas_distintas", erro.Codigo);
+        }
+
+        [Fact]
+        public void A_recusa_da_soma_independe_do_lado_da_moeda_estranha()
+        {
+            // Act & Assert
+            Assert.Throws<ValorInvalidoException>(() => Libras(30).Somar(Euros(50)));
+        }
+
+        [Fact]
+        public void Somar_nao_altera_as_parcelas()
+        {
+            // Arrange
+            var parcela = Euros(50);
+
+            // Act
+            parcela.Somar(Euros(30));
+
+            // Assert
+            Assert.Equal(Euros(50), parcela);
+        }
     }
 }

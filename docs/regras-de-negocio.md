@@ -90,12 +90,14 @@ Regras que se decompõem recebem mais de uma categoria.
 | R7.3 | A prioridade é uma ordem total, sem empates | Invariante |
 | R7.4 | A remoção de um alvo não deixa lacuna na ordem | Invariante |
 | R7.6 | A soma do custo da lista exige moeda única | Invariante |
+| R7.7 | A repriorização de um alvo não cria posição nova nem deixa lacuna | Invariante |
 
 **Notas**
 
 - R7.1 — a existência do limite é invariante; seu valor é política.
 - R7.3 e R7.4 — juntas, determinam o comportamento da inserção e da remoção: manter ordem total e contígua obriga o deslocamento dos alvos subsequentes.
 - R7.6 — mesma invariante de value object monetário de R2.4.
+- R7.7 — mover um alvo é removê-lo e inseri-lo na mesma operação, então valem os deslocamentos de R7.3 e R7.4. A diferença está na faixa de posições: quem já está na lista disputa de 1 a n, e não a n+1, que só existe para quem está entrando.
 
 ## F9 — Métricas por 90 minutos
 
