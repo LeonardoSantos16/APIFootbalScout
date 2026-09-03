@@ -11,37 +11,35 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
 
         public Guid OlheiroId { get; private set; }
         public string Nome { get; private set; }
+        public LimiteDeAlvos Limite { get; private set; }
         public IReadOnlyList<Alvo> Alvos => _alvos;
 
         public Dinheiro? CustoTotal => _alvos.Count == 0 ? null : _alvos.Select(a => a.CustoEstimado).Aggregate((a, b) => a.Somar(b));
 
-        private Shortlist(Guid id, Guid olheiroId, string nome) : base(id)
+        private Shortlist(Guid id, Guid olheiroId, string nome, LimiteDeAlvos limite) : base(id)
         {
             OlheiroId = olheiroId;
             Nome = nome;
+            Limite = limite;
         }
 
-        public static Shortlist Criar(Guid olheiroId, string nome)
-            => new(Guid.NewGuid(), olheiroId, nome);
+        public static Shortlist Criar(Guid olheiroId, string nome, LimiteDeAlvos limite)
+            => new(Guid.NewGuid(), olheiroId, nome, limite);
 
-        public static Shortlist Restaurar(Guid id, Guid olheiroId, string nome, IEnumerable<Alvo> alvos)
+        public static Shortlist Restaurar(
+            Guid id, Guid olheiroId, string nome, LimiteDeAlvos limite, IEnumerable<Alvo> alvos)
         {
-            var shortlist = new Shortlist(id, olheiroId, nome);
+            var shortlist = new Shortlist(id, olheiroId, nome, limite);
             shortlist._alvos.AddRange(alvos);
 
             return shortlist;
         }
 
-        public void AdicionarAlvo(int jogadorId, Prioridade prioridade, Dinheiro custoEstimado, ISpecification<Shortlist> comVaga)
+        public void AdicionarAlvo(int jogadorId, Prioridade prioridade, Dinheiro custoEstimado)
         {
             VerificarDuplicidade(jogadorId);
             VerificarMoeda(custoEstimado);
-
-            if (!comVaga.IsSatisfiedBy(this))
-            {
-                throw new RegraDeNegocioException("shortlist.limite_de_alvos_atingido", "Não há vagas disponíveis na shortlist.");
-            }
-
+            VerificarVaga();
 
             InsercaoAlvos(new Alvo(jogadorId, prioridade, custoEstimado));
         }
@@ -101,6 +99,14 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
                 throw new RegraDeNegocioException(
                     "shortlist.prioridade_fora_da_ordem",
                     "A prioridade informada esta fora da ordem da shortlist.");
+        }
+
+        private void VerificarVaga()
+        {
+            if (!Limite.Comporta(_alvos.Count))
+                throw new RegraDeNegocioException(
+                    "shortlist.limite_de_alvos_atingido",
+                    "Não há vagas disponíveis na shortlist.");
         }
 
         private void VerificarMoeda(Dinheiro custoEstimado)

@@ -1,7 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
-using APIFootballScout.Domain.ShortlistPersonalizada.Specifications;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
@@ -11,18 +10,18 @@ namespace APIFootballScout.Tests.Shortlists
     // vezes a mesma posicao nem posicao vazia entre a primeira e a ultima.
     public class OrdemDosAlvosTests
     {
-        private static readonly ShortlistComVagaSpecification ComVaga = new(25);
+        private static readonly LimiteDeAlvos Limite = new(25);
 
         private static Dinheiro Euros(long milhoes) => new(milhoes * 1_000_000_00, "EUR");
 
         private static Shortlist NovaShortlist()
-            => Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026");
+            => Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026", limite: Limite);
 
         private static Shortlist ShortlistCom(params int[] jogadores)
         {
             var shortlist = NovaShortlist();
             for (var posicao = 1; posicao <= jogadores.Length; posicao++)
-                shortlist.AdicionarAlvo(jogadores[posicao - 1], new Prioridade(posicao), Euros(5), ComVaga);
+                shortlist.AdicionarAlvo(jogadores[posicao - 1], new Prioridade(posicao), Euros(5));
 
             return shortlist;
         }
@@ -37,7 +36,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = NovaShortlist();
 
             // Act
-            shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5));
 
             // Assert
             Assert.Equal([(1001, 1)], Ordem(shortlist));
@@ -50,7 +49,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = ShortlistCom(1001, 1002);
 
             // Act
-            shortlist.AdicionarAlvo(jogadorId: 1003, new Prioridade(3), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(jogadorId: 1003, new Prioridade(3), Euros(5));
 
             // Assert
             Assert.Equal([(1001, 1), (1002, 2), (1003, 3)], Ordem(shortlist));
@@ -66,7 +65,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = ShortlistCom(1001, 1002, 1003);
 
             // Act
-            shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(2), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(2), Euros(5));
 
             // Assert
             Assert.Equal([(1001, 1), (2001, 2), (1002, 3), (1003, 4)], Ordem(shortlist));
@@ -79,7 +78,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = ShortlistCom(1001, 1002);
 
             // Act
-            shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(1), Euros(5));
 
             // Assert
             Assert.Equal([(2001, 1), (1001, 2), (1002, 3)], Ordem(shortlist));
@@ -96,7 +95,7 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(4), Euros(5), ComVaga));
+                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(4), Euros(5)));
 
             // Assert
             Assert.Equal("shortlist.prioridade_fora_da_ordem", erro.Codigo);
@@ -110,7 +109,7 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(2), Euros(5), ComVaga));
+                () => shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(2), Euros(5)));
 
             // Assert
             Assert.Equal("shortlist.prioridade_fora_da_ordem", erro.Codigo);
@@ -126,9 +125,9 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = ShortlistCom(1001, 1002, 1003);
 
             // Act
-            shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(2), Euros(5), ComVaga);
-            shortlist.AdicionarAlvo(jogadorId: 2002, new Prioridade(1), Euros(5), ComVaga);
-            shortlist.AdicionarAlvo(jogadorId: 2003, new Prioridade(6), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(2), Euros(5));
+            shortlist.AdicionarAlvo(jogadorId: 2002, new Prioridade(1), Euros(5));
+            shortlist.AdicionarAlvo(jogadorId: 2003, new Prioridade(6), Euros(5));
 
             // Assert
             Assert.Equal([1, 2, 3, 4, 5, 6], shortlist.Alvos.Select(alvo => alvo.Prioridade.Valor).Order());
@@ -142,7 +141,7 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Act
             Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(9), Euros(5), ComVaga));
+                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(9), Euros(5)));
 
             // Assert
             Assert.Equal([(1001, 1), (1002, 2)], Ordem(shortlist));
