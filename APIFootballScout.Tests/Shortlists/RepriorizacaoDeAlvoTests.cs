@@ -6,9 +6,9 @@ using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
 {
-    // R7.3 e R7.4 sobre a repriorizacao: mover um alvo e remover mais inserir na mesma
-    // operacao, entao vale o deslocamento das duas pontas. Mover nao cria posicao nova:
-    // as posicoes validas vao de 1 a n, nao a n+1.
+    // R7.7 - a repriorizacao nao cria posicao nova nem deixa lacuna. Mover um alvo e
+    // remove-lo e inseri-lo na mesma operacao, entao valem os deslocamentos de R7.3 e
+    // R7.4; a faixa e que muda: quem ja esta na lista disputa de 1 a n, nao a n+1.
     public class RepriorizacaoDeAlvoTests
     {
         private static readonly ShortlistComVagaSpecification ComVaga = new(25);
