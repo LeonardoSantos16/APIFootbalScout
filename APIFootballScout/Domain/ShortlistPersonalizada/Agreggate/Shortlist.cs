@@ -13,6 +13,8 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
         public string Nome { get; private set; }
         public IReadOnlyList<Alvo> Alvos => _alvos;
 
+        public Dinheiro? CustoTotal => throw new NotImplementedException();
+
         private Shortlist(Guid id, Guid olheiroId, string nome) : base(id)
         {
             OlheiroId = olheiroId;
