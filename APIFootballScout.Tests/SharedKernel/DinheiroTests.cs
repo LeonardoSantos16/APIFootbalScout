@@ -40,8 +40,6 @@ namespace APIFootballScout.Tests.SharedKernel
             Assert.Throws<ValorInvalidoException>(
                 () => Euros(60).VariacaoPercentualAbsolutaEmRelacaoA(Libras(50)));
         }
-        // R7.6 - a soma do custo da shortlist exige moeda unica. A regra e do value
-        // object, nao da lista: e aqui que a recusa de operar entre moedas vive (R2.4).
 
         [Fact]
         public void Quantias_da_mesma_moeda_se_somam()
@@ -66,9 +64,6 @@ namespace APIFootballScout.Tests.SharedKernel
         [Fact]
         public void Quantias_em_moedas_distintas_nao_se_somam()
         {
-            // Mesma invariante da comparacao: nao ha conversao no escopo, entao somar
-            // euro com libra nao tem resultado - nem zero, nem um dos dois lados.
-
             // Act
             var erro = Assert.Throws<ValorInvalidoException>(() => Euros(50).Somar(Libras(30)));
 
@@ -86,8 +81,6 @@ namespace APIFootballScout.Tests.SharedKernel
         [Fact]
         public void Somar_nao_altera_as_parcelas()
         {
-            // Value object e imutavel: a soma produz uma quantia nova.
-
             // Arrange
             var parcela = Euros(50);
 

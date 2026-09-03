@@ -6,9 +6,6 @@ using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
 {
-    // R7.6 - a soma do custo da lista exige moeda unica. A invariante e garantida na
-    // escrita: lista de moeda mista nao e exprimivel, entao o custo total nunca e uma
-    // leitura que pode falhar.
     public class CustoDaShortlistTests
     {
         private static readonly ShortlistComVagaSpecification ComVaga = new(25);
@@ -26,9 +23,6 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void A_lista_vazia_nao_tem_custo_total()
         {
-            // Sem alvo nao ha moeda, e sem moeda nao ha quantia. Zero exigiria escolher
-            // uma moeda que a lista ainda nao tem.
-
             // Act
             var shortlist = NovaShortlist();
 
@@ -67,15 +61,12 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void O_alvo_em_moeda_divergente_e_recusado()
         {
-            // A primeira insercao define a moeda da lista. A segunda se submete a ela:
-            // aceitar libra ao lado de euro tornaria o custo total insomavel.
-
             // Arrange
             var shortlist = NovaShortlist();
             shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
 
             // Act
-            var erro = Assert.Throws<ValorInvalidoException>(
+            var erro = Assert.Throws<RegraDeNegocioException>(
                 () => shortlist.AdicionarAlvo(1002, new Prioridade(2), Libras(5), ComVaga));
 
             // Assert
@@ -90,7 +81,7 @@ namespace APIFootballScout.Tests.Shortlists
             shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
 
             // Act
-            Assert.Throws<ValorInvalidoException>(
+            Assert.Throws<RegraDeNegocioException>(
                 () => shortlist.AdicionarAlvo(1002, new Prioridade(1), Libras(5), ComVaga));
 
             // Assert
@@ -101,14 +92,12 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void A_primeira_insercao_define_a_moeda_da_lista()
         {
-            // Nenhuma moeda e privilegiada: a lista que comeca em libra recusa o euro.
-
             // Arrange
             var shortlist = NovaShortlist();
             shortlist.AdicionarAlvo(1001, new Prioridade(1), Libras(5), ComVaga);
 
             // Act
-            var erro = Assert.Throws<ValorInvalidoException>(
+            var erro = Assert.Throws<RegraDeNegocioException>(
                 () => shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(5), ComVaga));
 
             // Assert
@@ -119,9 +108,6 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void A_lista_esvaziada_aceita_uma_moeda_nova()
         {
-            // A moeda nao e atributo da lista, e consequencia dos alvos que ela tem.
-            // Sem alvo nao ha moeda a respeitar.
-
             // Arrange
             var shortlist = NovaShortlist();
             shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
@@ -152,8 +138,6 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void A_repriorizacao_nao_altera_o_custo_total()
         {
-            // Mover muda a ordem, nao o conjunto: a soma e a mesma.
-
             // Arrange
             var shortlist = NovaShortlist();
             shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12), ComVaga);

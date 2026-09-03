@@ -13,7 +13,7 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
         public string Nome { get; private set; }
         public IReadOnlyList<Alvo> Alvos => _alvos;
 
-        public Dinheiro? CustoTotal => throw new NotImplementedException();
+        public Dinheiro? CustoTotal => _alvos.Count == 0 ? null : _alvos.Select(a => a.CustoEstimado).Aggregate((a, b) => a.Somar(b));
 
         private Shortlist(Guid id, Guid olheiroId, string nome) : base(id)
         {
@@ -35,6 +35,7 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
         public void AdicionarAlvo(int jogadorId, Prioridade prioridade, Dinheiro custoEstimado, ISpecification<Shortlist> comVaga)
         {
             VerificarDuplicidade(jogadorId);
+            VerificarMoeda(custoEstimado);
 
             if (!comVaga.IsSatisfiedBy(this))
             {
@@ -74,9 +75,6 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
         public void AtualizarPrioridade(int jogadorId, Prioridade novaPrioridade)
         {
             var origem = IndiceDe(jogadorId);
-
-            // Mover nao cria posicao nova: as posicoes validas vao de 1 a n, nao a n+1.
-            // A checagem vem antes da remocao para que a recusa deixe a ordem intacta.
             if (novaPrioridade.Valor > _alvos.Count)
                 throw new RegraDeNegocioException(
                     "shortlist.prioridade_fora_da_ordem",
@@ -103,6 +101,16 @@ namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
                 throw new RegraDeNegocioException(
                     "shortlist.prioridade_fora_da_ordem",
                     "A prioridade informada esta fora da ordem da shortlist.");
+        }
+
+        private void VerificarMoeda(Dinheiro custoEstimado)
+        {
+            var moedaDaLista = _alvos.FirstOrDefault()?.CustoEstimado.Moeda;
+
+            if (moedaDaLista is not null && moedaDaLista != custoEstimado.Moeda)
+                throw new RegraDeNegocioException(
+                    "shortlist.moeda_divergente",
+                    $"A shortlist esta em {moedaDaLista} e nao aceita custo em {custoEstimado.Moeda}.");
         }
 
         private void VerificarDuplicidade(int jogadorId)
