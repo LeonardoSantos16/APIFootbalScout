@@ -23,6 +23,8 @@ namespace APIFootballScout.Tests.Shortlists
 
         public AdicionarAlvoUseCase Adicionar() => new(Shortlists);
 
+        public RemoverAlvoUseCase Remover() => new(Shortlists);
+
         private IOptions<ScoutConfig> Politica()
             => Options.Create(new ScoutConfig { LimiteDeAlvosDaShortlist = LimiteDeAlvos });
 
@@ -41,6 +43,13 @@ namespace APIFootballScout.Tests.Shortlists
                 JogadorId: jogadorId,
                 Prioridade: prioridade,
                 CustoEstimado: custoEstimado ?? Euros(5));
+
+        public RemoverAlvoRequest PedidoDeRemocao(
+            Guid shortlistId, int jogadorId, Guid? olheiroId = null)
+            => new(
+                OlheiroId: olheiroId ?? OlheiroId,
+                ShortlistId: shortlistId,
+                JogadorId: jogadorId);
 
         public async Task<Guid> ShortlistCriada(Guid? olheiroId = null, string? nome = null)
         {
