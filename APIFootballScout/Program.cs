@@ -3,6 +3,7 @@ using APIFootballScout.Application;
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Application.RelatorioScouting;
+using APIFootballScout.Application.ShortlistPersonalizada;
 using APIFootballScout.Application.User;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
@@ -97,6 +98,13 @@ builder.Services.AddScoped<CorrigirRelatorioUseCase>();
 builder.Services.AddScoped<ObterRelatorioUseCase>();
 builder.Services.AddScoped<ListarRelatoriosDoJogadorUseCase>();
 
+builder.Services.AddScoped<CriarShortlistUseCase>();
+builder.Services.AddScoped<AdicionarAlvoUseCase>();
+builder.Services.AddScoped<RemoverAlvoUseCase>();
+builder.Services.AddScoped<RepriorizarAlvoUseCase>();
+builder.Services.AddScoped<ObterShortlistUseCase>();
+builder.Services.AddScoped<ListarShortlistsDoOlheiroUseCase>();
+
 
 builder.Services.AddScoped<ISofascorePlayerReader, SofascorePlayerReader>();
 builder.Services.AddScoped<ISofascoreTournamentReader, SofascoreTournamentReader>();
@@ -117,6 +125,7 @@ builder.Services.AddScoped(sp => new ConsultarMudancaAcompanhamentoUseCase(
     ));
 
 builder.Services.AddScoped<IRelatorioRepository, RelatorioRepositoryMongo>();
+builder.Services.AddScoped<IShortlistRepository, ShortlistRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();
 builder.Services.AddScoped<ICatalogoDeJogador, FonteDeDadosSofascore>();

@@ -1,21 +1,20 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
-using APIFootballScout.Domain.ShortlistPersonalizada.Specifications;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
 {
     public class CustoDaShortlistTests
     {
-        private static readonly ShortlistComVagaSpecification ComVaga = new(25);
+        private static readonly LimiteDeAlvos Limite = new(25);
 
         private static Dinheiro Euros(long milhoes) => new(milhoes * 1_000_000_00, "EUR");
 
         private static Dinheiro Libras(long milhoes) => new(milhoes * 1_000_000_00, "GBP");
 
         private static Shortlist NovaShortlist()
-            => Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026");
+            => Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026", limite: Limite);
 
         private static (int Jogador, int Prioridade)[] Ordem(Shortlist shortlist)
             => [.. shortlist.Alvos.Select(alvo => (alvo.JogadorId, alvo.Prioridade.Valor))];
@@ -37,7 +36,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = NovaShortlist();
 
             // Act
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5));
 
             // Assert
             Assert.Equal(Euros(5), shortlist.CustoTotal);
@@ -50,9 +49,9 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = NovaShortlist();
 
             // Act
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12), ComVaga);
-            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(30), ComVaga);
-            shortlist.AdicionarAlvo(1003, new Prioridade(3), Euros(8), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12));
+            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(30));
+            shortlist.AdicionarAlvo(1003, new Prioridade(3), Euros(8));
 
             // Assert
             Assert.Equal(Euros(50), shortlist.CustoTotal);
@@ -63,11 +62,11 @@ namespace APIFootballScout.Tests.Shortlists
         {
             // Arrange
             var shortlist = NovaShortlist();
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5));
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(1002, new Prioridade(2), Libras(5), ComVaga));
+                () => shortlist.AdicionarAlvo(1002, new Prioridade(2), Libras(5)));
 
             // Assert
             Assert.Equal("shortlist.moeda_divergente", erro.Codigo);
@@ -78,11 +77,11 @@ namespace APIFootballScout.Tests.Shortlists
         {
             // Arrange
             var shortlist = NovaShortlist();
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5));
 
             // Act
             Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(1002, new Prioridade(1), Libras(5), ComVaga));
+                () => shortlist.AdicionarAlvo(1002, new Prioridade(1), Libras(5)));
 
             // Assert
             Assert.Equal([(1001, 1)], Ordem(shortlist));
@@ -94,11 +93,11 @@ namespace APIFootballScout.Tests.Shortlists
         {
             // Arrange
             var shortlist = NovaShortlist();
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Libras(5), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Libras(5));
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(5), ComVaga));
+                () => shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(5)));
 
             // Assert
             Assert.Equal("shortlist.moeda_divergente", erro.Codigo);
@@ -110,11 +109,11 @@ namespace APIFootballScout.Tests.Shortlists
         {
             // Arrange
             var shortlist = NovaShortlist();
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5));
 
             // Act
             shortlist.RemoverAlvo(1001);
-            shortlist.AdicionarAlvo(1002, new Prioridade(1), Libras(7), ComVaga);
+            shortlist.AdicionarAlvo(1002, new Prioridade(1), Libras(7));
 
             // Assert
             Assert.Equal(Libras(7), shortlist.CustoTotal);
@@ -125,8 +124,8 @@ namespace APIFootballScout.Tests.Shortlists
         {
             // Arrange
             var shortlist = NovaShortlist();
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12), ComVaga);
-            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(30), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12));
+            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(30));
 
             // Act
             shortlist.RemoverAlvo(1002);
@@ -140,8 +139,8 @@ namespace APIFootballScout.Tests.Shortlists
         {
             // Arrange
             var shortlist = NovaShortlist();
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12), ComVaga);
-            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(30), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(12));
+            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(30));
 
             // Act
             shortlist.AtualizarPrioridade(1001, new Prioridade(2));

@@ -10,5 +10,6 @@
         public int MinimoDePros { get; init; }
         public int MinimoDeContras { get; init; }
         public int MinimoDeCaracteresDaObservacao { get; init; }
+        public int LimiteDeAlvosDaShortlist { get; init; }
     }
 }

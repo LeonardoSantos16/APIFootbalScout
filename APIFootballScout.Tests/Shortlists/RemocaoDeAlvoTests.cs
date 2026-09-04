@@ -1,7 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
-using APIFootballScout.Domain.ShortlistPersonalizada.Specifications;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
@@ -10,15 +9,15 @@ namespace APIFootballScout.Tests.Shortlists
     // removido sobe uma posicao; a ordem relativa entre os que ficam nao muda.
     public class RemocaoDeAlvoTests
     {
-        private static readonly ShortlistComVagaSpecification ComVaga = new(25);
+        private static readonly LimiteDeAlvos Limite = new(25);
 
         private static Dinheiro Euros(long milhoes) => new(milhoes * 1_000_000_00, "EUR");
 
         private static Shortlist ShortlistCom(params int[] jogadores)
         {
-            var shortlist = Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026");
+            var shortlist = Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026", limite: Limite);
             for (var posicao = 1; posicao <= jogadores.Length; posicao++)
-                shortlist.AdicionarAlvo(jogadores[posicao - 1], new Prioridade(posicao), Euros(5), ComVaga);
+                shortlist.AdicionarAlvo(jogadores[posicao - 1], new Prioridade(posicao), Euros(5));
 
             return shortlist;
         }
@@ -121,15 +120,14 @@ namespace APIFootballScout.Tests.Shortlists
             // sai, porque o limite conta alvos, nao insercoes ja feitas.
 
             // Arrange
-            var limitadaAtres = new ShortlistComVagaSpecification(limiteDeAlvos: 3);
-            var shortlist = Shortlist.Criar(Guid.NewGuid(), "Laterais esquerdos 2026");
-            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5), limitadaAtres);
-            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(5), limitadaAtres);
-            shortlist.AdicionarAlvo(1003, new Prioridade(3), Euros(5), limitadaAtres);
+            var shortlist = Shortlist.Criar(Guid.NewGuid(), "Laterais esquerdos 2026", new LimiteDeAlvos(3));
+            shortlist.AdicionarAlvo(1001, new Prioridade(1), Euros(5));
+            shortlist.AdicionarAlvo(1002, new Prioridade(2), Euros(5));
+            shortlist.AdicionarAlvo(1003, new Prioridade(3), Euros(5));
 
             // Act
             shortlist.RemoverAlvo(jogadorId: 1002);
-            shortlist.AdicionarAlvo(2001, new Prioridade(3), Euros(5), limitadaAtres);
+            shortlist.AdicionarAlvo(2001, new Prioridade(3), Euros(5));
 
             // Assert
             Assert.Equal([(1001, 1), (1003, 2), (2001, 3)], Ordem(shortlist));
@@ -146,7 +144,7 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Act
             shortlist.RemoverAlvo(jogadorId: 1001);
-            shortlist.AdicionarAlvo(1001, new Prioridade(2), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(1001, new Prioridade(2), Euros(5));
 
             // Assert
             Assert.Equal([(1002, 1), (1001, 2)], Ordem(shortlist));

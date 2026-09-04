@@ -1,7 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
-using APIFootballScout.Domain.ShortlistPersonalizada.Specifications;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
@@ -11,15 +10,15 @@ namespace APIFootballScout.Tests.Shortlists
     // R7.4; a faixa e que muda: quem ja esta na lista disputa de 1 a n, nao a n+1.
     public class RepriorizacaoDeAlvoTests
     {
-        private static readonly ShortlistComVagaSpecification ComVaga = new(25);
+        private static readonly LimiteDeAlvos Limite = new(25);
 
         private static Dinheiro Euros(long milhoes) => new(milhoes * 1_000_000_00, "EUR");
 
         private static Shortlist ShortlistCom(params int[] jogadores)
         {
-            var shortlist = Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026");
+            var shortlist = Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026", limite: Limite);
             for (var posicao = 1; posicao <= jogadores.Length; posicao++)
-                shortlist.AdicionarAlvo(jogadores[posicao - 1], new Prioridade(posicao), Euros(posicao), ComVaga);
+                shortlist.AdicionarAlvo(jogadores[posicao - 1], new Prioridade(posicao), Euros(posicao));
 
             return shortlist;
         }

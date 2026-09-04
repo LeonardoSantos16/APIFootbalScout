@@ -1,29 +1,25 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
-using APIFootballScout.Domain.ShortlistPersonalizada.Specifications;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
 namespace APIFootballScout.Tests.Shortlists
 {
-    // R7.1 - a existencia do limite e invariante do agregado: AdicionarAlvo e o unico
-    // caminho que pode estoura-lo, e por isso e nele que a recusa vive. O valor do teto
-    // entra pela specification, que a aplicacao monta a partir da politica.
     public class ShortlistTests
     {
-        private const int Limite = 3;
-        private static readonly ShortlistComVagaSpecification ComVaga = new(Limite);
+        private const int Teto = 3;
+        private static readonly LimiteDeAlvos Limite = new(Teto);
 
         private static Dinheiro Euros(long milhoes) => new(milhoes * 1_000_000_00, "EUR");
 
         private static Shortlist NovaShortlist()
-            => Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026");
+            => Shortlist.Criar(olheiroId: Guid.NewGuid(), nome: "Laterais esquerdos 2026", limite: Limite);
 
         private static Shortlist ShortlistCheia()
         {
             var shortlist = NovaShortlist();
-            for (var posicao = 1; posicao <= Limite; posicao++)
-                shortlist.AdicionarAlvo(jogadorId: 1000 + posicao, new Prioridade(posicao), Euros(5), ComVaga);
+            for (var posicao = 1; posicao <= Teto; posicao++)
+                shortlist.AdicionarAlvo(jogadorId: 1000 + posicao, new Prioridade(posicao), Euros(5));
 
             return shortlist;
         }
@@ -35,7 +31,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = NovaShortlist();
 
             // Act
-            shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5), ComVaga);
+            shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5));
 
             // Assert
             Assert.Equal(1001, Assert.Single(shortlist.Alvos).JogadorId);
@@ -50,7 +46,7 @@ namespace APIFootballScout.Tests.Shortlists
             var shortlist = ShortlistCheia();
 
             // Assert
-            Assert.Equal(Limite, shortlist.Alvos.Count);
+            Assert.Equal(Teto, shortlist.Alvos.Count);
         }
 
         [Fact]
@@ -61,7 +57,7 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Act
             var erro = Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(4), Euros(5), ComVaga));
+                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(4), Euros(5)));
 
             // Assert
             Assert.Equal("shortlist.limite_de_alvos_atingido", erro.Codigo);
@@ -79,7 +75,7 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Act
             Assert.Throws<RegraDeNegocioException>(
-                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(4), Euros(5), ComVaga));
+                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(4), Euros(5)));
 
             // Assert
             Assert.Equal(alvosAntes, shortlist.Alvos);
@@ -88,22 +84,43 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void O_teto_de_uma_lista_nao_limita_outra()
         {
-            // A politica entra por operacao, nao por tipo: duas listas do mesmo olheiro
-            // podem responder a limites diferentes sem que o modelo mude.
-
             // Arrange
-            var apertada = NovaShortlist();
-            var folgada = NovaShortlist();
-            apertada.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5), new ShortlistComVagaSpecification(limiteDeAlvos: 1));
+            var olheiroId = Guid.NewGuid();
+            var apertada = Shortlist.Criar(olheiroId, "Emergencia janela de inverno", new LimiteDeAlvos(1));
+            var folgada = Shortlist.Criar(olheiroId, "Laterais esquerdos 2026", new LimiteDeAlvos(25));
 
             // Act
-            folgada.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5), new ShortlistComVagaSpecification(limiteDeAlvos: 25));
-            folgada.AdicionarAlvo(jogadorId: 1002, new Prioridade(2), Euros(5), new ShortlistComVagaSpecification(limiteDeAlvos: 25));
+            apertada.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5));
+            folgada.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5));
+            folgada.AdicionarAlvo(jogadorId: 1002, new Prioridade(2), Euros(5));
 
             // Assert
             Assert.Throws<RegraDeNegocioException>(
-                () => apertada.AdicionarAlvo(jogadorId: 1002, new Prioridade(2), Euros(5), new ShortlistComVagaSpecification(limiteDeAlvos: 1)));
+                () => apertada.AdicionarAlvo(jogadorId: 1002, new Prioridade(2), Euros(5)));
             Assert.Equal(2, folgada.Alvos.Count);
+        }
+
+        [Fact]
+        public void O_limite_acompanha_a_lista_restaurada()
+        {
+            // Arrange
+            var shortlist = Shortlist.Restaurar(
+                id: Guid.NewGuid(),
+                olheiroId: Guid.NewGuid(),
+                nome: "Laterais esquerdos 2026",
+                limite: new LimiteDeAlvos(2),
+                alvos:
+                [
+                    new Alvo(1001, new Prioridade(1), Euros(5)),
+                    new Alvo(1002, new Prioridade(2), Euros(5))
+                ]);
+
+            // Act
+            var erro = Assert.Throws<RegraDeNegocioException>(
+                () => shortlist.AdicionarAlvo(jogadorId: 2001, new Prioridade(3), Euros(5)));
+
+            // Assert
+            Assert.Equal("shortlist.limite_de_alvos_atingido", erro.Codigo);
         }
     }
 }
