@@ -18,5 +18,6 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
             CustoEstimado: alvo.CustoEstimado);
 
         public static List<ShortlistResult> ParaResult(this IEnumerable<Shortlist> shortlists) => [.. shortlists.Select(ParaResult)];
+
     }
 }

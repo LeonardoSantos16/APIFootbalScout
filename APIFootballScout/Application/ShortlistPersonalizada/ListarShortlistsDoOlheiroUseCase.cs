@@ -1,4 +1,3 @@
-using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Application.ShortlistPersonalizada
@@ -15,7 +14,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
         public async Task<IReadOnlyList<ShortlistResult>> ListarShortlists(
             ListarShortlistsDoOlheiroRequest request, CancellationToken cancellationToken)
         {
-            var shortlists = await _shortlistRepository.ListarPorOlheiroAsync(request.OlheiroId, cancellationToken) ?? throw new RecursoNaoEncontradoException("shortlist.nao_encontrada", "shortlist nao encontrada");
+            var shortlists = await _shortlistRepository.ListarPorOlheiroAsync(request.OlheiroId, cancellationToken);
             var shortlistOrdenada = shortlists.OrderBy(shortlist => shortlist.Nome).ToList();
             return shortlistOrdenada.ParaResult();
 

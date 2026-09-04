@@ -125,6 +125,7 @@ builder.Services.AddScoped(sp => new ConsultarMudancaAcompanhamentoUseCase(
     ));
 
 builder.Services.AddScoped<IRelatorioRepository, RelatorioRepositoryMongo>();
+builder.Services.AddScoped<IShortlistRepository, ShortlistRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();
 builder.Services.AddScoped<ICatalogoDeJogador, FonteDeDadosSofascore>();
