@@ -1,3 +1,4 @@
+using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Application.ShortlistPersonalizada
@@ -11,8 +12,11 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
             _shortlistRepository = shortlistRepository;
         }
 
-        public Task<ShortlistResult> ObterShortlist(
+        public async Task<ShortlistResult> ObterShortlist(
             ObterShortlistRequest request, CancellationToken cancellationToken)
-            => throw new NotImplementedException();
+        {
+            var shortlist = await _shortlistRepository.ObterPorIdAsync(request.ShortlistId, request.OlheiroId ,cancellationToken) ?? throw new RecursoNaoEncontradoException("shortlist.nao_encontrada", "shortlist nao encontrada");
+            return shortlist.ParaResult();
+        }
     }
 }

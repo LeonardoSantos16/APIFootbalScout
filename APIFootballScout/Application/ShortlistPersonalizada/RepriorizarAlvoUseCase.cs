@@ -19,12 +19,11 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
         {
             var shortlist = await _shortlistRepository.ObterPorIdAsync(request.ShortlistId, request.OlheiroId, cancellationToken) ?? throw new RecursoNaoEncontradoException("shortlist.nao_encontrada", "shortlist nao encontrada");
             var alvo = shortlist.Alvos.FirstOrDefault(a => a.JogadorId == request.JogadorId) ?? throw new RecursoNaoEncontradoException("shortlist.alvo_nao_encontrado", "alvo nao encontrado");
-            var shortlistRestaurada = Shortlist.Restaurar(shortlist.Id, shortlist.OlheiroId, shortlist.Nome, shortlist.Limite, shortlist.Alvos);
 
-            shortlistRestaurada.AtualizarPrioridade(request.JogadorId, new Prioridade(request.Prioridade));
+            shortlist.AtualizarPrioridade(request.JogadorId, new Prioridade(request.Prioridade));
 
-            await _shortlistRepository.AtualizarAsync(shortlistRestaurada, cancellationToken);
-            return shortlistRestaurada.ParaResult();
+            await _shortlistRepository.AtualizarAsync(shortlist, cancellationToken);
+            return shortlist.ParaResult();
         }
     }
 }

@@ -16,5 +16,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
             JogadorId: alvo.JogadorId,
             Prioridade: alvo.Prioridade.Valor,
             CustoEstimado: alvo.CustoEstimado);
+
+        public static List<ShortlistResult> ParaResult(this IEnumerable<Shortlist> shortlists) => [.. shortlists.Select(ParaResult)];
     }
 }
