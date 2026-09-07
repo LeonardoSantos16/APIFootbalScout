@@ -53,5 +53,20 @@ namespace APIFootballScout.Tests.Analise
             var calculada = Assert.IsType<MetricaCalculada>(metrica);
             Assert.Equal(0.45m, calculada.Valor);
         }
+
+        [Fact]
+        public void A_metrica_declara_a_amostra_de_onde_saiu_e_nao_o_minimo_da_politica()
+        {
+            // Arrange
+            var gols = new EstatisticaAcumulavel(
+                TipoDeEstatistica.Gols, 12, new Minutagem(2400, Brasileirao2024));
+
+            // Act
+            var metrica = gols.PorNoventaMinutos(AmostraSuficiente);
+
+            // Assert
+            var calculada = Assert.IsType<MetricaCalculada>(metrica);
+            Assert.Equal(new Minutagem(2400, Brasileirao2024), calculada.Amostra);
+        }
     }
 }

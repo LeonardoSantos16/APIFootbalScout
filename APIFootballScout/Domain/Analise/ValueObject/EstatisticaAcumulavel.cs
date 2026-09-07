@@ -9,7 +9,7 @@ namespace APIFootballScout.Domain.Analise.ValueObject
 
         public MetricaPor90 PorNoventaMinutos(AmostraSuficienteSpecification amostraSuficiente)
             => amostraSuficiente.IsSatisfiedBy(Minutagem)
-                ? new MetricaCalculada((decimal)Contagem * MinutosDeUmaPartida / Minutagem.Minutos)
+                ? new MetricaCalculada((decimal)Contagem * MinutosDeUmaPartida / Minutagem.Minutos, Minutagem)
                 : new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente);
     }
 }
