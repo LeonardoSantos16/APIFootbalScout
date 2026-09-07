@@ -1,4 +1,5 @@
 using System.Net;
+using APIFootballScout.Domain.Analise.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Infrastructure.External;
 
@@ -39,6 +40,29 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
 
             return SofascoreTradutor.TraduzirParaPerfilDoJogador(
                 playerProfile.Content, statsPlayer.Content, recorte, lidoEm);
+        }
+
+        public async Task<ConjuntoDeEstatisticas?> ObterEstatisticas(int jogadorId, Recorte recorte, CancellationToken cancellationToken = default)
+        {
+            var statsPlayer = await _sofascoreApiClient.GetSofascorePlayerStatisticsSeasonAsync(
+                jogadorId,
+                recorte.CompeticaoId.ToString(),
+                recorte.TemporadaId.ToString(),
+                cancellationToken);
+
+            if (statsPlayer?.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            if (statsPlayer?.Content == null)
+            {
+                throw new FonteExternaIndisponivelException(
+                    "sofascore.estatisticas_do_jogador_indisponiveis",
+                    "Could not retrieve the player season statistics from Sofascore.");
+            }
+
+            return SofascoreTradutor.TraduzirParaConjuntoDeEstatisticas(statsPlayer.Content, recorte);
         }
     }
 }
