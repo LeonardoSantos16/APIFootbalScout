@@ -44,8 +44,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             var minutagem = new Minutagem(estatisticas.MinutesPlayed, recorte);
 
             return new ConjuntoDeEstatisticas(
-                Recorte: recorte,
-                Acumulaveis:
+                recorte: recorte,
+                acumulaveis:
                 [
                     new EstatisticaAcumulavel(TipoDeEstatistica.Gols, estatisticas.Goals, minutagem),
                     new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, estatisticas.Assists, minutagem),
@@ -53,7 +53,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                     new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, estatisticas.Tackles, minutagem),
                     new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, estatisticas.Interceptions, minutagem)
                 ],
-                Derivados:
+                derivados:
                 [
                     new ValorDerivado(TipoDeValorDerivado.Rating, (decimal)estatisticas.Rating),
                     new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, (decimal)estatisticas.AccuratePassesPercentage)
