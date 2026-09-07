@@ -1,3 +1,5 @@
+using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.Analise.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
@@ -28,6 +30,34 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 Recorte: recorte,
                 LidoEm: lidoEm
             );
+        }
+
+        /// <summary>
+        /// R9.4 — a fonte entrega contagem e valor derivado na mesma estrutura.
+        /// A separação em tipos distintos é decidida aqui, na tradução.
+        /// </summary>
+        public static ConjuntoDeEstatisticas TraduzirParaConjuntoDeEstatisticas(
+            SofaSeasonStatsResponse statsPlayer,
+            Recorte recorte)
+        {
+            var estatisticas = statsPlayer.Statistics;
+            var minutagem = new Minutagem(estatisticas.MinutesPlayed, recorte);
+
+            return new ConjuntoDeEstatisticas(
+                recorte: recorte,
+                acumulaveis:
+                [
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, estatisticas.Goals, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, estatisticas.Assists, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.PassesDecisivos, estatisticas.KeyPasses, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, estatisticas.Tackles, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, estatisticas.Interceptions, minutagem)
+                ],
+                derivados:
+                [
+                    new ValorDerivado(TipoDeValorDerivado.Rating, (decimal)estatisticas.Rating),
+                    new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, (decimal)estatisticas.AccuratePassesPercentage)
+                ]);
         }
     }
 }
