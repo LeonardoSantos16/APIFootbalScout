@@ -24,7 +24,7 @@ namespace APIFootballScout.Controllers
             CancellationToken cancellationToken)
         {
             var result = await consultarMetricasPor90UseCase.ConsultarMetricasPor90(
-                (dto with { JogadorId = jogadorId }).ParaRequest(), cancellationToken);
+                dto.ParaRequest(jogadorId), cancellationToken);
 
             return Ok(result.ParaResponse());
         }

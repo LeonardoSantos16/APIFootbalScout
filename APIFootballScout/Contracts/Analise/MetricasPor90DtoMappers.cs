@@ -8,10 +8,10 @@ namespace APIFootballScout.Contracts.Analise
 {
     public static class MetricasPor90RequestDtoMapper
     {
-        public static ConsultarMetricasPor90Request ParaRequest(this ConsultarMetricasPor90RequestDto dto)
+        public static ConsultarMetricasPor90Request ParaRequest(this ConsultarMetricasPor90RequestDto dto, int jogadorId)
         {
             return new ConsultarMetricasPor90Request(
-                JogadorId: dto.JogadorId,
+                JogadorId: jogadorId,
                 CompeticaoId: dto.CompeticaoId,
                 TemporadaId: dto.TemporadaId,
                 Contexto: ParaContexto(dto.Contexto));
