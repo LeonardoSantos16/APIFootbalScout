@@ -40,7 +40,24 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             SofaSeasonStatsResponse statsPlayer,
             Recorte recorte)
         {
-            throw new NotImplementedException();
+            var estatisticas = statsPlayer.Statistics;
+            var minutagem = new Minutagem(estatisticas.MinutesPlayed, recorte);
+
+            return new ConjuntoDeEstatisticas(
+                Recorte: recorte,
+                Acumulaveis:
+                [
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, estatisticas.Goals, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, estatisticas.Assists, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.PassesDecisivos, estatisticas.KeyPasses, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, estatisticas.Tackles, minutagem),
+                    new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, estatisticas.Interceptions, minutagem)
+                ],
+                Derivados:
+                [
+                    new ValorDerivado(TipoDeValorDerivado.Rating, (decimal)estatisticas.Rating),
+                    new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, (decimal)estatisticas.AccuratePassesPercentage)
+                ]);
         }
     }
 }
