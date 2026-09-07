@@ -5,7 +5,11 @@ namespace APIFootballScout.Domain.Analise.ValueObject
 {
     public sealed record EstatisticaAcumulavel(int Contagem, Minutagem Minutagem)
     {
+        private const int MinutosDeUmaPartida = 90;
+
         public MetricaPor90 PorNoventaMinutos(AmostraSuficienteSpecification amostraSuficiente)
-            => throw new NotImplementedException();
+            => amostraSuficiente.IsSatisfiedBy(Minutagem)
+                ? new MetricaCalculada((decimal)Contagem * MinutosDeUmaPartida / Minutagem.Minutos)
+                : new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente);
     }
 }
