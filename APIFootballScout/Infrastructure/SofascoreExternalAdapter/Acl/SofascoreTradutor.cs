@@ -1,3 +1,5 @@
+using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.Analise.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
@@ -28,6 +30,17 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 Recorte: recorte,
                 LidoEm: lidoEm
             );
+        }
+
+        /// <summary>
+        /// R9.4 — a fonte entrega contagem e valor derivado na mesma estrutura.
+        /// A separação em tipos distintos é decidida aqui, na tradução.
+        /// </summary>
+        public static ConjuntoDeEstatisticas TraduzirParaConjuntoDeEstatisticas(
+            SofaSeasonStatsResponse statsPlayer,
+            Recorte recorte)
+        {
+            throw new NotImplementedException();
         }
     }
 }

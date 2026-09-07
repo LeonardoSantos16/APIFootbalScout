@@ -16,7 +16,7 @@ namespace APIFootballScout.Tests.Analise
         public void Amostra_insuficiente_recusa_o_calculo_com_motivo()
         {
             // Arrange
-            var gols = new EstatisticaAcumulavel(3, new Minutagem(200, Brasileirao2024));
+            var gols = new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 3, new Minutagem(200, Brasileirao2024));
 
             // Act
             var metrica = gols.PorNoventaMinutos(AmostraSuficiente);
@@ -30,7 +30,7 @@ namespace APIFootballScout.Tests.Analise
         public void Estatistica_zerada_com_amostra_suficiente_e_valor_calculado_nao_recusa()
         {
             // Arrange
-            var gols = new EstatisticaAcumulavel(0, new Minutagem(2400, Brasileirao2024));
+            var gols = new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 0, new Minutagem(2400, Brasileirao2024));
 
             // Act
             var metrica = gols.PorNoventaMinutos(AmostraSuficiente);
@@ -44,7 +44,7 @@ namespace APIFootballScout.Tests.Analise
         public void Doze_gols_em_dois_mil_e_quatrocentos_minutos_dao_zero_virgula_quarenta_e_cinco_por_90()
         {
             // Arrange
-            var gols = new EstatisticaAcumulavel(12, new Minutagem(2400, Brasileirao2024));
+            var gols = new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 12, new Minutagem(2400, Brasileirao2024));
 
             // Act
             var metrica = gols.PorNoventaMinutos(AmostraSuficiente);

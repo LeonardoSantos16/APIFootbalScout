@@ -3,7 +3,7 @@ using APIFootballScout.Domain.Analise.Specifications;
 
 namespace APIFootballScout.Domain.Analise.ValueObject
 {
-    public sealed record EstatisticaAcumulavel(int Contagem, Minutagem Minutagem)
+    public sealed record EstatisticaAcumulavel(TipoDeEstatistica Tipo, int Contagem, Minutagem Minutagem)
     {
         private const int MinutosDeUmaPartida = 90;
 
