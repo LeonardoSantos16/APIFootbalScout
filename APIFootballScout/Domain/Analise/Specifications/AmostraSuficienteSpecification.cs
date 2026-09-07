@@ -7,6 +7,6 @@ namespace APIFootballScout.Domain.Analise.Specifications
     public sealed class AmostraSuficienteSpecification(AmostraMinima minima) : Specification<Minutagem>
     {
         public override bool IsSatisfiedBy(Minutagem minutagem)
-            => throw new NotImplementedException();
+           => minutagem.Minutos >= minima.Minutos;
     }
 }
