@@ -1,6 +1,7 @@
 using APIFootballScout;
 using APIFootballScout.Application;
 using APIFootballScout.Application.Acompanhamento;
+using APIFootballScout.Application.Analise;
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Application.RelatorioScouting;
 using APIFootballScout.Application.ShortlistPersonalizada;
@@ -122,6 +123,11 @@ builder.Services.AddScoped(sp => new ConsultarMudancaAcompanhamentoUseCase(
     new AferidorDeMudanca(
         sp.GetRequiredService<ScoutSpecificationFactory>().MudancaRelevante(),
         new LeiturasComparaveisSpecification())
+    ));
+
+builder.Services.AddScoped(sp => new ConsultarMetricasPor90UseCase(
+    sp.GetRequiredService<ICatalogoDeJogador>(),
+    sp.GetRequiredService<ScoutSpecificationFactory>().AmostraSuficiente()
     ));
 
 builder.Services.AddScoped<IRelatorioRepository, RelatorioRepositoryMongo>();
