@@ -8,6 +8,5 @@ namespace APIFootballScout.Application.Analise
     public sealed record ConsultarMetricasPor90Result(
         int JogadorId,
         Recorte Recorte,
-        IReadOnlyCollection<AtributoDoJogador> Metricas,
-        IReadOnlyCollection<ValorDerivado> Derivados);
+        IReadOnlyCollection<AtributoDoJogador> Atributos);
 }

@@ -34,31 +34,27 @@ namespace APIFootballScout.Contracts.Analise
             return new MetricasPor90ResponseDto(
                 JogadorId: result.JogadorId,
                 Recorte: ParaRecorte(result.Recorte),
-                Metricas: [.. result.Metricas.Select(ParaMetrica)],
-                Derivados: [.. result.Derivados.Select(ParaValorDerivado)]);
+                Atributos: [.. result.Atributos.Select(ParaAtributo)]);
         }
 
         private static RecorteDto ParaRecorte(Recorte recorte)
             => new(recorte.CompeticaoId, recorte.TemporadaId, ParaContexto(recorte.Contexto));
 
-        private static MetricaPor90Dto ParaMetrica(AtributoDoJogador metrica) => metrica.Resultado switch
+        private static AtributoDto ParaAtributo(AtributoDoJogador atributo) => atributo.Resultado switch
         {
-            AtributoCalculado calculada => new(
-                ParaTipo(metrica.Tipo),
+            AtributoCalculado calculado => new(
+                ParaTipo(atributo.Tipo),
                 ResultadoDoCalculoDto.Calculada,
-                Valor: calculada.Valor,
-                AmostraEmMinutos: calculada.Amostra.Minutos),
+                Valor: calculado.Valor,
+                AmostraEmMinutos: calculado.Amostra.Minutos),
             AtributoRecusado recusado => new(
-                ParaTipo(metrica.Tipo),
+                ParaTipo(atributo.Tipo),
                 ResultadoDoCalculoDto.Recusada,
                 Motivo: ParaMotivo(recusado.Motivo)),
             _ => throw new ValorInvalidoException(
                 "atributo.resultado_invalido",
-                $"Unexpected metric result: {metrica.Resultado.GetType().Name}.")
+                $"Unexpected attribute result: {atributo.Resultado.GetType().Name}.")
         };
-
-        private static ValorDerivadoDto ParaValorDerivado(ValorDerivado derivado)
-            => new(ParaTipo(derivado.Tipo), derivado.Valor);
 
         private static ContextoDeRecorteDto ParaContexto(ContextoDeRecorte contexto) => contexto switch
         {

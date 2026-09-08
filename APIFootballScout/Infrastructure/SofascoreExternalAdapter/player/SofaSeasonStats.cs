@@ -8,7 +8,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
     );
 
     public record SofaStatistics(
-        [property: JsonPropertyName("rating")] double Rating,
+        [property: JsonPropertyName("rating")] double? Rating,
         [property: JsonPropertyName("appearances")] int Appearances,
         [property: JsonPropertyName("minutesPlayed")] int MinutesPlayed,
         [property: JsonPropertyName("goals")] int Goals,
@@ -16,7 +16,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
         [property: JsonPropertyName("bigChancesCreated")] int BigChancesCreated,
         [property: JsonPropertyName("keyPasses")] int KeyPasses,
         [property: JsonPropertyName("totalPasses")] int TotalPasses,
-        [property: JsonPropertyName("accuratePassesPercentage")] double AccuratePassesPercentage,
+        [property: JsonPropertyName("accuratePassesPercentage")] double? AccuratePassesPercentage,
         [property: JsonPropertyName("successfulDribbles")] int SuccessfulDribbles,
         [property: JsonPropertyName("tackles")] int Tackles,
         [property: JsonPropertyName("interceptions")] int Interceptions,

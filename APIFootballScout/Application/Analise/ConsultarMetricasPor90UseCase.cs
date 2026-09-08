@@ -28,7 +28,7 @@ namespace APIFootballScout.Application.Analise
                     "jogador.estatisticas_nao_encontradas",
                     "estatisticas do jogador nao encontradas para esse recorte");
 
-            var metricas = conjunto.Acumulaveis
+            var atributos = conjunto.Acumulaveis
                 .Select(estatistica => new AtributoDoJogador(
                     estatistica.Tipo,
                     estatistica.PorNoventaMinutos(_amostraSuficiente)))
@@ -37,8 +37,7 @@ namespace APIFootballScout.Application.Analise
             return new ConsultarMetricasPor90Result(
                 JogadorId: request.JogadorId,
                 Recorte: conjunto.Recorte,
-                Metricas: metricas,
-                Derivados: conjunto.Derivados);
+                Atributos: atributos);
         }
     }
 }

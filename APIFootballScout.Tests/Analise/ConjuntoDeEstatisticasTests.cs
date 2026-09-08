@@ -22,7 +22,7 @@ namespace APIFootballScout.Tests.Analise
                     new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem),
                     new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, 7, minutagem)
                 ],
-                [new ValorDerivado(TipoDeAtributo.Rating, 7.42m)]);
+                [new ValorDerivado(TipoDeAtributo.Rating, 7.42m, minutagem)]);
 
             // Assert
             Assert.Equal(Brasileirao2024, conjunto.Recorte);
@@ -49,6 +49,34 @@ namespace APIFootballScout.Tests.Analise
                             TipoDeAtributo.Desarmes, 18, new Minutagem(2400, outroRecorte))
                     ],
                     []));
+
+            // Assert
+            Assert.Equal("conjunto_de_estatisticas.recorte_divergente", erro.Codigo);
+        }
+
+        [Theory]
+        [InlineData(8, 63814, ContextoDeRecorte.Clube)]
+        [InlineData(325, 77012, ContextoDeRecorte.Clube)]
+        [InlineData(325, 63814, ContextoDeRecorte.Selecao)]
+        public void Valor_derivado_de_outro_recorte_nao_entra_no_conjunto(
+            int competicaoId, int temporadaId, ContextoDeRecorte contexto)
+        {
+            // Arrange — o derivado passou a declarar a amostra que o sustenta, e com ela
+            // entra no conjunto sob a mesma exigencia de recorte dos acumulaveis.
+            var outroRecorte = new Recorte(competicaoId, temporadaId, contexto);
+
+            // Act
+            var erro = Assert.Throws<ValorInvalidoException>(
+                () => new ConjuntoDeEstatisticas(
+                    Brasileirao2024,
+                    [
+                        new EstatisticaAcumulavel(
+                            TipoDeAtributo.Gols, 12, new Minutagem(2400, Brasileirao2024))
+                    ],
+                    [
+                        new ValorDerivado(
+                            TipoDeAtributo.Rating, 7.42m, new Minutagem(2400, outroRecorte))
+                    ]));
 
             // Assert
             Assert.Equal("conjunto_de_estatisticas.recorte_divergente", erro.Codigo);

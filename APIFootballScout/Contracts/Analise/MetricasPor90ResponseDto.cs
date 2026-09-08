@@ -13,7 +13,8 @@ namespace APIFootballScout.Contracts.Analise
     [JsonConverter(typeof(JsonStringEnumConverter<MotivoDaRecusaDto>))]
     public enum MotivoDaRecusaDto
     {
-        AmostraInsuficiente = 1
+        AmostraInsuficiente = 1,
+        FonteNaoAtribuiu = 2
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<TipoDeAtributoDto>))]
@@ -30,18 +31,15 @@ namespace APIFootballScout.Contracts.Analise
 
     public sealed record RecorteDto(int CompeticaoId, int TemporadaId, ContextoDeRecorteDto Contexto);
 
-    public sealed record MetricaPor90Dto(
+    public sealed record AtributoDto(
         TipoDeAtributoDto Tipo,
         ResultadoDoCalculoDto Resultado,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] decimal? Valor = null,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? AmostraEmMinutos = null,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MotivoDaRecusaDto? Motivo = null);
 
-    public sealed record ValorDerivadoDto(TipoDeAtributoDto Tipo, decimal Valor);
-
     public sealed record MetricasPor90ResponseDto(
         int JogadorId,
         RecorteDto Recorte,
-        IReadOnlyCollection<MetricaPor90Dto> Metricas,
-        IReadOnlyCollection<ValorDerivadoDto> Derivados);
+        IReadOnlyCollection<AtributoDto> Atributos);
 }
