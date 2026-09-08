@@ -3,11 +3,11 @@ using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Application.Analise
 {
-    public sealed record MetricaDoJogador(TipoDeEstatistica Tipo, MetricaPor90 Metrica);
+    public sealed record AtributoDoJogador(TipoDeAtributo Tipo, ResultadoDeAtributo Resultado);
 
     public sealed record ConsultarMetricasPor90Result(
         int JogadorId,
         Recorte Recorte,
-        IReadOnlyCollection<MetricaDoJogador> Metricas,
+        IReadOnlyCollection<AtributoDoJogador> Metricas,
         IReadOnlyCollection<ValorDerivado> Derivados);
 }

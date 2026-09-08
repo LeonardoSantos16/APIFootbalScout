@@ -25,11 +25,11 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal(
                 new[]
                 {
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 12, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, 7, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.PassesDecisivos, 41, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, 18, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, 23, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, 7, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.PassesDecisivos, 41, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Desarmes, 18, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Interceptacoes, 23, minutagem)
                 },
                 conjunto.Acumulaveis);
         }
@@ -47,8 +47,8 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal(
                 new[]
                 {
-                    new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m),
-                    new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, 84.3m)
+                    new ValorDerivado(TipoDeAtributo.Rating, 7.42m),
+                    new ValorDerivado(TipoDeAtributo.PrecisaoDePasse, 84.3m)
                 },
                 conjunto.Derivados);
         }

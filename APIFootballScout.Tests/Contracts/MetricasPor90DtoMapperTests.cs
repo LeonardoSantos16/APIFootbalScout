@@ -15,7 +15,7 @@ namespace APIFootballScout.Tests.Contracts
         public void A_metrica_calculada_expoe_valor_e_amostra_sem_motivo_de_recusa()
         {
             // Arrange
-            var result = Resultado(new MetricaCalculada(0.45m, new Minutagem(2400, Brasileirao2024)));
+            var result = Resultado(new AtributoCalculado(0.45m, new Minutagem(2400, Brasileirao2024)));
 
             // Act
             var dto = result.ParaResponse();
@@ -32,7 +32,7 @@ namespace APIFootballScout.Tests.Contracts
         public void O_calculo_recusado_expoe_o_motivo_e_nenhum_valor()
         {
             // Arrange
-            var result = Resultado(new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente));
+            var result = Resultado(new AtributoRecusado(MotivoDaRecusa.AmostraInsuficiente));
 
             // Act
             var dto = result.ParaResponse();
@@ -49,7 +49,7 @@ namespace APIFootballScout.Tests.Contracts
         public void O_recorte_da_consulta_atravessa_o_contrato()
         {
             // Arrange
-            var result = Resultado(new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente));
+            var result = Resultado(new AtributoRecusado(MotivoDaRecusa.AmostraInsuficiente));
 
             // Act
             var dto = result.ParaResponse();
@@ -58,11 +58,11 @@ namespace APIFootballScout.Tests.Contracts
             Assert.Equal(new RecorteDto(325, 63814, ContextoDeRecorteDto.Clube), dto.Recorte);
         }
 
-        private static ConsultarMetricasPor90Result Resultado(MetricaPor90 metrica)
+        private static ConsultarMetricasPor90Result Resultado(ResultadoDeAtributo metrica)
             => new(
                 JogadorId: 13812,
                 Recorte: Brasileirao2024,
-                Metricas: [new MetricaDoJogador(TipoDeEstatistica.Gols, metrica)],
-                Derivados: [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)]);
+                Metricas: [new AtributoDoJogador(TipoDeAtributo.Gols, metrica)],
+                Derivados: [new ValorDerivado(TipoDeAtributo.Rating, 7.42m)]);
     }
 }

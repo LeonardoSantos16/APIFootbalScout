@@ -47,16 +47,16 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 recorte: recorte,
                 acumulaveis:
                 [
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, estatisticas.Goals, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, estatisticas.Assists, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.PassesDecisivos, estatisticas.KeyPasses, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, estatisticas.Tackles, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, estatisticas.Interceptions, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, estatisticas.Goals, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, estatisticas.Assists, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.PassesDecisivos, estatisticas.KeyPasses, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Desarmes, estatisticas.Tackles, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Interceptacoes, estatisticas.Interceptions, minutagem)
                 ],
                 derivados:
                 [
-                    new ValorDerivado(TipoDeValorDerivado.Rating, (decimal)estatisticas.Rating),
-                    new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, (decimal)estatisticas.AccuratePassesPercentage)
+                    new ValorDerivado(TipoDeAtributo.Rating, (decimal)estatisticas.Rating),
+                    new ValorDerivado(TipoDeAtributo.PrecisaoDePasse, (decimal)estatisticas.AccuratePassesPercentage)
                 ]);
         }
     }

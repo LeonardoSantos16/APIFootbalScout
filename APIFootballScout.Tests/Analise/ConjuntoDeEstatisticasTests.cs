@@ -19,10 +19,10 @@ namespace APIFootballScout.Tests.Analise
             var conjunto = new ConjuntoDeEstatisticas(
                 Brasileirao2024,
                 [
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 12, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, 7, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, 7, minutagem)
                 ],
-                [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)]);
+                [new ValorDerivado(TipoDeAtributo.Rating, 7.42m)]);
 
             // Assert
             Assert.Equal(Brasileirao2024, conjunto.Recorte);
@@ -44,9 +44,9 @@ namespace APIFootballScout.Tests.Analise
                     Brasileirao2024,
                     [
                         new EstatisticaAcumulavel(
-                            TipoDeEstatistica.Gols, 12, new Minutagem(2400, Brasileirao2024)),
+                            TipoDeAtributo.Gols, 12, new Minutagem(2400, Brasileirao2024)),
                         new EstatisticaAcumulavel(
-                            TipoDeEstatistica.Desarmes, 18, new Minutagem(2400, outroRecorte))
+                            TipoDeAtributo.Desarmes, 18, new Minutagem(2400, outroRecorte))
                     ],
                     []));
 

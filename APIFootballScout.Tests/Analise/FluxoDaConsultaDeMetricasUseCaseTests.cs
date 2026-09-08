@@ -33,12 +33,12 @@ namespace APIFootballScout.Tests.Analise
 
             // Assert
             Assert.Equal(Brasileirao2024, result.Recorte);
-            Assert.All(result.Metricas, metrica => Assert.IsType<MetricaCalculada>(metrica.Metrica));
+            Assert.All(result.Metricas, metrica => Assert.IsType<AtributoCalculado>(metrica.Resultado));
             Assert.Equal(
-                new[] { TipoDeEstatistica.Gols, TipoDeEstatistica.Assistencias },
+                new[] { TipoDeAtributo.Gols, TipoDeAtributo.Assistencias },
                 result.Metricas.Select(metrica => metrica.Tipo));
             Assert.Equal(
-                [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)],
+                [new ValorDerivado(TipoDeAtributo.Rating, 7.42m)],
                 result.Derivados);
         }
 
@@ -55,7 +55,7 @@ namespace APIFootballScout.Tests.Analise
             Assert.All(result.Metricas, metrica =>
                 Assert.Equal(
                     MotivoDaRecusa.AmostraInsuficiente,
-                    Assert.IsType<CalculoRecusado>(metrica.Metrica).Motivo));
+                    Assert.IsType<AtributoRecusado>(metrica.Resultado).Motivo));
         }
 
         [Fact]
@@ -83,10 +83,10 @@ namespace APIFootballScout.Tests.Analise
             return new ConjuntoDeEstatisticas(
                 Brasileirao2024,
                 [
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 12, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, 7, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, 7, minutagem)
                 ],
-                [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)]);
+                [new ValorDerivado(TipoDeAtributo.Rating, 7.42m)]);
         }
     }
 }

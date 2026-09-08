@@ -29,7 +29,7 @@ namespace APIFootballScout.Application.Analise
                     "estatisticas do jogador nao encontradas para esse recorte");
 
             var metricas = conjunto.Acumulaveis
-                .Select(estatistica => new MetricaDoJogador(
+                .Select(estatistica => new AtributoDoJogador(
                     estatistica.Tipo,
                     estatistica.PorNoventaMinutos(_amostraSuficiente)))
                 .ToList();

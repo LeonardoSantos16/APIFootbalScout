@@ -3,13 +3,13 @@ using APIFootballScout.Domain.Analise.Specifications;
 
 namespace APIFootballScout.Domain.Analise.ValueObject
 {
-    public sealed record EstatisticaAcumulavel(TipoDeEstatistica Tipo, int Contagem, Minutagem Minutagem)
+    public sealed record EstatisticaAcumulavel(TipoDeAtributo Tipo, int Contagem, Minutagem Minutagem)
     {
         private const int MinutosDeUmaPartida = 90;
 
-        public MetricaPor90 PorNoventaMinutos(AmostraSuficienteSpecification amostraSuficiente)
+        public ResultadoDeAtributo PorNoventaMinutos(AmostraSuficienteSpecification amostraSuficiente)
             => amostraSuficiente.IsSatisfiedBy(Minutagem)
-                ? new MetricaCalculada((decimal)Contagem * MinutosDeUmaPartida / Minutagem.Minutos, Minutagem)
-                : new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente);
+                ? new AtributoCalculado((decimal)Contagem * MinutosDeUmaPartida / Minutagem.Minutos, Minutagem)
+                : new AtributoRecusado(MotivoDaRecusa.AmostraInsuficiente);
     }
 }
