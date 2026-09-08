@@ -14,7 +14,8 @@ namespace APIFootballScout.Domain.Analise.ValueObject
             IReadOnlyCollection<EstatisticaAcumulavel> acumulaveis,
             IReadOnlyCollection<ValorDerivado> derivados)
         {
-            if (acumulaveis.Any(estatistica => estatistica.Minutagem.Recorte != recorte))
+            if (acumulaveis.Any(estatistica => estatistica.Minutagem.Recorte != recorte)
+                || derivados.Any(derivado => derivado.Minutagem.Recorte != recorte))
             {
                 throw new ValorInvalidoException(
                     "conjunto_de_estatisticas.recorte_divergente",

@@ -55,8 +55,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 ],
                 derivados:
                 [
-                    new ValorDerivado(TipoDeAtributo.Rating, (decimal)(estatisticas.Rating ?? 0), minutagem),
-                    new ValorDerivado(TipoDeAtributo.PrecisaoDePasse, (decimal)(estatisticas.AccuratePassesPercentage ?? 0), minutagem)
+                    new ValorDerivado(TipoDeAtributo.Rating, (decimal?)estatisticas.Rating, minutagem),
+                    new ValorDerivado(TipoDeAtributo.PrecisaoDePasse, (decimal?)estatisticas.AccuratePassesPercentage, minutagem)
                 ]);
         }
     }

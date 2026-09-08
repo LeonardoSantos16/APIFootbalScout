@@ -82,6 +82,7 @@ namespace APIFootballScout.Contracts.Analise
         private static MotivoDaRecusaDto ParaMotivo(MotivoDaRecusa motivo) => motivo switch
         {
             MotivoDaRecusa.AmostraInsuficiente => MotivoDaRecusaDto.AmostraInsuficiente,
+            MotivoDaRecusa.FonteNaoAtribuiu => MotivoDaRecusaDto.FonteNaoAtribuiu,
             _ => throw new ValorInvalidoException(
                 "atributo.motivo_invalido",
                 $"Unknown refusal reason: {motivo}.")
