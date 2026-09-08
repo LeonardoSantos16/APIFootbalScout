@@ -1,3 +1,4 @@
+using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.CatalogoDeJogador;
 
@@ -6,6 +7,7 @@ namespace APIFootballScout.Domain.Analise.ValueObject
     public sealed record ConjuntoDeEstatisticas
     {
         public Recorte Recorte { get; init; }
+        public Minutagem Minutagem { get; init; }
         public IReadOnlyCollection<EstatisticaAcumulavel> Acumulaveis { get; init; }
         public IReadOnlyCollection<ValorDerivado> Derivados { get; init; }
 
@@ -23,6 +25,9 @@ namespace APIFootballScout.Domain.Analise.ValueObject
             }
 
             Recorte = recorte;
+            Minutagem = acumulaveis.Select(estatistica => estatistica.Minutagem)
+                .Concat(derivados.Select(derivado => derivado.Minutagem))
+                .First();
             Acumulaveis = acumulaveis;
             Derivados = derivados;
         }

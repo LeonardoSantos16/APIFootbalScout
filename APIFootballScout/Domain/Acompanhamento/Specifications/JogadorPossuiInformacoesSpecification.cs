@@ -8,7 +8,7 @@ namespace APIFootballScout.Domain.Acompanhamento.Specifications
         public override bool IsSatisfiedBy(PerfilDoJogador perfil)
         {
             return !string.IsNullOrWhiteSpace(perfil.Nome)
-                && !string.IsNullOrWhiteSpace(perfil.Posicao)
+                && perfil.Posicao is not null
                 && !string.IsNullOrWhiteSpace(perfil.Clube);
         }
     }

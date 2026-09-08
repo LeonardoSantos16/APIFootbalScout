@@ -43,7 +43,6 @@ namespace APIFootballScout.Tests.Analise
         public async Task Amostra_insuficiente_recusa_os_acumulaveis_e_nao_o_derivado()
         {
             // Arrange — a amostra minima e politica nossa sobre a normalizacao; o derivado
-            // chega da fonte com o corte dela, e nao passa pela nossa.
             _catalogo.Estatisticas = ConjuntoDaFonte(minutos: 200);
 
             // Act

@@ -52,7 +52,7 @@ namespace APIFootballScout.Tests.Acompanhamento
             => Catalogo.Perfil = PerfilValido(clube, lidoEm);
 
         public PerfilDoJogador PerfilValido(string clube = "Santos", DateTime? lidoEm = null) => new(
-            JogadorId: JogadorId, Nome: "Neymar", Posicao: "F", Clube: clube,
+            JogadorId: JogadorId, Nome: "Neymar", Posicao: Posicao.Ataque, Clube: clube,
             ValorDeMercado: new Dinheiro(50_000_000_00, "EUR"),
             MinutosJogados: 900,
             Recorte: RecortePadrao,

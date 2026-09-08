@@ -5,11 +5,6 @@ using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Tests.Analise
 {
-    /// <summary>
-    /// R9.4 — um enum unico de atributo tornou exprimivel o que o modelo nao admite:
-    /// acumulavel com tipo derivado e derivado com tipo acumulavel. A guarda recompoe
-    /// a particao que a unificacao do vocabulario deixou de garantir pelo tipo.
-    /// </summary>
     public class ParticaoDoVocabularioTests
     {
         private static readonly Recorte Brasileirao2024 = new(325, 63814, ContextoDeRecorte.Clube);

@@ -23,7 +23,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             return new PerfilDoJogador(
                 JogadorId: sofaPlayer.Player.Id,
                 Nome: sofaPlayer.Player.Name,
-                Posicao: sofaPlayer.Player.Position,
+                Posicao: TraduzirPosicao(sofaPlayer.Player.Position),
                 Clube: sofaPlayer.Player.Team?.Name,
                 ValorDeMercado: new Dinheiro(sofaPlayer.Player.ProposedMarketValue, MoedaEsperada),
                 MinutosJogados: statsPlayer.Statistics.MinutesPlayed,
@@ -31,6 +31,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 LidoEm: lidoEm
             );
         }
+
+        private static Posicao? TraduzirPosicao(string? posicao) => null;
 
         /// <summary>
         /// R9.4 — a fonte entrega contagem e valor derivado na mesma estrutura.

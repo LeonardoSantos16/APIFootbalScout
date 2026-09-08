@@ -62,7 +62,6 @@ namespace APIFootballScout.Tests.Analise
             int competicaoId, int temporadaId, ContextoDeRecorte contexto)
         {
             // Arrange — o derivado passou a declarar a amostra que o sustenta, e com ela
-            // entra no conjunto sob a mesma exigencia de recorte dos acumulaveis.
             var outroRecorte = new Recorte(competicaoId, temporadaId, contexto);
 
             // Act
@@ -80,6 +79,63 @@ namespace APIFootballScout.Tests.Analise
 
             // Assert
             Assert.Equal("conjunto_de_estatisticas.recorte_divergente", erro.Codigo);
+        }
+
+        [Fact]
+        public void O_conjunto_declara_a_minutagem_unica_que_o_sustenta()
+        {
+            // Arrange
+            var minutagem = new Minutagem(2400, Brasileirao2024);
+
+            // Act
+            var conjunto = new ConjuntoDeEstatisticas(
+                Brasileirao2024,
+                [new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem)],
+                [new ValorDerivado(TipoDeAtributo.Rating, 7.42m, minutagem)]);
+
+            // Assert
+            Assert.Equal(minutagem, conjunto.Minutagem);
+        }
+
+        [Fact]
+        public void Acumulaveis_de_minutagens_diferentes_nao_formam_um_conjunto()
+        {
+            // Arrange — o mesmo recorte nao basta: a recusa da comparacao e por lado,
+
+            // Act
+            var erro = Assert.Throws<ValorInvalidoException>(
+                () => new ConjuntoDeEstatisticas(
+                    Brasileirao2024,
+                    [
+                        new EstatisticaAcumulavel(
+                            TipoDeAtributo.Gols, 12, new Minutagem(2400, Brasileirao2024)),
+                        new EstatisticaAcumulavel(
+                            TipoDeAtributo.Desarmes, 18, new Minutagem(1800, Brasileirao2024))
+                    ],
+                    []));
+
+            // Assert
+            Assert.Equal("conjunto_de_estatisticas.minutagem_divergente", erro.Codigo);
+        }
+
+        [Fact]
+        public void Derivado_de_outra_minutagem_nao_entra_no_conjunto()
+        {
+            // Act
+            var erro = Assert.Throws<ValorInvalidoException>(
+                () => new ConjuntoDeEstatisticas(
+                    Brasileirao2024,
+                    [
+                        new EstatisticaAcumulavel(
+                            TipoDeAtributo.Gols, 12, new Minutagem(2400, Brasileirao2024))
+                    ],
+                    [
+                        new ValorDerivado(
+                            TipoDeAtributo.Rating, 7.42m, new Minutagem(1800, Brasileirao2024))
+                    ]));
+
+            // Assert
+            Assert.Equal("conjunto_de_estatisticas.minutagem_divergente", erro.Codigo);
         }
     }
 }

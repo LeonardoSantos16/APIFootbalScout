@@ -6,7 +6,7 @@ namespace APIFootballScout.Tests.Acompanhamento
 {
     public class JogadorPossuiInformacoesSpecificationTests
     {
-        private static PerfilDoJogador Perfil(string nome, string? posicao, string? clube) => new(
+        private static PerfilDoJogador Perfil(string nome, Posicao? posicao, string? clube) => new(
             JogadorId: 42,
             Nome: nome,
             Posicao: posicao,
@@ -20,21 +20,19 @@ namespace APIFootballScout.Tests.Acompanhamento
         public void Perfil_completo_e_acompanhavel()
         {
             var acompanhavel = new JogadorPossuiInformacoesSpecification()
-                .IsSatisfiedBy(Perfil("Neymar", "F", "Santos"));
+                .IsSatisfiedBy(Perfil("Neymar", Posicao.Ataque, "Santos"));
 
             Assert.True(acompanhavel);
         }
 
         [Theory]
-        [InlineData("", "F", "Santos")]
-        [InlineData("   ", "F", "Santos")]
+        [InlineData("", Posicao.Ataque, "Santos")]
+        [InlineData("   ", Posicao.Ataque, "Santos")]
         [InlineData("Neymar", null, "Santos")]
-        [InlineData("Neymar", "", "Santos")]
-        [InlineData("Neymar", "   ", "Santos")]
-        [InlineData("Neymar", "F", null)]
-        [InlineData("Neymar", "F", "")]
-        [InlineData("Neymar", "F", "   ")]
-        public void Perfil_sem_base_comparavel_nao_e_acompanhavel(string nome, string? posicao, string? clube)
+        [InlineData("Neymar", Posicao.Ataque, null)]
+        [InlineData("Neymar", Posicao.Ataque, "")]
+        [InlineData("Neymar", Posicao.Ataque, "   ")]
+        public void Perfil_sem_base_comparavel_nao_e_acompanhavel(string nome, Posicao? posicao, string? clube)
         {
             var acompanhavel = new JogadorPossuiInformacoesSpecification()
                 .IsSatisfiedBy(Perfil(nome, posicao, clube));

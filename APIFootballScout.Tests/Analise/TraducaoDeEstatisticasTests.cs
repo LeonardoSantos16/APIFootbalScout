@@ -57,8 +57,7 @@ namespace APIFootballScout.Tests.Analise
         [Fact]
         public void Derivado_omitido_pela_fonte_nao_vira_zero_na_traducao()
         {
-            // Arrange — a fonte omite o campo quando nao atribui o valor, e omissao
-            // nao e o mesmo que valor zero.
+            // Arrange
             var retornoDaFonte = TemporadaNaFonte(rating: null, precisaoDePasse: null, minutosJogados: 200);
 
             // Act
