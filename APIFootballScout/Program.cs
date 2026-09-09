@@ -8,6 +8,7 @@ using APIFootballScout.Application.ShortlistPersonalizada;
 using APIFootballScout.Application.User;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
+using APIFootballScout.Domain.Analise.Services;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Context;
@@ -124,6 +125,13 @@ builder.Services.AddScoped(sp => new ConsultarMudancaAcompanhamentoUseCase(
         sp.GetRequiredService<ScoutSpecificationFactory>().MudancaRelevante(),
         new LeiturasComparaveisSpecification())
     ));
+
+builder.Services.AddScoped(sp => new ComparacaoDiretaUseCase(
+    sp.GetRequiredService<ICatalogoDeJogador>(),
+    new ComparadorDeJogadores(
+        sp.GetRequiredService<ScoutSpecificationFactory>().PosicoesCompativeis(),
+        sp.GetRequiredService<ScoutSpecificationFactory>().AmostraSuficiente())
+));
 
 builder.Services.AddScoped(sp => new ConsultarMetricasPor90UseCase(
     sp.GetRequiredService<ICatalogoDeJogador>(),
