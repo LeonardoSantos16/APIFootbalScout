@@ -24,8 +24,18 @@ namespace APIFootballScout.Domain.Analise.ValueObject
         }
 
         public ResultadoDeAtributo Resultado()
-            => Valor is null
-                ? new AtributoRecusado(MotivoDaRecusa.FonteNaoAtribuiu)
-                : new AtributoCalculado(Valor.Value, Minutagem);
+        {
+            if (Valor is null)
+            {
+                return new AtributoRecusado(MotivoDaRecusa.FonteNaoAtribuiu);
+            }
+
+            if (Minutagem.Minutos <= 0)
+            {
+                return new AtributoRecusado(MotivoDaRecusa.AmostraInsuficiente);
+            }
+
+            return new AtributoCalculado(Valor.Value, Minutagem);
+        }
     }
 }

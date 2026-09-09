@@ -22,6 +22,13 @@ namespace APIFootballScout.Application.Analise
             ComparacaoDiretaRequest request,
             CancellationToken cancellationToken)
         {
+            if (request.JogadorA == request.JogadorB)
+            {
+                throw new ValorInvalidoException(
+                    "comparacao.jogador_consigo_mesmo",
+                    "A comparacao exige dois jogadores distintos.");
+            }
+
             var recorte = new Recorte(request.CompeticaoId, request.TemporadaId, request.Contexto);
 
             var um = await Resolver(request.JogadorA, recorte, cancellationToken);

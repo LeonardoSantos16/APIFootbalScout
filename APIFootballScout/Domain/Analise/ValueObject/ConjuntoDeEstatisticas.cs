@@ -29,6 +29,13 @@ namespace APIFootballScout.Domain.Analise.ValueObject
                 .Distinct()
                 .ToList();
 
+            if (minutagens.Count == 0)
+            {
+                throw new ValorInvalidoException(
+                    "conjunto_de_estatisticas.vazio",
+                    "O conjunto precisa de ao menos uma estatistica.");
+            }
+
             if (minutagens.Count > 1)
             {
                 throw new ValorInvalidoException(
