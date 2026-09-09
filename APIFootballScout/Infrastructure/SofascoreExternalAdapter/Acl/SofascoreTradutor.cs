@@ -32,7 +32,14 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             );
         }
 
-        private static Posicao? TraduzirPosicao(string? posicao) => null;
+        private static Posicao? TraduzirPosicao(string? posicao) => posicao switch
+        {
+            "G" => Posicao.Goleiro,
+            "D" => Posicao.Defesa,
+            "M" => Posicao.MeioCampo,
+            "F" => Posicao.Ataque,
+            _ => null
+        };
 
         /// <summary>
         /// R9.4 — a fonte entrega contagem e valor derivado na mesma estrutura.

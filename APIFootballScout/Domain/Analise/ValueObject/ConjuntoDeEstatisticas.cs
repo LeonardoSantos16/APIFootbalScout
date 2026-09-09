@@ -24,10 +24,20 @@ namespace APIFootballScout.Domain.Analise.ValueObject
                     "Toda estatistica do conjunto precisa vir do recorte do conjunto.");
             }
 
-            Recorte = recorte;
-            Minutagem = acumulaveis.Select(estatistica => estatistica.Minutagem)
+            var minutagens = acumulaveis.Select(estatistica => estatistica.Minutagem)
                 .Concat(derivados.Select(derivado => derivado.Minutagem))
-                .First();
+                .Distinct()
+                .ToList();
+
+            if (minutagens.Count > 1)
+            {
+                throw new ValorInvalidoException(
+                    "conjunto_de_estatisticas.minutagem_divergente",
+                    "O conjunto precisa ser sustentado por uma unica amostra de minutos.");
+            }
+
+            Recorte = recorte;
+            Minutagem = minutagens.First();
             Acumulaveis = acumulaveis;
             Derivados = derivados;
         }
