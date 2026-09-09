@@ -27,7 +27,9 @@ namespace APIFootballScout.Application
         => new(new AmostraMinima(_config.AmostraMinimaDeMinutos));
 
         public PosicoesCompativeisSpecification PosicoesCompativeis()
-        => throw new NotImplementedException();
+        => new(_config.PosicoesCompativeis.ToDictionary(
+            declaracao => declaracao.Key,
+            declaracao => (IReadOnlyCollection<Posicao>)declaracao.Value));
 
         public RelatorioComConteudoMinimoSpecification ConteudoMinimoDoRelatorio()
         => new(_config.MinimoDePros, _config.MinimoDeContras, _config.MinimoDeCaracteresDaObservacao);

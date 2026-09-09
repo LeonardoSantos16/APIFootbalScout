@@ -37,7 +37,7 @@ namespace APIFootballScout.Contracts.Analise
                 Atributos: [.. result.Atributos.Select(ParaAtributo)]);
         }
 
-        private static RecorteDto ParaRecorte(Recorte recorte)
+        internal static RecorteDto ParaRecorte(Recorte recorte)
             => new(recorte.CompeticaoId, recorte.TemporadaId, ParaContexto(recorte.Contexto));
 
         private static AtributoDto ParaAtributo(AtributoDoJogador atributo) => atributo.Resultado switch
@@ -56,7 +56,7 @@ namespace APIFootballScout.Contracts.Analise
                 $"Unexpected attribute result: {atributo.Resultado.GetType().Name}.")
         };
 
-        private static ContextoDeRecorteDto ParaContexto(ContextoDeRecorte contexto) => contexto switch
+        internal static ContextoDeRecorteDto ParaContexto(ContextoDeRecorte contexto) => contexto switch
         {
             ContextoDeRecorte.Clube => ContextoDeRecorteDto.Clube,
             ContextoDeRecorte.Selecao => ContextoDeRecorteDto.Selecao,
@@ -65,7 +65,7 @@ namespace APIFootballScout.Contracts.Analise
                 $"Invalid scope context: {contexto}.")
         };
 
-        private static TipoDeAtributoDto ParaTipo(TipoDeAtributo tipo) => tipo switch
+        internal static TipoDeAtributoDto ParaTipo(TipoDeAtributo tipo) => tipo switch
         {
             TipoDeAtributo.Gols => TipoDeAtributoDto.Gols,
             TipoDeAtributo.Assistencias => TipoDeAtributoDto.Assistencias,
@@ -79,7 +79,7 @@ namespace APIFootballScout.Contracts.Analise
                 $"Unknown attribute type: {tipo}.")
         };
 
-        private static MotivoDaRecusaDto ParaMotivo(MotivoDaRecusa motivo) => motivo switch
+        internal static MotivoDaRecusaDto ParaMotivo(MotivoDaRecusa motivo) => motivo switch
         {
             MotivoDaRecusa.AmostraInsuficiente => MotivoDaRecusaDto.AmostraInsuficiente,
             MotivoDaRecusa.FonteNaoAtribuiu => MotivoDaRecusaDto.FonteNaoAtribuiu,
