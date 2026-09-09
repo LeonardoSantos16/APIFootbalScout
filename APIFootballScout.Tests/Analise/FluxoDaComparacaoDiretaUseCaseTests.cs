@@ -130,10 +130,24 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal("jogador.estatisticas_nao_encontradas", erro.Codigo);
         }
 
-        private static ComparacaoDiretaRequest Requisicao()
+        [Fact]
+        public async Task Comparar_um_jogador_consigo_mesmo_nao_consulta_a_fonte()
+        {
+            // Arrange
+            Registrar(Neymar);
+
+            // Act
+            var erro = await Assert.ThrowsAsync<ValorInvalidoException>(
+                () => _useCase.Comparar(Requisicao(jogadorB: Neymar), CancellationToken.None));
+
+            // Assert
+            Assert.Equal("comparacao.jogador_consigo_mesmo", erro.Codigo);
+            Assert.Equal(0, _catalogo.Chamadas);
+        }
+        private static ComparacaoDiretaRequest Requisicao(int? jogadorB = null)
             => new(
                 JogadorA: Neymar,
-                JogadorB: Rodrygo,
+                JogadorB: jogadorB ?? Rodrygo,
                 CompeticaoId: 325,
                 TemporadaId: 63814,
                 Contexto: ContextoDeRecorte.Clube);

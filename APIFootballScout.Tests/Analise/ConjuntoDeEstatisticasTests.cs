@@ -137,5 +137,16 @@ namespace APIFootballScout.Tests.Analise
             // Assert
             Assert.Equal("conjunto_de_estatisticas.minutagem_divergente", erro.Codigo);
         }
+
+        [Fact]
+        public void Conjunto_sem_estatistica_alguma_nao_e_construivel()
+        {
+            // Act
+            var erro = Assert.Throws<ValorInvalidoException>(
+                () => new ConjuntoDeEstatisticas(Brasileirao2024, [], []));
+
+            // Assert
+            Assert.Equal("conjunto_de_estatisticas.vazio", erro.Codigo);
+        }
     }
 }

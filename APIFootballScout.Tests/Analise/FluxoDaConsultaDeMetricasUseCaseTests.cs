@@ -90,6 +90,22 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal(Brasileirao2024, _catalogo.UltimoRecorte);
         }
 
+        [Fact]
+        public async Task Derivado_com_amostra_zerada_e_recusado_em_vez_de_derrubar_a_consulta()
+        {
+            // Arrange
+            _catalogo.Estatisticas = ConjuntoDaFonte(minutos: 0);
+
+            // Act
+            var result = await _useCase.ConsultarMetricasPor90(Requisicao(), CancellationToken.None);
+
+            // Assert
+            Assert.All(
+                result.Atributos,
+                atributo => Assert.Equal(
+                    MotivoDaRecusa.AmostraInsuficiente,
+                    Assert.IsType<AtributoRecusado>(atributo.Resultado).Motivo));
+        }
         private static ConsultarMetricasPor90Request Requisicao()
             => new(JogadorId: 13812, CompeticaoId: 325, TemporadaId: 63814, Contexto: ContextoDeRecorte.Clube);
 

@@ -49,5 +49,21 @@ namespace APIFootballScout.Tests.Analise
             // Assert
             Assert.NotEqual(MotivoDaRecusa.AmostraInsuficiente, recusa.Motivo);
         }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void O_derivado_informado_sem_amostra_positiva_e_recusado_e_nao_estoura(int minutos)
+        {
+            // Arrange
+            var rating = new ValorDerivado(TipoDeAtributo.Rating, 7.42m, new Minutagem(minutos, Brasileirao2024));
+
+            // Act
+            var resultado = rating.Resultado();
+
+            // Assert
+            var recusa = Assert.IsType<AtributoRecusado>(resultado);
+            Assert.Equal(MotivoDaRecusa.AmostraInsuficiente, recusa.Motivo);
+        }
     }
 }
