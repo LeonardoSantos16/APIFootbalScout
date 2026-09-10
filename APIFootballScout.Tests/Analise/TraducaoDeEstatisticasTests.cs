@@ -25,32 +25,59 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal(
                 new[]
                 {
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 12, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, 7, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.PassesDecisivos, 41, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, 18, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, 23, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, 7, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.PassesDecisivos, 41, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Desarmes, 18, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Interceptacoes, 23, minutagem)
                 },
                 conjunto.Acumulaveis);
         }
 
         [Fact]
-        public void Rating_e_precisao_de_passe_viram_valor_derivado()
+        public void Rating_e_precisao_de_passe_viram_valor_derivado_com_a_minutagem_do_conjunto()
         {
             // Arrange
-            var retornoDaFonte = TemporadaNaFonte(rating: 7.42, precisaoDePasse: 84.3);
+            var retornoDaFonte = TemporadaNaFonte(rating: 7.42, precisaoDePasse: 84.3, minutosJogados: 2400);
 
             // Act
             var conjunto = SofascoreTradutor.TraduzirParaConjuntoDeEstatisticas(retornoDaFonte, Brasileirao2024);
 
             // Assert
+            var minutagem = new Minutagem(2400, Brasileirao2024);
             Assert.Equal(
                 new[]
                 {
-                    new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m),
-                    new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, 84.3m)
+                    new ValorDerivado(TipoDeAtributo.Rating, 7.42m, minutagem),
+                    new ValorDerivado(TipoDeAtributo.PrecisaoDePasse, 84.3m, minutagem)
                 },
                 conjunto.Derivados);
+        }
+
+        [Fact]
+        public void Derivado_omitido_pela_fonte_nao_vira_zero_na_traducao()
+        {
+            // Arrange
+            var retornoDaFonte = TemporadaNaFonte(rating: null, precisaoDePasse: null, minutosJogados: 200);
+
+            // Act
+            var conjunto = SofascoreTradutor.TraduzirParaConjuntoDeEstatisticas(retornoDaFonte, Brasileirao2024);
+
+            // Assert
+            Assert.All(conjunto.Derivados, derivado => Assert.Null(derivado.Valor));
+        }
+
+        [Fact]
+        public void Derivado_zerado_pela_fonte_e_distinto_de_derivado_omitido()
+        {
+            // Arrange
+            var retornoDaFonte = TemporadaNaFonte(rating: 0, precisaoDePasse: 0, minutosJogados: 200);
+
+            // Act
+            var conjunto = SofascoreTradutor.TraduzirParaConjuntoDeEstatisticas(retornoDaFonte, Brasileirao2024);
+
+            // Assert
+            Assert.All(conjunto.Derivados, derivado => Assert.Equal(0m, derivado.Valor));
         }
 
         [Fact]
@@ -74,8 +101,8 @@ namespace APIFootballScout.Tests.Analise
             int desarmes = 0,
             int interceptacoes = 0,
             int minutosJogados = 0,
-            double rating = 0,
-            double precisaoDePasse = 0)
+            double? rating = 0,
+            double? precisaoDePasse = 0)
             => new(
                 new SofaStatistics(
                     Rating: rating,

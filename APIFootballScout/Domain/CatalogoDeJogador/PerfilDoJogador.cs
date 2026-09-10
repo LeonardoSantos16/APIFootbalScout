@@ -5,7 +5,7 @@ namespace APIFootballScout.Domain.CatalogoDeJogador
     public sealed record PerfilDoJogador(
         int JogadorId,
         string Nome,
-        string? Posicao,
+        Posicao? Posicao,
         string? Clube,
         Dinheiro ValorDeMercado,
         int MinutosJogados,

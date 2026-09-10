@@ -23,7 +23,7 @@ namespace APIFootballScout.Tests.Analise
         }
 
         [Fact]
-        public async Task A_consulta_normaliza_cada_acumulavel_e_preserva_os_derivados()
+        public async Task Acumulaveis_normalizados_e_derivados_chegam_numa_colecao_unica()
         {
             // Arrange
             _catalogo.Estatisticas = ConjuntoDaFonte(minutos: 2400);
@@ -33,29 +33,46 @@ namespace APIFootballScout.Tests.Analise
 
             // Assert
             Assert.Equal(Brasileirao2024, result.Recorte);
-            Assert.All(result.Metricas, metrica => Assert.IsType<MetricaCalculada>(metrica.Metrica));
             Assert.Equal(
-                new[] { TipoDeEstatistica.Gols, TipoDeEstatistica.Assistencias },
-                result.Metricas.Select(metrica => metrica.Tipo));
-            Assert.Equal(
-                [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)],
-                result.Derivados);
+                new[] { TipoDeAtributo.Gols, TipoDeAtributo.Assistencias, TipoDeAtributo.Rating },
+                result.Atributos.Select(atributo => atributo.Tipo));
+            Assert.All(result.Atributos, atributo => Assert.IsType<AtributoCalculado>(atributo.Resultado));
         }
 
         [Fact]
-        public async Task A_recusa_por_amostra_insuficiente_chega_ao_resultado_da_consulta()
+        public async Task Amostra_insuficiente_recusa_os_acumulaveis_e_nao_o_derivado()
         {
-            // Arrange
+            // Arrange — a amostra minima e politica nossa sobre a normalizacao; o derivado
             _catalogo.Estatisticas = ConjuntoDaFonte(minutos: 200);
 
             // Act
             var result = await _useCase.ConsultarMetricasPor90(Requisicao(), CancellationToken.None);
 
             // Assert
-            Assert.All(result.Metricas, metrica =>
-                Assert.Equal(
+            Assert.All(
+                result.Atributos.Where(atributo => atributo.Tipo != TipoDeAtributo.Rating),
+                atributo => Assert.Equal(
                     MotivoDaRecusa.AmostraInsuficiente,
-                    Assert.IsType<CalculoRecusado>(metrica.Metrica).Motivo));
+                    Assert.IsType<AtributoRecusado>(atributo.Resultado).Motivo));
+
+            var rating = Assert.Single(result.Atributos, atributo => atributo.Tipo == TipoDeAtributo.Rating);
+            Assert.Equal(7.42m, Assert.IsType<AtributoCalculado>(rating.Resultado).Valor);
+        }
+
+        [Fact]
+        public async Task O_derivado_que_a_fonte_nao_atribuiu_chega_como_recusa()
+        {
+            // Arrange
+            _catalogo.Estatisticas = ConjuntoDaFonte(minutos: 2400, rating: null);
+
+            // Act
+            var result = await _useCase.ConsultarMetricasPor90(Requisicao(), CancellationToken.None);
+
+            // Assert
+            var rating = Assert.Single(result.Atributos, atributo => atributo.Tipo == TipoDeAtributo.Rating);
+            Assert.Equal(
+                MotivoDaRecusa.FonteNaoAtribuiu,
+                Assert.IsType<AtributoRecusado>(rating.Resultado).Motivo);
         }
 
         [Fact]
@@ -73,20 +90,36 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal(Brasileirao2024, _catalogo.UltimoRecorte);
         }
 
+        [Fact]
+        public async Task Derivado_com_amostra_zerada_e_recusado_em_vez_de_derrubar_a_consulta()
+        {
+            // Arrange
+            _catalogo.Estatisticas = ConjuntoDaFonte(minutos: 0);
+
+            // Act
+            var result = await _useCase.ConsultarMetricasPor90(Requisicao(), CancellationToken.None);
+
+            // Assert
+            Assert.All(
+                result.Atributos,
+                atributo => Assert.Equal(
+                    MotivoDaRecusa.AmostraInsuficiente,
+                    Assert.IsType<AtributoRecusado>(atributo.Resultado).Motivo));
+        }
         private static ConsultarMetricasPor90Request Requisicao()
             => new(JogadorId: 13812, CompeticaoId: 325, TemporadaId: 63814, Contexto: ContextoDeRecorte.Clube);
 
-        private static ConjuntoDeEstatisticas ConjuntoDaFonte(int minutos)
+        private static ConjuntoDeEstatisticas ConjuntoDaFonte(int minutos, decimal? rating = 7.42m)
         {
             var minutagem = new Minutagem(minutos, Brasileirao2024);
 
             return new ConjuntoDeEstatisticas(
                 Brasileirao2024,
                 [
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, 12, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, 7, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, 12, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, 7, minutagem)
                 ],
-                [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)]);
+                [new ValorDerivado(TipoDeAtributo.Rating, rating, minutagem)]);
         }
     }
 }

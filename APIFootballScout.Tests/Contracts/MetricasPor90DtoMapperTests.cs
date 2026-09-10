@@ -12,44 +12,87 @@ namespace APIFootballScout.Tests.Contracts
         private static readonly Recorte Brasileirao2024 = new(325, 63814, ContextoDeRecorte.Clube);
 
         [Fact]
-        public void A_metrica_calculada_expoe_valor_e_amostra_sem_motivo_de_recusa()
+        public void O_atributo_calculado_expoe_valor_e_amostra_sem_motivo_de_recusa()
         {
             // Arrange
-            var result = Resultado(new MetricaCalculada(0.45m, new Minutagem(2400, Brasileirao2024)));
+            var result = Resultado(new AtributoCalculado(0.45m, new Minutagem(2400, Brasileirao2024)));
 
             // Act
             var dto = result.ParaResponse();
 
             // Assert
-            var metrica = Assert.Single(dto.Metricas);
-            Assert.Equal(ResultadoDoCalculoDto.Calculada, metrica.Resultado);
-            Assert.Equal(0.45m, metrica.Valor);
-            Assert.Equal(2400, metrica.AmostraEmMinutos);
-            Assert.Null(metrica.Motivo);
+            var atributo = Assert.Single(dto.Atributos);
+            Assert.Equal(ResultadoDoCalculoDto.Calculada, atributo.Resultado);
+            Assert.Equal(0.45m, atributo.Valor);
+            Assert.Equal(2400, atributo.AmostraEmMinutos);
+            Assert.Null(atributo.Motivo);
         }
 
         [Fact]
-        public void O_calculo_recusado_expoe_o_motivo_e_nenhum_valor()
+        public void O_atributo_recusado_expoe_o_motivo_e_nenhum_valor()
         {
             // Arrange
-            var result = Resultado(new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente));
+            var result = Resultado(new AtributoRecusado(MotivoDaRecusa.AmostraInsuficiente));
 
             // Act
             var dto = result.ParaResponse();
 
             // Assert
-            var metrica = Assert.Single(dto.Metricas);
-            Assert.Equal(ResultadoDoCalculoDto.Recusada, metrica.Resultado);
-            Assert.Equal(MotivoDaRecusaDto.AmostraInsuficiente, metrica.Motivo);
-            Assert.Null(metrica.Valor);
-            Assert.Null(metrica.AmostraEmMinutos);
+            var atributo = Assert.Single(dto.Atributos);
+            Assert.Equal(ResultadoDoCalculoDto.Recusada, atributo.Resultado);
+            Assert.Equal(MotivoDaRecusaDto.AmostraInsuficiente, atributo.Motivo);
+            Assert.Null(atributo.Valor);
+            Assert.Null(atributo.AmostraEmMinutos);
+        }
+
+        [Fact]
+        public void A_recusa_por_ausencia_na_fonte_atravessa_o_contrato()
+        {
+            // Arrange
+            var result = Resultado(
+                new AtributoRecusado(MotivoDaRecusa.FonteNaoAtribuiu),
+                TipoDeAtributo.Rating);
+
+            // Act
+            var dto = result.ParaResponse();
+
+            // Assert
+            var atributo = Assert.Single(dto.Atributos);
+            Assert.Equal(MotivoDaRecusaDto.FonteNaoAtribuiu, atributo.Motivo);
+            Assert.Equal(TipoDeAtributoDto.Rating, atributo.Tipo);
+        }
+
+        [Fact]
+        public void Acumulavel_e_derivado_saem_na_mesma_colecao_do_contrato()
+        {
+            // Arrange
+            var result = new ConsultarMetricasPor90Result(
+                JogadorId: 13812,
+                Recorte: Brasileirao2024,
+                Atributos:
+                [
+                    new AtributoDoJogador(
+                        TipoDeAtributo.Gols,
+                        new AtributoCalculado(0.45m, new Minutagem(2400, Brasileirao2024))),
+                    new AtributoDoJogador(
+                        TipoDeAtributo.Rating,
+                        new AtributoCalculado(7.42m, new Minutagem(2400, Brasileirao2024)))
+                ]);
+
+            // Act
+            var dto = result.ParaResponse();
+
+            // Assert
+            Assert.Equal(
+                new[] { TipoDeAtributoDto.Gols, TipoDeAtributoDto.Rating },
+                dto.Atributos.Select(atributo => atributo.Tipo));
         }
 
         [Fact]
         public void O_recorte_da_consulta_atravessa_o_contrato()
         {
             // Arrange
-            var result = Resultado(new CalculoRecusado(MotivoDaRecusa.AmostraInsuficiente));
+            var result = Resultado(new AtributoRecusado(MotivoDaRecusa.AmostraInsuficiente));
 
             // Act
             var dto = result.ParaResponse();
@@ -58,11 +101,12 @@ namespace APIFootballScout.Tests.Contracts
             Assert.Equal(new RecorteDto(325, 63814, ContextoDeRecorteDto.Clube), dto.Recorte);
         }
 
-        private static ConsultarMetricasPor90Result Resultado(MetricaPor90 metrica)
+        private static ConsultarMetricasPor90Result Resultado(
+            ResultadoDeAtributo resultado,
+            TipoDeAtributo tipo = TipoDeAtributo.Gols)
             => new(
                 JogadorId: 13812,
                 Recorte: Brasileirao2024,
-                Metricas: [new MetricaDoJogador(TipoDeEstatistica.Gols, metrica)],
-                Derivados: [new ValorDerivado(TipoDeValorDerivado.Rating, 7.42m)]);
+                Atributos: [new AtributoDoJogador(tipo, resultado)]);
     }
 }

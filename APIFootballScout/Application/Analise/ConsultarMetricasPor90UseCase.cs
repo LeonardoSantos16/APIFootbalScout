@@ -28,17 +28,20 @@ namespace APIFootballScout.Application.Analise
                     "jogador.estatisticas_nao_encontradas",
                     "estatisticas do jogador nao encontradas para esse recorte");
 
-            var metricas = conjunto.Acumulaveis
-                .Select(estatistica => new MetricaDoJogador(
+            var normalizados = conjunto.Acumulaveis
+                .Select(estatistica => new AtributoDoJogador(
                     estatistica.Tipo,
-                    estatistica.PorNoventaMinutos(_amostraSuficiente)))
-                .ToList();
+                    estatistica.PorNoventaMinutos(_amostraSuficiente)));
+
+            var informados = conjunto.Derivados
+                .Select(derivado => new AtributoDoJogador(derivado.Tipo, derivado.Resultado()));
+
+            var atributos = normalizados.Concat(informados).ToList();
 
             return new ConsultarMetricasPor90Result(
                 JogadorId: request.JogadorId,
                 Recorte: conjunto.Recorte,
-                Metricas: metricas,
-                Derivados: conjunto.Derivados);
+                Atributos: atributos);
         }
     }
 }

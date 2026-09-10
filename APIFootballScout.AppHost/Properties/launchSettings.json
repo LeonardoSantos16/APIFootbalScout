@@ -2,7 +2,6 @@
   "profiles": {
     "https": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Users\\leods\\Documents\\Desenvolvimento\\dotnet\\APIFootballScout\\APIFootballScout.AppHost",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

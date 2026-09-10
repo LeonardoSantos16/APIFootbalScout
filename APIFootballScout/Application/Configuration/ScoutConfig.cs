@@ -1,4 +1,6 @@
-﻿namespace APIFootballScout.Application.Configuration
+﻿using APIFootballScout.Domain.CatalogoDeJogador;
+
+namespace APIFootballScout.Application.Configuration
 {
     public sealed class ScoutConfig
     {
@@ -12,5 +14,6 @@
         public int MinimoDeCaracteresDaObservacao { get; init; }
         public int LimiteDeAlvosDaShortlist { get; init; }
         public int AmostraMinimaDeMinutos { get; init; }
+        public Dictionary<Posicao, Posicao[]> PosicoesCompativeis { get; init; } = new();
     }
 }

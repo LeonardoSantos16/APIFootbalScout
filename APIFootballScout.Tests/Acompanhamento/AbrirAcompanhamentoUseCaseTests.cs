@@ -1,5 +1,6 @@
 using APIFootballScout.Domain.Acompanhamento.Aggregate;
 using APIFootballScout.Domain.Base.Exceptions;
+using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Tests.Acompanhamento
 {
@@ -68,13 +69,12 @@ namespace APIFootballScout.Tests.Acompanhamento
         }
 
         [Theory]
-        [InlineData("", "F", "Santos")]
-        [InlineData("   ", "F", "Santos")]
+        [InlineData("", Posicao.Ataque, "Santos")]
+        [InlineData("   ", Posicao.Ataque, "Santos")]
         [InlineData("Neymar", null, "Santos")]
-        [InlineData("Neymar", "   ", "Santos")]
-        [InlineData("Neymar", "F", null)]
-        [InlineData("Neymar", "F", "   ")]
-        public async Task Perfil_sem_informacoes_minimas_recusa_abertura(string nome, string? posicao, string? clube)
+        [InlineData("Neymar", Posicao.Ataque, null)]
+        [InlineData("Neymar", Posicao.Ataque, "   ")]
+        public async Task Perfil_sem_informacoes_minimas_recusa_abertura(string nome, Posicao? posicao, string? clube)
         {
             // Arrange
             var ctx = new AcompanhamentoTestContext();

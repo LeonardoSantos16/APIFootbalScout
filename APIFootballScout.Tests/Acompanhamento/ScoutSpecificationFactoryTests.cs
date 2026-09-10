@@ -42,5 +42,37 @@ namespace APIFootballScout.Tests.Acompanhamento
             Assert.False(especificacao.IsSatisfiedBy(
                 new MudancaDeMinutagem(Anterior: Minutos(400), Atual: Minutos(420))));
         }
+
+        [Fact]
+        public void O_mapa_de_posicoes_compativeis_vem_da_politica()
+        {
+            // Arrange
+            var config = new ScoutConfig
+            {
+                PosicoesCompativeis = new Dictionary<Posicao, Posicao[]>
+                {
+                    [Posicao.Ataque] = [Posicao.MeioCampo]
+                }
+            };
+
+            // Act
+            var compativeis = new ScoutSpecificationFactory(Options.Create(config)).PosicoesCompativeis();
+
+            // Assert
+            Assert.True(compativeis.IsSatisfiedBy((Posicao.Ataque, Posicao.MeioCampo)));
+            Assert.True(compativeis.IsSatisfiedBy((Posicao.MeioCampo, Posicao.Ataque)));
+            Assert.False(compativeis.IsSatisfiedBy((Posicao.Goleiro, Posicao.Ataque)));
+        }
+
+        [Fact]
+        public void Sem_mapa_declarado_so_a_posicao_igual_e_compativel()
+        {
+            // Act
+            var compativeis = new ScoutSpecificationFactory(Options.Create(new ScoutConfig())).PosicoesCompativeis();
+
+            // Assert
+            Assert.True(compativeis.IsSatisfiedBy((Posicao.Ataque, Posicao.Ataque)));
+            Assert.False(compativeis.IsSatisfiedBy((Posicao.Ataque, Posicao.MeioCampo)));
+        }
     }
 }
