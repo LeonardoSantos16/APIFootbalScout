@@ -112,13 +112,16 @@ Regras que se decompõem recebem mais de uma categoria.
 **Notas**
 
 - R9.1 — o predicado responde se a amostra sustenta o cálculo; o valor do mínimo é política.
-- R9.3 — o retorno admite dois resultados distintos, e a recusa é um deles. Cumprida pelo tipo, mesma forma de R2.6.
-- R9.4 — percentuais e médias, como precisão de passe e rating, não admitem normalização por 90 minutos, ainda que sejam entregues pela fonte externa na mesma estrutura das estatísticas acumuláveis. Separando contagem e valor derivado em tipos distintos, a operação passa a existir apenas no primeiro. A distinção entre os campos do DTO é decisão de mapeamento, na camada de tradução.
+- R9.3 — o retorno admite dois resultados distintos, e a recusa é um deles. Cumprida pelo tipo, mesma forma de R2.6. A regra vale também contra a fonte externa: ela expressa a própria recusa omitindo o campo, e um DTO de tipo não anulável converteria a omissão em zero, exatamente o valor que a regra proíbe. Preservar a ausência na tradução é condição para a regra valer de ponta a ponta, e a omissão da fonte é motivo de recusa distinto da amostra insuficiente.
+- R9.4 — percentuais e médias, como precisão de passe e rating, não admitem normalização por 90 minutos, ainda que sejam entregues pela fonte externa na mesma estrutura das estatísticas acumuláveis. Separando contagem e valor derivado em tipos distintos, a operação passa a existir apenas no primeiro. A distinção entre os campos do DTO é decisão de mapeamento, na camada de tradução. A distinção vale para a operação, não para o seu resultado: contagem normalizada e valor derivado informado compartilham um único tipo de resultado de atributo, o que mantém um só regime de recusa no que a F10 consome.
+- R9.5 — a amostra é declarada também pelo valor derivado, onde não participa de cálculo algum: ali ela é o contexto de minutos sobre o qual a fonte atribuiu o valor. Mesmo campo, dois significados — divisor no acumulável, contexto declarado no derivado.
 - R9.6 — o recorte é definido por competição, temporada e contexto de clube ou seleção. A fonte externa expõe recortes distintos em endpoints e parâmetros distintos, sem identificação no retorno. Incorporando o recorte à identidade do conjunto de estatísticas, a combinação incorreta deixa de ser exprimível.
 
 ## F10 — Comparação direta
 
 A operação de comparação é, em si, um domain service: atravessa dois jogadores e não pertence a nenhum deles.
+
+Suas recusas são resultados tipados, na mesma forma de R9.3: perguntar se dois jogadores são comparáveis é pergunta legítima, e "não são" é a resposta dela, não um erro. A única exceção é R10.2.
 
 | ID | Regra | Classificação |
 | --- | --- | --- |
@@ -131,11 +134,13 @@ A operação de comparação é, em si, um domain service: atravessa dois jogado
 
 **Notas**
 
-- R10.1 — o critério é specification; o mapa de quais posições são compatíveis entre si é definido pelo negócio e configurável, portanto política.
+- R10.1 — o critério é specification; o mapa de quais posições são compatíveis entre si é definido pelo negócio e configurável, portanto política. O mapa é fechado simetricamente na construção da specification: declarar que uma posição é compatível com outra basta, e a direção inversa não pode ser esquecida na configuração — sem isso, R10.7 cairia por configuração, e não por código. Enquanto a fonte externa entregar apenas macroposições, o conteúdo do mapa é próximo da identidade; a pobreza é da fonte, não do modelo. Posição ausente ou não reconhecida não é compatível com nada, e recusa a comparação.
 - R10.2 — diferente de R10.1, é guarda de caso degenerado, sem conteúdo de negócio e sem reaproveitamento. Fica como guarda de construção da comparação.
-- R10.3 — regra sobre o comportamento do domain service de comparação: a recusa de R9.3 se propaga e é declarada no resultado.
-- R10.4 — o critério é specification; o número mínimo de atributos é política.
-- R10.7 — propriedade do algoritmo, garantida pelo desenho da operação e verificável por teste, não por guarda em tempo de execução.
+- R10.3 — regra sobre o comportamento do domain service de comparação: a recusa de R9.3 se propaga e é declarada no resultado. A exclusão se dá pela recusa viajando dentro do par, indexada pelo jogador a quem pertence, e não pela remoção do atributo da comparação: o resultado de cada atributo já admite ser uma recusa, e é ali que ela fica declarada. Por isso o resultado não carrega coleção de exclusões — ela duplicaria, num campo paralelo, o que o par já diz.
+- R10.3 — as duas origens de recusa têm alcances distintos, e só a segunda produz exclusão parcial. A amostra insuficiente de R9.1 é única por invariante do conjunto de estatísticas, então alcança o lado inteiro e a recusa é da comparação toda, por R10.4. A omissão da fonte de R9.3 é por atributo: um valor derivado que a fonte atribuiu a um jogador e não ao outro fica declarado como recusa no par daquele atributo, sem derrubar a comparação.
+- R10.4 — o critério é specification; o número mínimo de atributos é política. A insuficiência não é contada atributo por atributo: como a amostra é única no conjunto, um lado sem amostra não tem atributo comparável nenhum, e é isso que recusa a comparação inteira. A recusa por omissão da fonte, que é por atributo, não entra nessa contagem — ela é declarada no par e a comparação segue. Sem um caso em que sobrem atributos comparáveis em número intermediário, um mínimo não discriminaria nada, e não é parametrizado.
+- R10.5 — a comparação recebe um recorte único, e não um por jogador, o que torna a divergência inexprimível na entrada. O carimbo da tradução (R9.6) copia o recorte pedido, então confrontar o conjunto com o pedido seria tautológico: a verificação compara os dois conjuntos entre si. Com uma fonte só e um recorte só na entrada, ela não tem como falhar hoje, e existe para o dia em que houver um segundo provedor ou uma leitura por lado — a regra permanece porque é ela que torna esse dia exprimível como recusa, e não como comparação silenciosamente errada.
+- R10.7 — propriedade do algoritmo, garantida pelo desenho da operação e verificável por teste, não por guarda em tempo de execução. Os desenhos que garantem são dois: o resultado indexa os valores pela identidade do jogador, sem lado esquerdo nem direito, e a relação de compatibilidade de R10.1 é simétrica por construção. Nenhum dos dois tem onde guardar a ordem dos argumentos, e o contrato de saída preserva isso expondo os valores como mapa, não como sequência.
 
 ---
 

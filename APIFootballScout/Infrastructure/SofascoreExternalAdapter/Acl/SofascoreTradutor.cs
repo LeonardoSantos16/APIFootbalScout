@@ -23,7 +23,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             return new PerfilDoJogador(
                 JogadorId: sofaPlayer.Player.Id,
                 Nome: sofaPlayer.Player.Name,
-                Posicao: sofaPlayer.Player.Position,
+                Posicao: TraduzirPosicao(sofaPlayer.Player.Position),
                 Clube: sofaPlayer.Player.Team?.Name,
                 ValorDeMercado: new Dinheiro(sofaPlayer.Player.ProposedMarketValue, MoedaEsperada),
                 MinutosJogados: statsPlayer.Statistics.MinutesPlayed,
@@ -31,6 +31,15 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 LidoEm: lidoEm
             );
         }
+
+        private static Posicao? TraduzirPosicao(string? posicao) => posicao switch
+        {
+            "G" => Posicao.Goleiro,
+            "D" => Posicao.Defesa,
+            "M" => Posicao.MeioCampo,
+            "F" => Posicao.Ataque,
+            _ => null
+        };
 
         /// <summary>
         /// R9.4 — a fonte entrega contagem e valor derivado na mesma estrutura.
@@ -47,16 +56,16 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
                 recorte: recorte,
                 acumulaveis:
                 [
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Gols, estatisticas.Goals, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Assistencias, estatisticas.Assists, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.PassesDecisivos, estatisticas.KeyPasses, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Desarmes, estatisticas.Tackles, minutagem),
-                    new EstatisticaAcumulavel(TipoDeEstatistica.Interceptacoes, estatisticas.Interceptions, minutagem)
+                    new EstatisticaAcumulavel(TipoDeAtributo.Gols, estatisticas.Goals, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Assistencias, estatisticas.Assists, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.PassesDecisivos, estatisticas.KeyPasses, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Desarmes, estatisticas.Tackles, minutagem),
+                    new EstatisticaAcumulavel(TipoDeAtributo.Interceptacoes, estatisticas.Interceptions, minutagem)
                 ],
                 derivados:
                 [
-                    new ValorDerivado(TipoDeValorDerivado.Rating, (decimal)estatisticas.Rating),
-                    new ValorDerivado(TipoDeValorDerivado.PrecisaoDePasse, (decimal)estatisticas.AccuratePassesPercentage)
+                    new ValorDerivado(TipoDeAtributo.Rating, (decimal?)estatisticas.Rating, minutagem),
+                    new ValorDerivado(TipoDeAtributo.PrecisaoDePasse, (decimal?)estatisticas.AccuratePassesPercentage, minutagem)
                 ]);
         }
     }

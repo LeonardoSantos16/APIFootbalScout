@@ -5,7 +5,7 @@ using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Tests.Analise
 {
-    public class MetricaCalculadaTests
+    public class AtributoCalculadoTests
     {
         private static readonly Recorte Brasileirao2024 = new(325, 63814, ContextoDeRecorte.Clube);
 
@@ -13,7 +13,7 @@ namespace APIFootballScout.Tests.Analise
         public void A_metrica_declara_o_tamanho_da_amostra_que_a_sustenta()
         {
             // Act
-            var metrica = new MetricaCalculada(0.45m, new Minutagem(2400, Brasileirao2024));
+            var metrica = new AtributoCalculado(0.45m, new Minutagem(2400, Brasileirao2024));
 
             // Assert
             Assert.Equal(2400, metrica.Amostra.Minutos);
@@ -26,10 +26,10 @@ namespace APIFootballScout.Tests.Analise
         {
             // Act
             var erro = Assert.Throws<ValorInvalidoException>(
-                () => new MetricaCalculada(0.45m, new Minutagem(minutos, Brasileirao2024)));
+                () => new AtributoCalculado(0.45m, new Minutagem(minutos, Brasileirao2024)));
 
             // Assert
-            Assert.Equal("metrica_por_90.amostra_nao_sustenta", erro.Codigo);
+            Assert.Equal("atributo.amostra_nao_sustenta", erro.Codigo);
         }
     }
 }
