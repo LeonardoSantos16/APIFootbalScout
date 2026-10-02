@@ -13,6 +13,7 @@ using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.External;
+using APIFootballScout.Infrastructure.OpenApi;
 using APIFootballScout.Infrastructure.Persistence.Repositories;
 using APIFootballScout.Infrastructure.Security;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
@@ -22,7 +23,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using MongoDB.Driver;
 using Refit;
 using System.Text;
@@ -40,7 +40,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.AddRedisClient("cache");
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+    options.AddOperationTransformer<AuthorizeOperationTransformer>();
+    options.AddSchemaTransformer<EnumSemNuloSchemaTransformer>();
+});
 
 builder.Services.AddSingleton<IValidateOptions<JwtOptions>, JwtOptionsValidator>();
 builder.Services.AddOptions<JwtOptions>()
@@ -143,24 +148,6 @@ builder.Services.AddScoped<IShortlistRepository, ShortlistRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoRepository, AcompanhamentoRepositoryMongo>();
 builder.Services.AddScoped<IAcompanhamentoService, AcompanhamentoService>();
 builder.Services.AddScoped<ICatalogoDeJogador, FonteDeDadosSofascore>();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Description = "Informe apenas o access token; o prefixo Bearer e adicionado automaticamente.",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT"
-    });
-
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-    {
-        [new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, document)] = []
-    });
-});
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -188,8 +175,7 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "APIFootballScout v1"));
 }
 
 app.UseHttpsRedirection();
