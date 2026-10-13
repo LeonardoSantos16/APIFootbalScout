@@ -54,7 +54,7 @@ namespace APIFootballScout.Tests.Acompanhamento
         {
             var dossie = _dossies.FindAll(d => d.OlheiroId == olheiroId && d.JogadorId == jogadorId && d.Status == StatusDossie.Ativo);
 
-            return Task.FromResult(dossie.Count > 0);           
+            return Task.FromResult(dossie.Count > 0);
         }
     }
 }

@@ -2,6 +2,7 @@ using APIFootballScout.Application.Configuration;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
+
 using Microsoft.Extensions.Options;
 
 namespace APIFootballScout.Application.ShortlistPersonalizada

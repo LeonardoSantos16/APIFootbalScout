@@ -49,7 +49,7 @@ namespace APIFootballScout.Tests.Shortlists
         [Fact]
         public void A_recusa_deixa_a_lista_intacta()
         {
-                        // Arrange
+            // Arrange
             var shortlist = NovaShortlist();
             shortlist.AdicionarAlvo(jogadorId: 1001, new Prioridade(1), Euros(5));
 
@@ -107,6 +107,6 @@ namespace APIFootballScout.Tests.Shortlists
 
             // Assert
             Assert.Equal("shortlist.jogador_ja_na_lista", erro.Codigo);
-        }     
+        }
     }
 }

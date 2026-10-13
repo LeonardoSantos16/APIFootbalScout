@@ -1,6 +1,8 @@
 using APIFootballScout.Domain;
 using APIFootballScout.Infrastructure.Persistence;
+
 using Microsoft.EntityFrameworkCore;
+
 using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace APIFootballScout.Infrastructure.Context

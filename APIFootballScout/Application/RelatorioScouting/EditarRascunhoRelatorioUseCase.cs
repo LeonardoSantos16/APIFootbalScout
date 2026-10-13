@@ -10,8 +10,8 @@ namespace APIFootballScout.Application.RelatorioScouting
         public async Task<RelatorioResult> EditarRascunho(
             EditarRascunhoRelatorioRequest request, CancellationToken cancellationToken)
         {
-           var relatorio = await relatorioRepository.ObterPorIdAsync(request.RelatorioId, request.OlheiroId ,cancellationToken)
-                ?? throw new RecursoNaoEncontradoException("relatorio.nao_encontrado", "O relatório não foi encontrado.");
+            var relatorio = await relatorioRepository.ObterPorIdAsync(request.RelatorioId, request.OlheiroId, cancellationToken)
+                 ?? throw new RecursoNaoEncontradoException("relatorio.nao_encontrado", "O relatório não foi encontrado.");
 
             AplicarEdicao(relatorio, request);
 

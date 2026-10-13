@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 using APIFootballScout.Application.RelatorioScouting;
 using APIFootballScout.Contracts.RelatorioScouting;
 using APIFootballScout.Domain.Base.Exceptions;

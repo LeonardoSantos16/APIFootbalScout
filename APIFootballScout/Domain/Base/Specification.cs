@@ -10,5 +10,5 @@
 
         public Specification<T> Not() => new NotSpecification<T>(this);
     }
-  
+
 }

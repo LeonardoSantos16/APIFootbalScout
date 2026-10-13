@@ -77,7 +77,7 @@ namespace APIFootballScout.Tests.Auth
             // Arrange
             var ctx = new AuthTestContext();
             var (usuario, primeira) = await ctx.SeedUsuarioAsync();
-            var segunda = await ctx.Issuer.EmitirAsync(usuario); 
+            var segunda = await ctx.Issuer.EmitirAsync(usuario);
 
             // Act
             await ctx.NovoSignOut().ExecuteTodasSessoes(usuario.Id);

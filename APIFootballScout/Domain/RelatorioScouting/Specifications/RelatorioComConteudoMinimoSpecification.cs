@@ -10,6 +10,6 @@ namespace APIFootballScout.Domain.RelatorioScouting.Specifications
             conteudo.PontosPositivos.Count >= minimoDePros &&
             conteudo.PontosNegativos.Count >= minimoDeContras &&
             conteudo.PontosPositivos.Sum(p => p.Length) + conteudo.PontosNegativos.Sum(c => c.Length) >= minimoDeCaracteres;
-        
+
     }
 }

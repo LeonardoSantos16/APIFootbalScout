@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text;
+﻿using System.Text;
+
+using Microsoft.Extensions.Options;
 
 namespace APIFootballScout.Infrastructure.Security
 {

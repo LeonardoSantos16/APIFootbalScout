@@ -1,19 +1,23 @@
-﻿using APIFootballScout.Application;
+﻿using System.Text.Json;
+
+using APIFootballScout.Application;
 using APIFootballScout.Domain;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+
 using MongoDB.Driver;
+
 using Refit;
-using System.Text.Json;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
     public class SofascorePlayerReader
-        (ISofascoreClient sofascoreClient, AppDbContext context, IDistributedCache cache,  ScoutSpecificationFactory specsScout) : ISofascorePlayerReader
+        (ISofascoreClient sofascoreClient, AppDbContext context, IDistributedCache cache, ScoutSpecificationFactory specsScout) : ISofascorePlayerReader
     {
 
         public async Task<SofaSearchResponse> SearchPlayersAsync(string name)
@@ -117,6 +121,6 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
                 "sofascore.historico_de_estatisticas_indisponivel",
                 $"No history stats found for playerId: {playerId}.") : result;
         }
-    
+
     }
 }

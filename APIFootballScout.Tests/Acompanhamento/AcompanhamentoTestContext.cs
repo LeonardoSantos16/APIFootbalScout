@@ -1,11 +1,12 @@
-using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application;
+using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.SharedKernel;
+
 using Microsoft.Extensions.Time.Testing;
 
 namespace APIFootballScout.Tests.Acompanhamento

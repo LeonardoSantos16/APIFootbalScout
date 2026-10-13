@@ -1,13 +1,15 @@
-﻿using APIFootballScout.Application;
+﻿using System.Text.Json;
+
+using APIFootballScout.Application;
 using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
+
 using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
-    public class SofascoreTournamentReader(ISofascoreClient sofascoreClient, IDistributedCache cache, 
+    public class SofascoreTournamentReader(ISofascoreClient sofascoreClient, IDistributedCache cache,
         ScoutSpecificationFactory specsScout) : ISofascoreTournamentReader
     {
         public async Task<SofaTournamentDetailResponse?> GetDetailsAsync(int tournamentId)

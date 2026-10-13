@@ -1,5 +1,5 @@
-﻿using APIFootballScout.Domain.Base;
-using APIFootballScout.Domain.Acompanhamento.ValueObject;
+﻿using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.Base;
 using APIFootballScout.Domain.Base.Exceptions;
 
 namespace APIFootballScout.Domain.Acompanhamento.Aggregate

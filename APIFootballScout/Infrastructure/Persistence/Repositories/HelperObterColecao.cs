@@ -1,4 +1,5 @@
 ﻿using APIFootballScout.Infrastructure.Persistence.Documents;
+
 using MongoDB.Driver;
 
 namespace APIFootballScout.Infrastructure.Persistence.Repositories

@@ -1,5 +1,6 @@
-﻿using APIFootballScout.Infrastructure.Security;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+
+using APIFootballScout.Infrastructure.Security;
 
 namespace APIFootballScout.Tests
 {
@@ -20,9 +21,9 @@ namespace APIFootballScout.Tests
             var agora = time.GetUtcNow().UtcDateTime;
 
             var resultado = new TokenResult(
-                $"at-{_cont + 1}",              
+                $"at-{_cont + 1}",
                 agora.AddMinutes(AccessTokenMinutes),
-                GenerateRefreshToken(),   
+                GenerateRefreshToken(),
                 agora.AddDays(RefreshTokenDays));
 
             LastSubject = usuario;

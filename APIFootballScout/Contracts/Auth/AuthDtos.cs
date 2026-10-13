@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 using APIFootballScout.Application.User;
 
 namespace APIFootballScout.Contracts.Auth

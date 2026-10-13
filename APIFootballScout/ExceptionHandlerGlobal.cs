@@ -1,5 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Infrastructure.External;
+
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 

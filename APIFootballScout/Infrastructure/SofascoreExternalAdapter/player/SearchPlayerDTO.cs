@@ -34,4 +34,3 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
         [property: JsonPropertyName("alpha2")] string Alpha2
     );
 }
-

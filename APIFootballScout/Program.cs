@@ -1,3 +1,6 @@
+using System.Text;
+using System.Text.Json.Serialization;
+
 using APIFootballScout;
 using APIFootballScout.Application;
 using APIFootballScout.Application.Acompanhamento;
@@ -18,15 +21,16 @@ using APIFootballScout.Infrastructure.Persistence.Repositories;
 using APIFootballScout.Infrastructure.Security;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+
 using MongoDB.Driver;
+
 using Refit;
-using System.Text;
-using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);

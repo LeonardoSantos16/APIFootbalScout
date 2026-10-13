@@ -1,4 +1,5 @@
 using APIFootballScout.Infrastructure.Security;
+
 using Microsoft.Extensions.Configuration;
 
 namespace APIFootballScout.Tests.Security

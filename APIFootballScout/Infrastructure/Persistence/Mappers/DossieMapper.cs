@@ -1,6 +1,6 @@
-﻿using APIFootballScout.Domain.CatalogoDeJogador;
-using APIFootballScout.Domain.Acompanhamento.Aggregate;
+﻿using APIFootballScout.Domain.Acompanhamento.Aggregate;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
+using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 
@@ -10,19 +10,19 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
     {
         public static Dossie MapToDomain(DossieDocument document)
         {
-          var linhaDeBase = new LinhaDeBase(
-                document.LinhaDeBase.MedidaEm,
-                document.LinhaDeBase.Clube,
-                new Dinheiro(document.LinhaDeBase.ValorEmCentavos, document.LinhaDeBase.Moeda),
-                new Minutagem(
-                    document.LinhaDeBase.Minutos,
-                    new Recorte(
-                        document.LinhaDeBase.CompeticaoId,
-                        document.LinhaDeBase.TemporadaId,
-                        (ContextoDeRecorte)document.LinhaDeBase.Contexto
-                    )
-                )
-            );
+            var linhaDeBase = new LinhaDeBase(
+                  document.LinhaDeBase.MedidaEm,
+                  document.LinhaDeBase.Clube,
+                  new Dinheiro(document.LinhaDeBase.ValorEmCentavos, document.LinhaDeBase.Moeda),
+                  new Minutagem(
+                      document.LinhaDeBase.Minutos,
+                      new Recorte(
+                          document.LinhaDeBase.CompeticaoId,
+                          document.LinhaDeBase.TemporadaId,
+                          (ContextoDeRecorte)document.LinhaDeBase.Contexto
+                      )
+                  )
+              );
             return Dossie.Restaurar(
                 document.Id,
                 document.JogadorId,
@@ -37,7 +37,8 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
         public static List<Dossie> MapToListDomain(List<DossieDocument> documents)
         {
             var list = new List<Dossie>();
-            foreach (DossieDocument document in documents) {
+            foreach (DossieDocument document in documents)
+            {
                 list.Add(MapToDomain(document));
             }
 

@@ -1,5 +1,6 @@
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ namespace APIFootballScout.Controllers
         }
 
         [HttpGet("{id:int}/profile")]
-        public async Task<ActionResult<PlayerFullProfileDto>> GetProfile (int id)
+        public async Task<ActionResult<PlayerFullProfileDto>> GetProfile(int id)
         {
             var profile = await sofascorePlayerReader.GetPlayerProfileAsync(id);
             Console.WriteLine($"profileprofile");

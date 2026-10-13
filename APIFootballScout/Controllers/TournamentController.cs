@@ -1,5 +1,6 @@
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,7 @@
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Contracts.Acompanhamento;
 using APIFootballScout.Infrastructure.Security;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

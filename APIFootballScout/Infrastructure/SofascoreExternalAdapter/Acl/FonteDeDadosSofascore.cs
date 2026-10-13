@@ -1,4 +1,5 @@
 using System.Net;
+
 using APIFootballScout.Domain.Analise.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Infrastructure.External;

@@ -1,6 +1,6 @@
 using APIFootballScout.Application.Acompanhamento;
-using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Base.Exceptions;
+using APIFootballScout.Domain.CatalogoDeJogador;
 
 namespace APIFootballScout.Contracts.Acompanhamento
 {
