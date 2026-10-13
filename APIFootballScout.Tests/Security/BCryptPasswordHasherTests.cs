@@ -6,7 +6,7 @@ namespace APIFootballScout.Tests.Security
 {
     public class BCryptPasswordHasherTests
     {
-        private static IPasswordHasher ComPepper(string pepper) =>
+        private static BCryptPasswordHasher ComPepper(string pepper) =>
             new BCryptPasswordHasher(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Password:Pepper"] = pepper

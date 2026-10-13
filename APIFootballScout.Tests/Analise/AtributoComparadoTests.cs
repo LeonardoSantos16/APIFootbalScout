@@ -9,7 +9,7 @@ namespace APIFootballScout.Tests.Analise
     {
         private static readonly Recorte Brasileirao2024 = new(325, 63814, ContextoDeRecorte.Clube);
 
-        private static ResultadoDeAtributo Valor(decimal valor)
+        private static AtributoCalculado Valor(decimal valor)
             => new AtributoCalculado(valor, new Minutagem(2400, Brasileirao2024));
 
         [Fact]

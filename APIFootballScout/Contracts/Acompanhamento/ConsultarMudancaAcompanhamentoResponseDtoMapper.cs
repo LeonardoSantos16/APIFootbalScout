@@ -66,9 +66,11 @@ namespace APIFootballScout.Contracts.Acompanhamento
                 $"Unknown unavailability reason: {motivo}.")
         };
 
-        private static Exception AfericaoInesperada(AfericaoDeMudanca afericao)
-            => new ValorInvalidoException(
-                "afericao.tipo_invalido",
-                $"Unexpected assessment for this change type: {afericao.GetType().Name}.");
+        private static ValorInvalidoException AfericaoInesperada(AfericaoDeMudanca afericao)
+        {
+            return new ValorInvalidoException(
+                        "afericao.tipo_invalido",
+                        $"Unexpected assessment for this change type: {afericao.GetType().Name}.");
+        }
     }
 }

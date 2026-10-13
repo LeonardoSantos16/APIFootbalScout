@@ -18,11 +18,11 @@ namespace APIFootballScout.Infrastructure.Context
 
 
 
-        protected override void OnModelCreating(ModelBuilder mb)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(mb);
+            base.OnModelCreating(modelBuilder);
 
-            mb.Entity<Player>().ToCollection("players");
+            modelBuilder.Entity<Player>().ToCollection("players");
         }
     }
 }

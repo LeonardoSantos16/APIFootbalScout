@@ -35,7 +35,7 @@ namespace APIFootballScout.Tests.Acompanhamento
         public ConsultarMudancaAcompanhamentoUseCase ConsultarMudanca()
             => new(Dossies, Catalogo, Aferidor());
 
-        public AferidorDeMudanca Aferidor()
+        public static AferidorDeMudanca Aferidor()
         {
             var config = new ScoutConfig
             {

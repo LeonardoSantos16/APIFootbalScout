@@ -3,7 +3,7 @@ using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Tests.Acompanhamento
 {
-    internal class InMemoryAcompanhamentoRepository : IAcompanhamentoRepository
+    internal sealed class InMemoryAcompanhamentoRepository : IAcompanhamentoRepository
     {
         private readonly List<Dossie> _dossies = [];
         public IReadOnlyList<Dossie> Todos => _dossies;

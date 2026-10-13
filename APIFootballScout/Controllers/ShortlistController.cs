@@ -16,9 +16,9 @@ namespace APIFootballScout.Controllers
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-    public class ShortlistController(AdicionarAlvoUseCase _adicionarAlvoUsecase, CriarShortlistUseCase _criarShortlistUseCase,
-        ListarShortlistsDoOlheiroUseCase _listarShortlistDoOlheiroUseCase, ObterShortlistUseCase _obterShortlistUseCase,
-        RemoverAlvoUseCase _removerAlvoUseCase, RepriorizarAlvoUseCase _repriorizarAlvoUseCase) : ControllerBase
+    public class ShortlistController(AdicionarAlvoUseCase adicionarAlvoUseCase, CriarShortlistUseCase criarShortlistUseCase,
+        ListarShortlistsDoOlheiroUseCase listarShortlistDoOlheiroUseCase, ObterShortlistUseCase obterShortlistUseCase,
+        RemoverAlvoUseCase removerAlvoUseCase, RepriorizarAlvoUseCase repriorizarAlvoUseCase) : ControllerBase
     {
         private Guid OlheiroId => User.ObterUserId();
 
@@ -27,7 +27,7 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<ShortlistResponseDto>> Criar(
             [FromBody] CriarShortlistRequestDto dto, CancellationToken cancellationToken)
         {
-            var shortlistCriada = await _criarShortlistUseCase.CriarShortlist(
+            var shortlistCriada = await criarShortlistUseCase.CriarShortlist(
                 dto.ParaRequest(OlheiroId), cancellationToken);
 
             return CreatedAtAction(
@@ -41,7 +41,7 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<ShortlistResponseDto>> Obter(
             [FromRoute] Guid shortlistId, CancellationToken cancellationToken)
         {
-            var shortlist = await _obterShortlistUseCase.ObterShortlist(
+            var shortlist = await obterShortlistUseCase.ObterShortlist(
                 ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId), cancellationToken);
 
             return Ok(shortlist.ParaResponse());
@@ -52,7 +52,7 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<IReadOnlyList<ShortlistResponseDto>>> Listar(
             CancellationToken cancellationToken)
         {
-            var shortlists = await _listarShortlistDoOlheiroUseCase.ListarShortlists(
+            var shortlists = await listarShortlistDoOlheiroUseCase.ListarShortlists(
                 ShortlistDtoMappers.ParaRequest(OlheiroId), cancellationToken);
 
             return Ok(shortlists.ParaResponse());
@@ -65,7 +65,7 @@ namespace APIFootballScout.Controllers
             [FromBody] AdicionarAlvoRequestDto dto,
             CancellationToken cancellationToken)
         {
-            var shortlist = await _adicionarAlvoUsecase.AdicionarAlvo(
+            var shortlist = await adicionarAlvoUseCase.AdicionarAlvo(
                 dto.ParaRequest(OlheiroId, shortlistId), cancellationToken);
 
             return CreatedAtAction(
@@ -82,7 +82,7 @@ namespace APIFootballScout.Controllers
             [FromBody] RepriorizarAlvoRequestDto dto,
             CancellationToken cancellationToken)
         {
-            var shortlist = await _repriorizarAlvoUseCase.RepriorizarAlvo(
+            var shortlist = await repriorizarAlvoUseCase.RepriorizarAlvo(
                 dto.ParaRequest(OlheiroId, shortlistId, jogadorId), cancellationToken);
 
             return Ok(shortlist.ParaResponse());
@@ -95,7 +95,7 @@ namespace APIFootballScout.Controllers
             [FromRoute] int jogadorId,
             CancellationToken cancellationToken)
         {
-            var shortlist = await _removerAlvoUseCase.RemoverAlvo(
+            var shortlist = await removerAlvoUseCase.RemoverAlvo(
                 ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId, jogadorId), cancellationToken);
 
             return Ok(shortlist.ParaResponse());
