@@ -1,7 +1,7 @@
 name: build and test
 
 on:
-  push: 
+  push:
     branches: [ master, develop ]
   pull_request:
     branches: [ master, develop ]
@@ -26,9 +26,25 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore
-      
+
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    
+
     - name: Test
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./TestResults
+
+    - name: Coverage report
+      uses: danielpalme/ReportGenerator-GitHub-Action@v5
+      with:
+        reports: TestResults/**/coverage.cobertura.xml
+        targetdir: coveragereport
+        reporttypes: Html;MarkdownSummaryGithub
+
+    - name: Coverage summary
+      run: cat coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v7
+      with:
+        name: coverage-report
+        path: coveragereport
