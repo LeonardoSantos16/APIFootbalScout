@@ -48,3 +48,23 @@ jobs:
       with:
         name: coverage-report
         path: coveragereport
+
+  docker-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
+    - name: Build image
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        file: APIFootballScout/Dockerfile
+        push: false
+        tags: apifootballscout:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
