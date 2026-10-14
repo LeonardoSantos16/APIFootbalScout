@@ -15,7 +15,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
         public async Task<ShortlistResult> ObterShortlist(
             ObterShortlistRequest request, CancellationToken cancellationToken)
         {
-            var shortlist = await _shortlistRepository.ObterPorIdAsync(request.ShortlistId, request.OlheiroId ,cancellationToken) ?? throw new RecursoNaoEncontradoException("shortlist.nao_encontrada", "shortlist nao encontrada");
+            var shortlist = await _shortlistRepository.ObterPorIdAsync(request.ShortlistId, request.OlheiroId, cancellationToken) ?? throw new RecursoNaoEncontradoException("shortlist.nao_encontrada", "shortlist nao encontrada");
             return shortlist.ParaResult();
         }
     }

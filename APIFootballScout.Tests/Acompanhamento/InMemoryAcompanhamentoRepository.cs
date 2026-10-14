@@ -3,7 +3,7 @@ using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Tests.Acompanhamento
 {
-    internal class InMemoryAcompanhamentoRepository : IAcompanhamentoRepository
+    internal sealed class InMemoryAcompanhamentoRepository : IAcompanhamentoRepository
     {
         private readonly List<Dossie> _dossies = [];
         public IReadOnlyList<Dossie> Todos => _dossies;
@@ -54,7 +54,7 @@ namespace APIFootballScout.Tests.Acompanhamento
         {
             var dossie = _dossies.FindAll(d => d.OlheiroId == olheiroId && d.JogadorId == jogadorId && d.Status == StatusDossie.Ativo);
 
-            return Task.FromResult(dossie.Count > 0);           
+            return Task.FromResult(dossie.Count > 0);
         }
     }
 }

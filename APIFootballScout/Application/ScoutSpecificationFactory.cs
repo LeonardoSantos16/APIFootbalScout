@@ -1,10 +1,11 @@
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
+using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.Analise.Specifications;
 using APIFootballScout.Domain.Analise.ValueObject;
-using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.RelatorioScouting.Specifications;
+
 using Microsoft.Extensions.Options;
 
 namespace APIFootballScout.Application

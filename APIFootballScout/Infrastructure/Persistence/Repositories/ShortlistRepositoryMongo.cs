@@ -2,6 +2,7 @@
 using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 using APIFootballScout.Infrastructure.Persistence.Mappers;
+
 using MongoDB.Driver;
 
 namespace APIFootballScout.Infrastructure.Persistence.Repositories
@@ -21,7 +22,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
         public async Task AtualizarAsync(Shortlist shortlist, CancellationToken cancellationToken = default)
         {
             var filter = Builders<ShortlistDocument>.Filter.Eq(s => s.Id, shortlist.Id) & Builders<ShortlistDocument>.Filter.Eq(s => s.OlheiroId, shortlist.OlheiroId);
-            await _colecaoShortlist.ReplaceOneAsync(filter, shortlist.MapToEntity(), new ReplaceOptions { IsUpsert= false}, cancellationToken);
+            await _colecaoShortlist.ReplaceOneAsync(filter, shortlist.MapToEntity(), new ReplaceOptions { IsUpsert = false }, cancellationToken);
         }
 
         public async Task<IReadOnlyList<Shortlist>> ListarPorOlheiroAsync(Guid olheiroId, CancellationToken cancellationToken = default)

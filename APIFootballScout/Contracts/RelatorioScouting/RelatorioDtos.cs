@@ -1,6 +1,7 @@
-using APIFootballScout.Application.RelatorioScouting;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+
+using APIFootballScout.Application.RelatorioScouting;
 
 namespace APIFootballScout.Contracts.RelatorioScouting
 {

@@ -1,14 +1,10 @@
 name: build and test
 
 on:
-  push: 
+  push:
     branches: [ master, develop ]
   pull_request:
     branches: [ master, develop ]
-    paths:
-    - '**.cs'
-    - '**.csproj'
-    - '.github/workflows/**'
 
 env:
   DOTNET_VERSION: '10.0.302'
@@ -16,24 +12,61 @@ env:
 jobs:
   build-and-test:
 
-    name: build-and-test-${{matrix.os}}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Install dependencies
       run: dotnet restore
-      
+
+    - name: Check formatting
+      run: |
+        dotnet format whitespace --verify-no-changes
+        dotnet format style --verify-no-changes --no-restore
+
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    
+
     - name: Test
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./TestResults
+
+    - name: Coverage report
+      uses: danielpalme/ReportGenerator-GitHub-Action@v5
+      with:
+        reports: TestResults/**/coverage.cobertura.xml
+        targetdir: coveragereport
+        reporttypes: Html;MarkdownSummaryGithub
+
+    - name: Coverage summary
+      run: cat coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v7
+      with:
+        name: coverage-report
+        path: coveragereport
+
+  docker-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
+    - name: Build image
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        file: APIFootballScout/Dockerfile
+        push: false
+        tags: apifootballscout:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 using APIFootballScout.Application.ShortlistPersonalizada;
 using APIFootballScout.Contracts.Acompanhamento;
 using APIFootballScout.Contracts.ShortlistPersonalizada;

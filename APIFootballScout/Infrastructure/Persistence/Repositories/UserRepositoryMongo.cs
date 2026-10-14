@@ -1,5 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Infrastructure.Persistence.Documents;
+
 using MongoDB.Driver;
 
 namespace APIFootballScout.Infrastructure.Persistence.Repositories

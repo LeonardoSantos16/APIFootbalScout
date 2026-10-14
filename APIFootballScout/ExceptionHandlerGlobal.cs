@@ -1,5 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Infrastructure.External;
+
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +17,13 @@ namespace APIFootballScout
         {
             if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
             {
-                logger.LogInformation("Request cancelled by the client: {Path}", httpContext.Request.Path);
+                LogRequisicaoCancelada(logger, httpContext.Request.Path, null);
                 return true;
             }
 
             if (httpContext.Response.HasStarted)
             {
-                logger.LogError(exception, "Exception thrown after the response had started: {Path}", httpContext.Request.Path);
+                LogRespostaJaIniciada(logger, httpContext.Request.Path, exception);
                 return false;
             }
 
@@ -67,9 +68,25 @@ namespace APIFootballScout
         private void LogException(int status, Exception exception)
         {
             if (status >= StatusCodes.Status500InternalServerError)
-                logger.LogError(exception, "Unexpected error: {Message}", exception.Message);
+                LogErroInesperado(logger, exception.Message, exception);
             else
-                logger.LogWarning("Handled exception [{Status}]: {Message}", status, exception.Message);
+                LogExcecaoTratada(logger, status, exception.Message, null);
         }
+
+        private static readonly Action<ILogger, PathString, Exception?> LogRequisicaoCancelada =
+            LoggerMessage.Define<PathString>(LogLevel.Information, new EventId(1, nameof(LogRequisicaoCancelada)),
+                "Request cancelled by the client: {Path}");
+
+        private static readonly Action<ILogger, PathString, Exception?> LogRespostaJaIniciada =
+            LoggerMessage.Define<PathString>(LogLevel.Error, new EventId(2, nameof(LogRespostaJaIniciada)),
+                "Exception thrown after the response had started: {Path}");
+
+        private static readonly Action<ILogger, string, Exception?> LogErroInesperado =
+            LoggerMessage.Define<string>(LogLevel.Error, new EventId(3, nameof(LogErroInesperado)),
+                "Unexpected error: {Message}");
+
+        private static readonly Action<ILogger, int, string, Exception?> LogExcecaoTratada =
+            LoggerMessage.Define<int, string>(LogLevel.Warning, new EventId(4, nameof(LogExcecaoTratada)),
+                "Handled exception [{Status}]: {Message}");
     }
 }

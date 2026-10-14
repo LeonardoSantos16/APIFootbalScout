@@ -1,5 +1,7 @@
 using System.Security.Claims;
+
 using APIFootballScout.Domain.Base.Exceptions;
+
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace APIFootballScout.Infrastructure.Security

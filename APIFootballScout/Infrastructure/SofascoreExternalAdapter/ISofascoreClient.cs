@@ -1,10 +1,11 @@
 ﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
+
 using Refit;
 
 namespace APIFootballScout.Infrastructure.External
 {
-   public interface ISofascoreClient
+    public interface ISofascoreClient
     {
         [Get("/search")]
         Task<IApiResponse<SofaSearchResponse>> SofascoreSearchPlayerAsync([Query] string q, [Query] string? type = "player-team-persons", [Query] int? page = 0);

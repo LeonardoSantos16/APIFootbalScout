@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System.Text.Json;
+
+using Microsoft.Extensions.Caching.Distributed;
+
 using Refit;
-using System.Text.Json;
 
 namespace APIFootballScout.Infrastructure.Extensions
 {

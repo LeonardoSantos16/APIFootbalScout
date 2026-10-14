@@ -1,5 +1,6 @@
-﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament
 {

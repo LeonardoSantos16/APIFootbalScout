@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 using APIFootballScout.Contracts.Acompanhamento;
 
 namespace APIFootballScout.Contracts.Analise

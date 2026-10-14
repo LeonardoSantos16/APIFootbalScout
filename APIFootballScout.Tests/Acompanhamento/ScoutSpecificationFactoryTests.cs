@@ -4,6 +4,7 @@ using APIFootballScout.Domain.Acompanhamento.Specifications;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.SharedKernel;
+
 using Microsoft.Extensions.Options;
 
 namespace APIFootballScout.Tests.Acompanhamento

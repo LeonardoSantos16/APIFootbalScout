@@ -2,6 +2,7 @@
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 using APIFootballScout.Infrastructure.Persistence.Mappers;
+
 using MongoDB.Driver;
 
 namespace APIFootballScout.Infrastructure.Persistence.Repositories
@@ -25,7 +26,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
         {
             var relatorioDocument = RelatorioMapper.MapToEntity(relatorio);
             var filter = Builders<RelatorioDocument>.Filter.Eq(r => r.ID, relatorioDocument.ID);
-            await _colecaoRelatorio.ReplaceOneAsync(filter, relatorioDocument, new ReplaceOptions { IsUpsert = false}, cancellationToken);
+            await _colecaoRelatorio.ReplaceOneAsync(filter, relatorioDocument, new ReplaceOptions { IsUpsert = false }, cancellationToken);
         }
 
         public async Task<IReadOnlyList<Relatorio>> ListarPorJogadorAsync(int jogadorId, Guid olheiroId, CancellationToken cancellationToken = default)

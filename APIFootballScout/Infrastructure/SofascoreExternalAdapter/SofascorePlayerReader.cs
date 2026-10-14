@@ -1,19 +1,23 @@
-﻿using APIFootballScout.Application;
+﻿using System.Text.Json;
+
+using APIFootballScout.Application;
 using APIFootballScout.Domain;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+
 using MongoDB.Driver;
+
 using Refit;
-using System.Text.Json;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
     public class SofascorePlayerReader
-        (ISofascoreClient sofascoreClient, AppDbContext context, IDistributedCache cache,  ScoutSpecificationFactory specsScout) : ISofascorePlayerReader
+        (ISofascoreClient sofascoreClient, AppDbContext context, IDistributedCache cache, ScoutSpecificationFactory specsScout) : ISofascorePlayerReader
     {
 
         public async Task<SofaSearchResponse> SearchPlayersAsync(string name)
@@ -26,7 +30,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
         public async Task<PlayerFullProfileDto> GetPlayerProfileAsync(int playerId, CancellationToken cancellationToken = default)
         {
             var cacheKey = $"player_profile_{playerId}";
-            var cachedData = await cache.GetStringAsync(cacheKey);
+            var cachedData = await cache.GetStringAsync(cacheKey, token: cancellationToken);
 
             if (!string.IsNullOrEmpty(cachedData))
             {
@@ -43,11 +47,11 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 
             if (details != null)
             {
-                var existsPlayerInDB = await context.Players.AnyAsync(player => player.ExternalId == playerId);
+                var existsPlayerInDB = await context.Players.AnyAsync(player => player.ExternalId == playerId, cancellationToken);
                 if (!existsPlayerInDB)
                 {
                     context.Players.Add(new Player { ExternalId = playerId, Name = details.Name, TeamName = details.Team.Name, Position = details.Position, CreatedAt = DateTime.UtcNow });
-                    await context.SaveChangesAsync();
+                    await context.SaveChangesAsync(cancellationToken);
                 }
             }
 
@@ -62,7 +66,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12) };
 
-            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(profile), cacheOptions);
+            await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(profile), cacheOptions, cancellationToken);
 
             return profile;
         }
@@ -117,6 +121,6 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
                 "sofascore.historico_de_estatisticas_indisponivel",
                 $"No history stats found for playerId: {playerId}.") : result;
         }
-    
+
     }
 }

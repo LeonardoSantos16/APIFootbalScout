@@ -35,9 +35,9 @@ namespace APIFootballScout.Tests.Acompanhamento
         }
 
         [Theory]
-        [InlineData(50, 55)] 
-        [InlineData(50, 45)] 
-        [InlineData(50, 52)] 
+        [InlineData(50, 55)]
+        [InlineData(50, 45)]
+        [InlineData(50, 52)]
         [InlineData(50, 50)]
         public void Valor_de_mercado_que_nao_ultrapassa_o_limiar_nao_e_relevante(long anterior, long atual)
         {
@@ -66,10 +66,10 @@ namespace APIFootballScout.Tests.Acompanhamento
         }
 
         [Theory]
-        [InlineData(400, 580)] 
-        [InlineData(400, 220)] 
-        [InlineData(400, 450)] 
-        [InlineData(400, 400)] 
+        [InlineData(400, 580)]
+        [InlineData(400, 220)]
+        [InlineData(400, 450)]
+        [InlineData(400, 400)]
         public void Minutagem_que_nao_ultrapassa_o_limiar_nao_e_relevante(int anterior, int atual)
         {
             var relevante = Especificacao().IsSatisfiedBy(

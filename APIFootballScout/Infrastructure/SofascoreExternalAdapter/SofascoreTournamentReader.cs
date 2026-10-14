@@ -1,13 +1,16 @@
-﻿using APIFootballScout.Application;
+﻿using System.Globalization;
+using System.Text.Json;
+
+using APIFootballScout.Application;
 using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
+
 using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {
-    public class SofascoreTournamentReader(ISofascoreClient sofascoreClient, IDistributedCache cache, 
+    public class SofascoreTournamentReader(ISofascoreClient sofascoreClient, IDistributedCache cache,
         ScoutSpecificationFactory specsScout) : ISofascoreTournamentReader
     {
         public async Task<SofaTournamentDetailResponse?> GetDetailsAsync(int tournamentId)
@@ -48,7 +51,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 
         public async Task<SofaTournamentFullDTO> GetTournamentDetailAsync(int tournamentId, int? seasonId)
         {
-            var cacheKey = $"tournament_{tournamentId}_season_{seasonId?.ToString() ?? "latest"}";
+            var cacheKey = $"tournament_{tournamentId}_season_{seasonId?.ToString(CultureInfo.InvariantCulture) ?? "latest"}";
 
             var cachedData = await cache.GetStringAsync(cacheKey);
             if (!string.IsNullOrEmpty(cachedData))
@@ -62,7 +65,7 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
             {
                 var seasonsResponse = await sofascoreClient.GetSofascoreTournamentSeason(tournamentId);
 
-                if (!seasonsResponse.IsSuccessStatusCode || seasonsResponse.Content?.Seasons == null || !seasonsResponse.Content.Seasons.Any())
+                if (!seasonsResponse.IsSuccessStatusCode || seasonsResponse.Content?.Seasons == null || seasonsResponse.Content.Seasons.Count == 0)
                 {
                     throw new FonteExternaIndisponivelException(
                         "sofascore.temporadas_do_torneio_indisponiveis",

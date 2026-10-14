@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -112,7 +113,7 @@ public sealed class TokenService : ITokenService
 
         var principal = new ClaimsPrincipal(result.ClaimsIdentity);
 
-        
+
         if (principal.FindFirstValue(TokenTypeClaim) != AccessTokenType)
             return null;
 

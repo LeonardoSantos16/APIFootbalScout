@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 using APIFootballScout.Application.RelatorioScouting;
 using APIFootballScout.Contracts.RelatorioScouting;
 using APIFootballScout.Domain.Base.Exceptions;
@@ -135,9 +136,9 @@ namespace APIFootballScout.Tests.Contracts
             Assert.DoesNotContain("corrigeRelatorioId", json);
         }
 
-        public static TheoryData<Parecer> PareceresDoDominio => [.. Enum.GetValues<Parecer>()];
+        public static TheoryData<Parecer> PareceresDoDominio => new(Enum.GetValues<Parecer>());
 
-        public static TheoryData<StatusRelatorio> StatusDoDominio => [.. Enum.GetValues<StatusRelatorio>()];
+        public static TheoryData<StatusRelatorio> StatusDoDominio => new(Enum.GetValues<StatusRelatorio>());
 
         [Theory]
         [MemberData(nameof(PareceresDoDominio))]

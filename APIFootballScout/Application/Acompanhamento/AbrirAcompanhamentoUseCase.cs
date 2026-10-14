@@ -2,8 +2,8 @@ using APIFootballScout.Domain.Acompanhamento.Aggregate;
 using APIFootballScout.Domain.Acompanhamento.Services;
 using APIFootballScout.Domain.Acompanhamento.Specifications;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
-using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Base.Exceptions;
+using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Domain.Repository;
 
 namespace APIFootballScout.Application.Acompanhamento

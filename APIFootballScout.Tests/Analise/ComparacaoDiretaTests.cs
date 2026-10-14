@@ -236,7 +236,7 @@ namespace APIFootballScout.Tests.Analise
             Assert.Equal(7.42m, Assert.IsType<AtributoCalculado>(rating.Valores[Rodrygo]).Valor);
         }
 
-        private static IEnumerable<(TipoDeAtributo Tipo, int JogadorId, ResultadoDeAtributo Valor)> Achatar(
+        private static List<(TipoDeAtributo Tipo, int JogadorId, ResultadoDeAtributo Valor)> Achatar(
             ResultadoDaComparacao resultado)
             => Assert.IsType<ComparacaoRealizada>(resultado).Atributos
                 .SelectMany(atributo => atributo.Valores

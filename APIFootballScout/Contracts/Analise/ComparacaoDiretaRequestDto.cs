@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 using APIFootballScout.Contracts.Acompanhamento;
 
 namespace APIFootballScout.Contracts.Analise

@@ -23,9 +23,7 @@ namespace APIFootballScout.Application.User
             {
                 if (armazenado.ReplacedByHash is not null)
                 {
-                    logger.LogWarning(
-                        "Reuse of a rotated refresh token detected for user {UserId}; revoking every active session.",
-                        armazenado.UserId);
+                    LogReusoDeTokenRotacionado(logger, armazenado.UserId, null);
 
                     await refreshTokenRepository.RevogarTodosDoUsuarioAsync(armazenado.UserId, agora, cancellationToken);
                 }
@@ -54,6 +52,10 @@ namespace APIFootballScout.Application.User
 
             return novaSessao;
         }
+
+        private static readonly Action<ILogger, Guid, Exception?> LogReusoDeTokenRotacionado =
+            LoggerMessage.Define<Guid>(LogLevel.Warning, new EventId(1, nameof(LogReusoDeTokenRotacionado)),
+                "Reuse of a rotated refresh token detected for user {UserId}; revoking every active session.");
 
         private static NaoAutenticadoException TokenInvalido() =>
             new("usuario.refresh_token_invalido", "Invalid or expired refresh token.");

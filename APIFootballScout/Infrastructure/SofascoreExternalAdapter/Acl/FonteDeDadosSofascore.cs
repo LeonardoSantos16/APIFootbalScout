@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Net;
+
 using APIFootballScout.Domain.Analise.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Infrastructure.External;
@@ -21,8 +23,8 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
             var playerProfile = await _sofascoreApiClient.GetSofascorePlayerDetailsAsync(jogadorId, cancellationToken);
             var statsPlayer = await _sofascoreApiClient.GetSofascorePlayerStatisticsSeasonAsync(
                 jogadorId,
-                recorte.CompeticaoId.ToString(),
-                recorte.TemporadaId.ToString(),
+                recorte.CompeticaoId.ToString(CultureInfo.InvariantCulture),
+                recorte.TemporadaId.ToString(CultureInfo.InvariantCulture),
                 cancellationToken);
 
             if (playerProfile?.StatusCode == HttpStatusCode.NotFound
@@ -46,9 +48,9 @@ namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl
         {
             var statsPlayer = await _sofascoreApiClient.GetSofascorePlayerStatisticsSeasonAsync(
                 jogadorId,
-                recorte.CompeticaoId.ToString(),
-                recorte.TemporadaId.ToString(),
-                cancellationToken);
+                tournamentId: recorte.CompeticaoId.ToString(CultureInfo.InvariantCulture),
+                seasonId: recorte.TemporadaId.ToString(CultureInfo.InvariantCulture),
+                cancelationToken: cancellationToken);
 
             if (statsPlayer?.StatusCode == HttpStatusCode.NotFound)
             {

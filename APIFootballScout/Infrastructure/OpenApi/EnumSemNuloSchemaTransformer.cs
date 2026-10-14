@@ -1,6 +1,7 @@
+using System.Text.Json;
+
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Text.Json;
 
 namespace APIFootballScout.Infrastructure.OpenApi
 {

@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 using APIFootballScout.Application.Acompanhamento;
 using APIFootballScout.Contracts.Acompanhamento;
 using APIFootballScout.Domain.Acompanhamento.ValueObject;
@@ -149,7 +150,7 @@ namespace APIFootballScout.Tests.Contracts
 
         [Fact]
         public void A_resposta_serializada_expoe_os_valores_de_cada_afericao()
-        {        
+        {
 
             // Arrange
             var resultado = Resultado(

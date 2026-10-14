@@ -26,21 +26,21 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
         }
 
         public static RelatorioDocument MapToEntity(Relatorio relatorio) => new()
-            {
-                ID = relatorio.Id,
-                JogadorId = relatorio.JogadorId,
-                OlheiroId = relatorio.OlheiroId,
-                Status = relatorio.Status.ToString(),
-                Texto = relatorio.Texto,
-                ObservadoEm = relatorio.ObservadoEm.UtcDateTime,
-                Escrito_em = relatorio.EscritoEm.UtcDateTime,
-                PontosPositivos = [.. relatorio.PontosPositivos],
-                PontosNegativos = [.. relatorio.PontosNegativos],
-                Nota = relatorio.Nota?.Valor,
-                Parecer = relatorio.Parecer?.ToString(),
-                FinalizadoEm = relatorio.FinalizadoEm?.UtcDateTime,
-                CorrigeRelatorioId = relatorio.CorrigeRelatorioId
-            };
+        {
+            ID = relatorio.Id,
+            JogadorId = relatorio.JogadorId,
+            OlheiroId = relatorio.OlheiroId,
+            Status = relatorio.Status.ToString(),
+            Texto = relatorio.Texto,
+            ObservadoEm = relatorio.ObservadoEm.UtcDateTime,
+            Escrito_em = relatorio.EscritoEm.UtcDateTime,
+            PontosPositivos = [.. relatorio.PontosPositivos],
+            PontosNegativos = [.. relatorio.PontosNegativos],
+            Nota = relatorio.Nota?.Valor,
+            Parecer = relatorio.Parecer?.ToString(),
+            FinalizadoEm = relatorio.FinalizadoEm?.UtcDateTime,
+            CorrigeRelatorioId = relatorio.CorrigeRelatorioId
+        };
 
         private static T ParseOuFalhar<T>(string valor, Guid documentoId) where T : struct, Enum
         => Enum.TryParse<T>(valor, ignoreCase: true, out var resultado) && Enum.IsDefined(resultado)

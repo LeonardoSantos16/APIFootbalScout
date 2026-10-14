@@ -1,9 +1,10 @@
-﻿using APIFootballScout.Infrastructure.Security;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+
+using APIFootballScout.Infrastructure.Security;
 
 namespace APIFootballScout.Tests
 {
-    internal class FakeTokenService(TimeProvider time) : ITokenService
+    internal sealed class FakeTokenService(TimeProvider time) : ITokenService
     {
         private int _cont;
         public int AccessTokenMinutes { get; set; } = 15;
@@ -20,9 +21,9 @@ namespace APIFootballScout.Tests
             var agora = time.GetUtcNow().UtcDateTime;
 
             var resultado = new TokenResult(
-                $"at-{_cont + 1}",              
+                $"at-{_cont + 1}",
                 agora.AddMinutes(AccessTokenMinutes),
-                GenerateRefreshToken(),   
+                GenerateRefreshToken(),
                 agora.AddDays(RefreshTokenDays));
 
             LastSubject = usuario;
