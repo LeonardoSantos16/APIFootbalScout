@@ -21,3 +21,14 @@ updates:
     groups:
       actions:
         patterns: [ "*" ]
+
+  - package-ecosystem: docker
+    directory: /APIFootballScout
+    target-branch: develop
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      dotnet-images:
+        patterns: [ "*" ]
