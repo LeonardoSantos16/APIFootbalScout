@@ -13,9 +13,6 @@ jobs:
   build-and-test:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v7
@@ -26,6 +23,11 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore
+
+    - name: Check formatting
+      run: |
+        dotnet format whitespace --verify-no-changes
+        dotnet format style --verify-no-changes --no-restore
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
