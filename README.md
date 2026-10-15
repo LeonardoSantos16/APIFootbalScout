@@ -39,6 +39,8 @@ O motivo de o cache valer só para as listas principais está no [ADR 0003](docs
 ### Infraestrutura com .NET Aspire
 Toda a infraestrutura de suporte (banco de dados e cache) é orquestrada pelo **.NET Aspire**. Isso permite que o ambiente de desenvolvimento seja espelhado via Docker sem a necessidade de scripts manuais ou configurações externas de banco.
 
+O motivo de o projeto usar o Aspire no lugar de um `docker-compose.yml` está no [ADR 0004](docs/adr/0004-aspire-no-lugar-do-docker-compose.md).
+
 ---
 
 ## Como Rodar o Projeto
