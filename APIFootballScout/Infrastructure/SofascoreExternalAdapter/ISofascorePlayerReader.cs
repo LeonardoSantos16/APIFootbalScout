@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players;
 
 namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter
 {

@@ -1,4 +1,4 @@
-namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
+namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players
 {
     public class PlayerFullProfileDto
     {

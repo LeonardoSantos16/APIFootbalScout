@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
+namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players
 {
     public record SofaTransferHistoryResponse(
         [property: JsonPropertyName("transferHistory")] List<SofaTransfer> Transfers

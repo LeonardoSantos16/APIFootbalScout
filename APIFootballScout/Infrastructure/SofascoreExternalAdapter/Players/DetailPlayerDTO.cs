@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.player
+namespace APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players
 {
     public record SofaPlayerDetailsResponse(
         [property: JsonPropertyName("player")] SofaPlayerDetail Player

@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+﻿using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Tournament;
 
 using Refit;
