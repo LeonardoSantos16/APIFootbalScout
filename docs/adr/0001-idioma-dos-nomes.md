@@ -1,6 +1,6 @@
 # Termos do domínio em português, vocabulário técnico em inglês
 
-Os nomes no código seguem a linguagem ubíqua do DDD: todo termo de domínio (`Dossie`, `Relatorio`, `Shortlist`, `Olheiro`, `Parecer`, `AbrirRascunho`) fica em português, como aparece em `CONTEXT.md` e em `docs/Mapeamento do Modelo de Domínio.md`, em qualquer camada onde apareça, e não só em `Domain/`. O vocabulário técnico, que não pertence ao domínio, fica em inglês: sufixos e padrões (`UseCase`, `Repository`, `Controller`, `Mapper`, `Document`, `Request`, `Result`, `Specification`), infraestrutura, autenticação (`SignInUserUseCase`, `TokenService`) e os DTOs da fonte externa. Assim, um nome como `AbrirRascunhoRelatorioUseCase` ou `RelatorioRepositoryMongo` junta as duas partes de propósito.
+Os nomes no código seguem a linguagem ubíqua do DDD: todo termo de domínio (`Dossie`, `Relatorio`, `Shortlist`, `Olheiro`, `Parecer`, `AbrirRascunho`) fica em português, como aparece no [Mapeamento do Modelo de Domínio](../Mapeamento%20do%20Modelo%20de%20Domínio.md), em qualquer camada onde apareça, e não só em `Domain/`. O vocabulário técnico, que não pertence ao domínio, fica em inglês: sufixos e padrões (`UseCase`, `Repository`, `Controller`, `Mapper`, `Document`, `Request`, `Result`, `Specification`), infraestrutura, autenticação (`SignInUserUseCase`, `TokenService`) e os DTOs da fonte externa. Assim, um nome como `AbrirRascunhoRelatorioUseCase` ou `RelatorioRepositoryMongo` junta as duas partes de propósito.
 
 ## Considered Options
 
