@@ -6,7 +6,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
         [BsonElement("olheiro_id")]
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Guid OlheiroId { get; set; }
@@ -27,10 +27,11 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
         [BsonElement("observado_em")]
         public DateTime ObservadoEm { get; set; }
         [BsonElement("escrito_em")]
-        public DateTime Escrito_em { get; set; }
+        public DateTime EscritoEm { get; set; }
         [BsonElement("finalizado_em")]
         public DateTime? FinalizadoEm { get; set; }
         [BsonElement("corrige_relatorio_id")]
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Guid? CorrigeRelatorioId { get; set; }
     }
 }

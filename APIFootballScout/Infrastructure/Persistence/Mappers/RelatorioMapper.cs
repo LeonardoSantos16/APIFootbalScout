@@ -9,17 +9,17 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
         public static Relatorio MapToDomain(RelatorioDocument document)
         {
             return Relatorio.Restaurar(
-                id: document.ID,
+                id: document.Id,
                 jogadorId: document.JogadorId,
                 olheiroId: document.OlheiroId,
-                status: ParseOuFalhar<StatusRelatorio>(document.Status, document.ID),
+                status: ParseOuFalhar<StatusRelatorio>(document.Status, document.Id),
                 texto: document.Texto,
                 observadoEm: document.ObservadoEm,
-                escritoEm: document.Escrito_em,
+                escritoEm: document.EscritoEm,
                 pontosNegativos: document.PontosNegativos,
                 pontosPositivos: document.PontosPositivos,
                 nota: Nota.FromDecimal(document.Nota),
-                parecer: ParseOuNulo<Parecer>(document.Parecer, document.ID),
+                parecer: ParseOuNulo<Parecer>(document.Parecer, document.Id),
                 finalizadoEm: document.FinalizadoEm,
                 corrigeRelatorioId: document.CorrigeRelatorioId
                 );
@@ -27,13 +27,13 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
 
         public static RelatorioDocument MapToEntity(Relatorio relatorio) => new()
         {
-            ID = relatorio.Id,
+            Id = relatorio.Id,
             JogadorId = relatorio.JogadorId,
             OlheiroId = relatorio.OlheiroId,
             Status = relatorio.Status.ToString(),
             Texto = relatorio.Texto,
             ObservadoEm = relatorio.ObservadoEm.UtcDateTime,
-            Escrito_em = relatorio.EscritoEm.UtcDateTime,
+            EscritoEm = relatorio.EscritoEm.UtcDateTime,
             PontosPositivos = [.. relatorio.PontosPositivos],
             PontosNegativos = [.. relatorio.PontosNegativos],
             Nota = relatorio.Nota?.Valor,
