@@ -1,6 +1,6 @@
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
-using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
+using APIFootballScout.Domain.ShortlistPersonalizada.Aggregate;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 using APIFootballScout.Infrastructure.Persistence.Mappers;
 

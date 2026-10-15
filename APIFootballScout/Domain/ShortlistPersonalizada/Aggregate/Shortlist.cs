@@ -3,7 +3,7 @@ using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.SharedKernel;
 using APIFootballScout.Domain.ShortlistPersonalizada.ValueObject;
 
-namespace APIFootballScout.Domain.ShortlistPersonalizada.Agreggate
+namespace APIFootballScout.Domain.ShortlistPersonalizada.Aggregate
 {
     public sealed class Shortlist : AggregateRootBase<Guid>
     {

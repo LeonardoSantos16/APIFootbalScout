@@ -2,7 +2,7 @@ using APIFootballScout.Domain.Base;
 using APIFootballScout.Domain.Base.Exceptions;
 using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
-namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
+namespace APIFootballScout.Domain.RelatorioScouting.Aggregate
 {
     public class Relatorio : AggregateRootBase<Guid>
     {

@@ -1,5 +1,5 @@
 using APIFootballScout.Domain.Repository;
-using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
+using APIFootballScout.Domain.ShortlistPersonalizada.Aggregate;
 
 namespace APIFootballScout.Tests.Shortlists
 {

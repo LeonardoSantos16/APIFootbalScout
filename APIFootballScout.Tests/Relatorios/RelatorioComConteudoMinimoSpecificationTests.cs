@@ -1,4 +1,4 @@
-using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.RelatorioScouting.Specifications;
 
 namespace APIFootballScout.Tests.Relatorios

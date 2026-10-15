@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+﻿using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 using APIFootballScout.Infrastructure.Persistence.Mappers;

@@ -3,7 +3,7 @@ using System.Text.Json;
 using APIFootballScout.Application.RelatorioScouting;
 using APIFootballScout.Contracts.RelatorioScouting;
 using APIFootballScout.Domain.Base.Exceptions;
-using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 namespace APIFootballScout.Tests.Contracts

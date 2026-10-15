@@ -1,7 +1,7 @@
 using APIFootballScout.Application;
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Application.RelatorioScouting;
-using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 using Microsoft.Extensions.Options;
