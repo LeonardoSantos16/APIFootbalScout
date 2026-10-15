@@ -48,6 +48,37 @@ O projeto depende do **Docker Desktop** e do **SDK do .NET 9**.
 
 ---
 
+## Qualidade e CI
+
+Todo push e pull request para `master` e `develop` passa pelos workflows do GitHub Actions:
+
+* **build and test** (`.github/workflows/build-and-test.yml`)
+    * `build-and-test`: verifica a formatação, compila com warnings tratados como erro (regras em `Directory.Build.props` e `.editorconfig`), roda os testes e publica o relatório de cobertura no resumo do job.
+    * `docker-build`: constrói a imagem da API a partir do `APIFootballScout/Dockerfile`, sem publicá-la.
+* **codeql** (`.github/workflows/codeql.yml`): análise de segurança do código C# e dos workflows.
+* **Dependabot** (`.github/dependabot.yml`): atualizações mensais de pacotes NuGet, GitHub Actions e imagens Docker, abertas contra a `develop`.
+
+### Rodando as verificações localmente
+
+Antes do push, os mesmos checks podem ser reproduzidos na raiz do repositório:
+
+```bash
+dotnet format whitespace --verify-no-changes
+dotnet format style --verify-no-changes
+dotnet build --configuration Release
+./coverage.ps1
+docker build -f APIFootballScout/Dockerfile -t apifootballscout:local .
+```
+
+* `dotnet format` sem `--verify-no-changes` aplica as correções de formatação.
+* `coverage.ps1` roda os testes e gera o relatório HTML em `coveragereport/` (requer `dotnet tool install -g dotnet-reportgenerator-globaltool`).
+
+### Checks obrigatórios
+
+A proteção das branches exige os checks `build-and-test` e `docker-build`. Eles são identificados pelo nome do job, então renomear um job no workflow exige atualizar a regra de proteção no GitHub; caso contrário, os pull requests ficam aguardando um check que nunca será reportado.
+
+---
+
 ## Roadmap
 
 - [x] **V1.0:** Integração Core, Cache Redis e Histórico MongoDB.
