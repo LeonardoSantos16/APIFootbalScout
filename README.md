@@ -6,25 +6,35 @@ O foco principal do projeto foi a criação de uma arquitetura resiliente, utili
 
 ## Stack Técnica
 
-* **Runtime:** .NET 10 (C# 12)
+* **Runtime:** .NET 10 (C# 14)
 * **Orquestração:** .NET Aspire (Gerenciamento de containers e Service Discovery)
 * **Comunicação:** Refit para consumo de API REST (Type-safe HTTP client)
 * **Cache:** Redis (IDistributedCache)
-* **Persistência:** MongoDB via Entity Framework Core (Provider oficial)
+* **Persistência:** MongoDB, com o driver oficial nos repositórios dos agregados
+* **Autenticação:** JWT com refresh token rotativo e senhas com BCrypt
+* **Documentação da API:** OpenAPI nativo do ASP.NET Core com Swagger UI
 
 ---
 
 ## Arquitetura e Decisões de Projeto
 
-### Integração e Performance
-A comunicação com a API do SofaScore é feita via **Refit**, garantindo contratos de dados fortemente tipados e facilitando a manutenção. Para evitar o overhead de rede e reduzir o consumo de créditos da API externa, implementamos uma estratégia de **Targeted Caching** no Redis:
-* **Dados Estáticos:** Ligas e Torneios possuem maior tempo de vida no cache.
-* **Dados Dinâmicos:** Perfis de jogadores são invalidados ou atualizados conforme a demanda, garantindo fluidez no consumo pelo frontend.
+### Domínio
+O código segue DDD, com o domínio separado em contextos (Acompanhamento, Avaliação, Priorização, Análise e Catálogo de Jogador). As funcionalidades implementadas são:
 
-### Persistência e Histórico (FIFO)
-Utilizamos o MongoDB para armazenar o histórico de buscas e perfis consultados. Foi implementado um algoritmo **FIFO (First-In, First-Out)** que limita o histórico aos últimos 10 jogadores visualizados.
-* A lógica utiliza `Upsert` para evitar duplicidade de registros.
-* Limpeza automática de registros excedentes via `RemoveRange` no contexto do EF Core, mantendo o banco otimizado.
+* **F1 — Acompanhamento e dossiê:** o olheiro marca um jogador e o sistema guarda uma linha de base do estado dele naquele instante.
+* **F2 — Detecção de mudança:** na consulta, compara a linha de base com o dado atual (clube, valor de mercado e minutagem).
+* **F5 — Relatório de scouting:** rascunho editável e relatório finalizado imutável, corrigido por emissão de um novo relatório.
+* **F7 — Shortlist priorizada:** lista ordenada de alvos de transferência, com limite de posições e prioridade sem empates.
+* **F9 — Métricas por 90 minutos:** normalização de estatísticas, recusada quando a amostra de minutos é insuficiente.
+* **F10 — Comparação direta:** head-to-head entre jogadores de posições compatíveis no mesmo recorte temporal.
+
+A documentação do domínio está em `docs/`: [features](docs/features.md), [regras de negócio](docs/regras-de-negocio.md) e [mapeamento do modelo de domínio](docs/Mapeamento%20do%20Modelo%20de%20Domínio.md). As decisões de arquitetura ficam registradas em [`docs/adr/`](docs/adr/).
+
+### Integração e Performance
+A comunicação com a API do SofaScore é feita via **Refit**, garantindo contratos de dados fortemente tipados, e passa por uma anticorruption layer que traduz os dados externos para o modelo de domínio. Para reduzir o consumo de créditos da API externa, as respostas são guardadas no Redis com tempo de vida conforme o tipo de dado:
+* **Jogadores e torneios principais** (listas configuradas em `ScoutConfig`): de 1 a 20 dias no cache, conforme o dado.
+* **Perfil completo do jogador:** 12 horas no cache, para qualquer jogador.
+* **Demais jogadores e torneios:** consultados direto na fonte, exceto a lista de temporadas de um torneio, que fica 2 horas no cache.
 
 ### Infraestrutura com .NET Aspire
 Toda a infraestrutura de suporte (banco de dados e cache) é orquestrada pelo **.NET Aspire**. Isso permite que o ambiente de desenvolvimento seja espelhado via Docker sem a necessidade de scripts manuais ou configurações externas de banco.
@@ -33,18 +43,27 @@ Toda a infraestrutura de suporte (banco de dados e cache) é orquestrada pelo **
 
 ## Como Rodar o Projeto
 
-O projeto depende do **Docker Desktop** e do **SDK do .NET 9**.
+O projeto depende do **Docker Desktop** e do **SDK do .NET 10**.
 
 1.  **Clone o repositório.**
-2.  **Configure a chave de API do SofaScore:**
+2.  **Configure os três segredos do AppHost:**
     ```bash
-    dotnet user-secrets set "SofaScoreKey" "SUA_CHAVE_AQUI" --project APIFootballScout.AppHost
+    dotnet user-secrets set "Parameters:SofaScoreKey" "SUA_CHAVE_DO_SOFASCORE" --project APIFootballScout.AppHost
+    dotnet user-secrets set "Parameters:JwtSigningKey" "CHAVE_COM_PELO_MENOS_32_BYTES" --project APIFootballScout.AppHost
+    dotnet user-secrets set "Parameters:PasswordPepper" "VALOR_ALEATORIO" --project APIFootballScout.AppHost
     ```
+    * `SofaScoreKey`: chave da API do SofaScore.
+    * `JwtSigningKey`: chave de assinatura dos tokens JWT (HMAC-SHA256), com no mínimo 32 bytes.
+    * `PasswordPepper`: valor secreto combinado às senhas antes do hash. Trocá-lo invalida as senhas já cadastradas.
 3.  **Inicie o projeto via AppHost:**
     ```bash
     dotnet run --project APIFootballScout.AppHost
     ```
-4.  **Acesso:** O Dashboard do Aspire abrirá no navegador, fornecendo acesso aos logs estruturados e à documentação Swagger da API.
+4.  **Acesso:** O Dashboard do Aspire abrirá no navegador, com os logs estruturados e o link da API. A documentação fica em `/swagger`, e o contrato OpenAPI em `/openapi/v1.json`.
+5.  **Testes:**
+    ```bash
+    dotnet test
+    ```
 
 ---
 
@@ -81,10 +100,13 @@ A proteção das branches exige os checks `build-and-test` e `docker-build`. Ele
 
 ## Roadmap
 
-- [x] **V1.0:** Integração Core, Cache Redis e Histórico MongoDB.
-- [ ] **V1.1:** **Scouting Reporter** — Módulo para geração de relatórios analíticos automáticos baseados em ratings de temporada.
-- [ ] **V1.2:** **Shortlists** — Sistema de pastas para organização de alvos de transferência.
-- [ ] **V1.3:** **Comparison Engine** — Endpoint para comparação direta (Head-to-Head) entre atletas.
+- [x] **Integração:** consumo da API do SofaScore com cache no Redis.
+- [x] **Autenticação:** cadastro, login, refresh token rotativo e encerramento de sessões.
+- [x] **Acompanhamento e detecção de mudança** (F1 e F2).
+- [x] **Relatório de scouting** (F5).
+- [x] **Shortlist priorizada** (F7).
+- [x] **Métricas por 90 minutos e comparação direta** (F9 e F10).
+- [ ] **Histórico de jogadores consultados:** registro dos últimos jogadores vistos por olheiro. Hoje só existe a gravação do jogador na primeira consulta do perfil, sem limite e sem leitura.
 
 ---
 **Desenvolvido por Leonardo dos Santos Mendes Ferreira**
