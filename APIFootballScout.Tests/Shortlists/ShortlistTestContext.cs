@@ -1,7 +1,7 @@
 using APIFootballScout.Application.Configuration;
 using APIFootballScout.Application.ShortlistPersonalizada;
 using APIFootballScout.Domain.SharedKernel;
-using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
+using APIFootballScout.Domain.ShortlistPersonalizada.Aggregate;
 
 using Microsoft.Extensions.Options;
 

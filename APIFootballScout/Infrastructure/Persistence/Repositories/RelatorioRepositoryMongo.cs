@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+﻿using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 using APIFootballScout.Infrastructure.Persistence.Mappers;
@@ -25,7 +25,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
         public async Task AtualizarAsync(Relatorio relatorio, CancellationToken cancellationToken = default)
         {
             var relatorioDocument = RelatorioMapper.MapToEntity(relatorio);
-            var filter = Builders<RelatorioDocument>.Filter.Eq(r => r.ID, relatorioDocument.ID);
+            var filter = Builders<RelatorioDocument>.Filter.Eq(r => r.Id, relatorioDocument.Id);
             await _colecaoRelatorio.ReplaceOneAsync(filter, relatorioDocument, new ReplaceOptions { IsUpsert = false }, cancellationToken);
         }
 
@@ -40,7 +40,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
 
         public async Task<Relatorio?> ObterPorIdAsync(Guid relatorioId, Guid olheiroId, CancellationToken cancellationToken = default)
         {
-            var filters = Builders<RelatorioDocument>.Filter.Eq(r => r.ID, relatorioId) & Builders<RelatorioDocument>.Filter.Eq(r => r.OlheiroId, olheiroId);
+            var filters = Builders<RelatorioDocument>.Filter.Eq(r => r.Id, relatorioId) & Builders<RelatorioDocument>.Filter.Eq(r => r.OlheiroId, olheiroId);
             var relatorio = await _colecaoRelatorio.Find(filters).FirstOrDefaultAsync(cancellationToken);
 
             return relatorio is null ? null : RelatorioMapper.MapToDomain(relatorio);

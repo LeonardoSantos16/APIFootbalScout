@@ -1,4 +1,4 @@
-using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
+using APIFootballScout.Domain.ShortlistPersonalizada.Aggregate;
 
 namespace APIFootballScout.Domain.Repository
 {

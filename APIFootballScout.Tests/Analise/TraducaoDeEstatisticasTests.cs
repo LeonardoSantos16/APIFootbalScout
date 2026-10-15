@@ -2,7 +2,7 @@ using APIFootballScout.Domain.Acompanhamento.ValueObject;
 using APIFootballScout.Domain.Analise.ValueObject;
 using APIFootballScout.Domain.CatalogoDeJogador;
 using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Acl;
-using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players;
 
 namespace APIFootballScout.Tests.Analise
 {

@@ -1,4 +1,4 @@
-﻿namespace APIFootballScout.Domain.RelatorioScouting.Agreggate
+﻿namespace APIFootballScout.Domain.RelatorioScouting.Aggregate
 {
     public enum StatusRelatorio
     {

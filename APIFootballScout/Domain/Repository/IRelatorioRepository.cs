@@ -1,4 +1,4 @@
-using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 
 namespace APIFootballScout.Domain.Repository
 {

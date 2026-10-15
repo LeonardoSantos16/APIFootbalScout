@@ -5,7 +5,7 @@ using APIFootballScout.Domain;
 using APIFootballScout.Infrastructure.Context;
 using APIFootballScout.Infrastructure.Extensions;
 using APIFootballScout.Infrastructure.External;
-using APIFootballScout.Infrastructure.SofascoreExternalAdapter.player;
+using APIFootballScout.Infrastructure.SofascoreExternalAdapter.Players;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;

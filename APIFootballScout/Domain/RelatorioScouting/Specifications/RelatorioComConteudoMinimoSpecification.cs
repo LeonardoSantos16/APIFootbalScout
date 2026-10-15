@@ -1,5 +1,5 @@
 ﻿using APIFootballScout.Domain.Base;
-using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 namespace APIFootballScout.Domain.RelatorioScouting.Specifications
 {
     public sealed class RelatorioComConteudoMinimoSpecification(

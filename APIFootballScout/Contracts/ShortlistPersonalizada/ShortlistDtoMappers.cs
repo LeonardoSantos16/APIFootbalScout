@@ -1,7 +1,7 @@
 using APIFootballScout.Application.ShortlistPersonalizada;
 using APIFootballScout.Contracts.Acompanhamento;
 using APIFootballScout.Domain.SharedKernel;
-using APIFootballScout.Domain.ShortlistPersonalizada.Agreggate;
+using APIFootballScout.Domain.ShortlistPersonalizada.Aggregate;
 
 namespace APIFootballScout.Contracts.ShortlistPersonalizada
 {

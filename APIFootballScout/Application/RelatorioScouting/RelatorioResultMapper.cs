@@ -1,4 +1,4 @@
-﻿using APIFootballScout.Domain.RelatorioScouting.Agreggate;
+﻿using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.RelatorioScouting.ValueObject;
 
 namespace APIFootballScout.Application.RelatorioScouting
