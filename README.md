@@ -1,8 +1,6 @@
 # API Football Scout
 
-Backend desenvolvido para centralizar e processar dados de scouting futebolístico. A API integra dados em tempo real do SofaScore, permitindo a análise de atletas, gestão de destaques e comparação de métricas de desempenho.
-
-O foco principal do projeto foi a criação de uma arquitetura resiliente, utilizando cache distribuído para otimizar o consumo de recursos externos e persistência NoSQL para alta disponibilidade de informações.
+Backend de apoio ao trabalho do olheiro. A API consome dados de jogadores e torneios do SofaScore e, sobre eles, permite acompanhar jogadores, escrever relatórios de scouting, montar shortlists priorizadas e comparar métricas de desempenho.
 
 ## Stack Técnica
 
@@ -33,8 +31,10 @@ A documentação do domínio está em `docs/`: [features](docs/features.md), [re
 ### Integração e Performance
 A comunicação com a API do SofaScore é feita via **Refit**, garantindo contratos de dados fortemente tipados, e passa por uma anticorruption layer que traduz os dados externos para o modelo de domínio. Para reduzir o consumo de créditos da API externa, as respostas são guardadas no Redis com tempo de vida conforme o tipo de dado:
 * **Jogadores e torneios principais** (listas configuradas em `ScoutConfig`): de 1 a 20 dias no cache, conforme o dado.
-* **Perfil completo do jogador:** 12 horas no cache, para qualquer jogador.
+* **Perfil completo do jogador e página completa do torneio:** 12 horas no cache, para qualquer jogador ou torneio.
 * **Demais jogadores e torneios:** consultados direto na fonte, exceto a lista de temporadas de um torneio, que fica 2 horas no cache.
+
+O motivo de o cache valer só para as listas principais está no [ADR 0003](docs/adr/0003-cache-seletivo-da-fonte-externa.md).
 
 ### Infraestrutura com .NET Aspire
 Toda a infraestrutura de suporte (banco de dados e cache) é orquestrada pelo **.NET Aspire**. Isso permite que o ambiente de desenvolvimento seja espelhado via Docker sem a necessidade de scripts manuais ou configurações externas de banco.
@@ -54,7 +54,7 @@ O projeto depende do **Docker Desktop** e do **SDK do .NET 10**.
     ```
     * `SofaScoreKey`: chave da API do SofaScore.
     * `JwtSigningKey`: chave de assinatura dos tokens JWT (HMAC-SHA256), com no mínimo 32 bytes.
-    * `PasswordPepper`: valor secreto combinado às senhas antes do hash. Trocá-lo invalida as senhas já cadastradas.
+    * `PasswordPepper`: valor secreto combinado às senhas antes do hash. Trocá-lo invalida as senhas já cadastradas (ver [ADR 0002](docs/adr/0002-pepper-nas-senhas-e-refresh-token-rotativo.md)).
 3.  **Inicie o projeto via AppHost:**
     ```bash
     dotnet run --project APIFootballScout.AppHost
