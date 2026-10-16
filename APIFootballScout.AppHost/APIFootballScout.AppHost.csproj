@@ -7,6 +7,7 @@
 	  <NoWarn>$(NoWarn);ASPIRE010</NoWarn>
     <Nullable>enable</Nullable>
     <UserSecretsId>ca42a705-28b3-42a8-b826-3d13ad4c3877</UserSecretsId>
+    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <ItemGroup>

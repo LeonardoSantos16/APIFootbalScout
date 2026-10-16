@@ -1,0 +1,47 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: APIFootballScout/Dockerfile
+    image: apifootballscout:local
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__mongodb: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017/?authSource=admin
+      ConnectionStrings__scoutdb: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017/scoutdb?authSource=admin
+      ConnectionStrings__cache: redis:6379,password=${REDIS_PASSWORD}
+      Jwt__Key: ${JWT_SIGNING_KEY:?defina JWT_SIGNING_KEY no .env}
+      SofaScore__ApiKey: ${SOFASCORE_KEY:?defina SOFASCORE_KEY no .env}
+      Password__Pepper: ${PASSWORD_PEPPER:?defina PASSWORD_PEPPER no .env}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:8.3
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:?defina MONGO_USER no .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?defina MONGO_PASSWORD no .env}
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8.6
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?defina REDIS_PASSWORD no .env}"]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+volumes:
+  mongo-data:
