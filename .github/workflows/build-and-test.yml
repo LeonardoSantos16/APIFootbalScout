@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ master, develop ]
 
-env:
-  DOTNET_VERSION: '10.0.302'
-
 jobs:
   build-and-test:
 
@@ -19,10 +16,10 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        global-json-file: global.json
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore --locked-mode
 
     - name: Check formatting
       run: |
