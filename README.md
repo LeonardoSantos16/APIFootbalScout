@@ -45,7 +45,7 @@ O motivo de o projeto usar o Aspire no lugar de um `docker-compose.yml` está no
 
 ## Como Rodar o Projeto
 
-O projeto depende do **Docker Desktop** e do **SDK do .NET 10**.
+O projeto depende do **Docker Desktop** e do **SDK do .NET 10.0.400**. O `global.json` aceita só patches dessa versão (`10.0.4xx`), então SDKs anteriores, como o `10.0.3xx`, falham já no primeiro `dotnet build`.
 
 1.  **Clone o repositório.**
 2.  **Configure os três segredos do AppHost:**
@@ -67,6 +67,22 @@ O projeto depende do **Docker Desktop** e do **SDK do .NET 10**.
     dotnet test
     ```
 
+### Rodando a imagem sem o Aspire
+
+O `docker-compose.yml` sobe a imagem da API construída pelo `APIFootballScout/Dockerfile`, com o MongoDB e o Redis nas mesmas versões usadas pelo Aspire. Ele não substitui o AppHost no desenvolvimento: serve para conferir que a imagem roda só com variáveis de ambiente (ver [ADR 0004](docs/adr/0004-aspire-no-lugar-do-docker-compose.md)).
+
+1.  **Crie o `.env`** a partir do `.env.example` e preencha os valores. O `.env` é ignorado pelo git.
+    * `SOFASCORE_KEY`, `JWT_SIGNING_KEY` e `PASSWORD_PEPPER`: os mesmos três segredos do AppHost, listados com `dotnet user-secrets list --project APIFootballScout.AppHost`.
+    * `MONGO_USER`, `MONGO_PASSWORD` e `REDIS_PASSWORD`: credenciais dos bancos do compose, escolhidas livremente. A senha do Mongo entra numa URI, então não pode ter `@`, `:`, `/` nem `%`.
+2.  **Suba os containers:**
+    ```bash
+    docker compose up --build
+    ```
+    A API só inicia depois que o Mongo e o Redis passam no healthcheck. Se faltar alguma variável no `.env`, o compose falha antes de subir.
+3.  **Acesso:** a API responde em `http://localhost:8080`, no ambiente `Production`.
+
+Para apagar os containers e os dados do Mongo: `docker compose down -v`.
+
 ---
 
 ## Qualidade e CI
@@ -84,6 +100,7 @@ Todo push e pull request para `master` e `develop` passa pelos workflows do GitH
 Antes do push, os mesmos checks podem ser reproduzidos na raiz do repositório:
 
 ```bash
+dotnet restore --locked-mode
 dotnet format whitespace --verify-no-changes
 dotnet format style --verify-no-changes
 dotnet build --configuration Release
@@ -97,6 +114,27 @@ docker build -f APIFootballScout/Dockerfile -t apifootballscout:local .
 ### Checks obrigatórios
 
 A proteção das branches exige os checks `build-and-test` e `docker-build`. Eles são identificados pelo nome do job, então renomear um job no workflow exige atualizar a regra de proteção no GitHub; caso contrário, os pull requests ficam aguardando um check que nunca será reportado.
+
+### Dependências e lock files
+
+As versões dos pacotes NuGet ficam registradas nos `packages.lock.json` de cada projeto, e o restore roda com `--locked-mode` no CI e no Dockerfile. Se um pacote mudar no `.csproj` sem o lock atualizado no mesmo commit, o restore falha com o erro `NU1004`.
+
+* Para atualizar os lock files depois de adicionar ou atualizar um pacote: `dotnet restore --force-evaluate`.
+* O AppHost não tem lock file (`RestorePackagesWithLockFile` desligado no `.csproj`). O SDK do Aspire baixa pacotes diferentes conforme o sistema operacional (`win-x64` no Windows, `linux-x64` no runner), então um lock gerado numa máquina quebra o restore na outra. O AppHost não entra na imagem, então isso não afeta a reprodutibilidade do que é publicado.
+* As imagens base do Dockerfile são fixadas por digest, e o Dependabot propõe as atualizações.
+
+### Publicando uma release
+
+Uma release é uma tag git `vX.Y.Z` num commit que já está na `master`. O workflow não impede tags em outros commits. A tag pode ser criada de duas formas:
+
+* **Pelo GitHub:** em *Releases → Draft a new release*, digite a nova tag (`v1.2.0`), escolha `master` como target e publique.
+* **Pelo terminal:**
+    ```bash
+    git tag v1.2.0
+    git push origin v1.2.0
+    ```
+
+O push da tag roda os testes de novo e publica a imagem com as tags semver e `latest`.
 
 ---
 
