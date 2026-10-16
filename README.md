@@ -73,7 +73,7 @@ Todo push e pull request para `master` e `develop` passa pelos workflows do GitH
 
 * **build and test** (`.github/workflows/build-and-test.yml`)
     * `build-and-test`: verifica a formatação, compila com warnings tratados como erro (regras em `Directory.Build.props` e `.editorconfig`), roda os testes e publica o relatório de cobertura no resumo do job.
-    * `docker-build`: constrói a imagem da API a partir do `APIFootballScout/Dockerfile`, sem publicá-la.
+    * `docker-build`: roda depois de `build-and-test` e constrói a imagem da API a partir do `APIFootballScout/Dockerfile`. Em pull requests e na `develop` a imagem só é validada; em push na `master` ela é publicada em `ghcr.io/leonardosantos16/apifootballscout` com a tag `sha-<commit>` e a tag `latest`.
 * **codeql** (`.github/workflows/codeql.yml`): análise de segurança do código C# e dos workflows.
 * **Dependabot** (`.github/dependabot.yml`): atualizações mensais de pacotes NuGet, GitHub Actions e imagens Docker, abertas contra a `develop`.
 
