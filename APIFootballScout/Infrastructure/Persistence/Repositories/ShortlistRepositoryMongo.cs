@@ -26,7 +26,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             var newVersion = expectedVersion + 1;
             var filter = Builders<ShortlistDocument>.Filter.And(Builders<ShortlistDocument>.Filter.Eq(s => s.Id, shortlist.Id), Builders<ShortlistDocument>.Filter.Eq(s => s.OlheiroId, shortlist.OlheiroId),
                 Builders<ShortlistDocument>.Filter.Eq(s => s.Version, expectedVersion));
-           shortlist.AtualizarVersao(newVersion);
+            shortlist.AtualizarVersao(newVersion);
             var shortlistBD = await _colecaoShortlist.ReplaceOneAsync(filter, shortlist.MapToEntity(), new ReplaceOptions { IsUpsert = false }, cancellationToken);
 
             if (shortlistBD.MatchedCount == 0)
