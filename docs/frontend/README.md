@@ -75,6 +75,8 @@ O prefixo de todas as rotas e `/api`. A API redireciona HTTP para HTTPS
 Subir a stack completa (Mongo + Redis + API) depende do Docker Desktop e do .NET Aspire:
 `dotnet run --project APIFootballScout.AppHost`.
 
+**CORS ainda nao configurado.** A API nao tem politica de CORS, entao um front servido em outra origem tem as chamadas bloqueadas pelo navegador. Quando a politica entrar, ela precisa expor o header `ETag`: as escritas de shortlist e relatorio exigem `If-Match` com a versao recebida no `ETag` (pendencia no Roadmap do README).
+
 ## Convencoes de serializacao
 
 - **Enums viajam como string.** Todos os enums dos contratos usam `JsonStringEnumConverter`, entao o valor no JSON e `"Clube"`, `"Rascunho"`,
