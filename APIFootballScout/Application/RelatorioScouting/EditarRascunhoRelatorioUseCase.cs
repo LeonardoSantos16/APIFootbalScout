@@ -15,7 +15,7 @@ namespace APIFootballScout.Application.RelatorioScouting
 
             AplicarEdicao(relatorio, request);
 
-            await relatorioRepository.AtualizarAsync(relatorio, relatorio.Version, cancellationToken);
+            await relatorioRepository.AtualizarAsync(relatorio, request.ExpectedVersion, cancellationToken);
 
             return relatorio.ParaResult();
         }

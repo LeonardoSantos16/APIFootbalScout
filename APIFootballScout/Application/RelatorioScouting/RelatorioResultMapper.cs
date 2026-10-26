@@ -19,6 +19,6 @@ namespace APIFootballScout.Application.RelatorioScouting
             EscritoEm: relatorio.EscritoEm,
             FinalizadoEm: relatorio.FinalizadoEm,
             CorrigeRelatorioId: relatorio.CorrigeRelatorioId,
-            Version: 0);
+            Version: relatorio.Version);
     }
 }
