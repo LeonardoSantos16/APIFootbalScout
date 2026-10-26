@@ -34,7 +34,7 @@ namespace APIFootballScout.Application.RelatorioScouting
 
             relatorio.Finalizar(_relatorioComConteudoMinimoSpecification, _timeProvider.GetUtcNow().UtcDateTime);
 
-            await _relatorioRepository.AtualizarAsync(relatorio, cancellationToken);
+            await _relatorioRepository.AtualizarAsync(relatorio, relatorio.Version, cancellationToken);
 
             return relatorio.ParaResult();
         }

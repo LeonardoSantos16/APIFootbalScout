@@ -64,18 +64,24 @@ namespace APIFootballScout.Tests.Relatorios
             decimal? nota = null,
             IReadOnlyList<string>? pontosPositivos = null,
             IReadOnlyList<string>? pontosNegativos = null,
-            Parecer? parecer = null)
+            Parecer? parecer = null,
+            long? versao = null)
             => new(
                 OlheiroId: olheiroId ?? OlheiroId,
                 RelatorioId: relatorioId,
+                ExpectedVersion: versao ?? Relatorios.VersaoDe(relatorioId),
                 Texto: texto,
                 Nota: nota,
                 PontosPositivos: pontosPositivos,
                 PontosNegativos: pontosNegativos,
                 Parecer: parecer);
 
-        public FinalizarRelatorioRequest PedidoDeFinalizacao(Guid relatorioId, Guid? olheiroId = null)
-            => new(OlheiroId: olheiroId ?? OlheiroId, RelatorioId: relatorioId);
+        public FinalizarRelatorioRequest PedidoDeFinalizacao(
+            Guid relatorioId, Guid? olheiroId = null, long? versao = null)
+            => new(
+                OlheiroId: olheiroId ?? OlheiroId,
+                RelatorioId: relatorioId,
+                ExpectedVersion: versao ?? Relatorios.VersaoDe(relatorioId));
 
         public const string TextoDaCorrecao = "Revisto: erra a saida de bola.";
 

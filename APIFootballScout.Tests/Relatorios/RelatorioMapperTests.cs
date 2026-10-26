@@ -67,6 +67,20 @@ namespace APIFootballScout.Tests.Relatorios
         }
 
         [Fact]
+        public void A_versao_sobrevive_ao_round_trip()
+        {
+            // Arrange
+            var original = NovoRascunho();
+            original.AtualizarVersao(7);
+
+            // Act
+            var restaurado = RoundTrip(original);
+
+            // Assert
+            Assert.Equal(7, restaurado.Version);
+        }
+
+        [Fact]
         public void Rascunho_restaurado_continua_editavel()
         {
             // Arrange

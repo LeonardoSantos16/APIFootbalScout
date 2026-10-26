@@ -22,7 +22,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             await _colecaoRelatorio.InsertOneAsync(relatorioDocument, options: null, cancellationToken);
         }
 
-        public async Task AtualizarAsync(Relatorio relatorio, CancellationToken cancellationToken = default)
+        public async Task AtualizarAsync(Relatorio relatorio, long expectedVersion, CancellationToken cancellationToken = default)
         {
             var relatorioDocument = RelatorioMapper.MapToEntity(relatorio);
             var filter = Builders<RelatorioDocument>.Filter.Eq(r => r.Id, relatorioDocument.Id);

@@ -35,7 +35,8 @@ namespace APIFootballScout.Tests.Contracts
                 ObservadoEm: ObservadoEm,
                 EscritoEm: EscritoEm,
                 FinalizadoEm: finalizadoEm,
-                CorrigeRelatorioId: null);
+                CorrigeRelatorioId: null,
+                Version: 4);
 
         [Fact]
         public void Dto_de_abertura_vira_request_com_o_olheiro_do_token()
@@ -65,7 +66,7 @@ namespace APIFootballScout.Tests.Contracts
             var dto = new EditarRascunhoRelatorioRequestDto { Nota = 7.5m };
 
             // Act
-            var request = dto.ParaRequest(OlheiroId, RelatorioId);
+            var request = dto.ParaRequest(OlheiroId, RelatorioId, expectedVersion: 4);
 
             // Assert
             Assert.Equal(OlheiroId, request.OlheiroId);
@@ -77,6 +78,34 @@ namespace APIFootballScout.Tests.Contracts
             Assert.Null(request.Parecer);
         }
 
+        [Fact]
+        public void A_edicao_leva_a_versao_esperada_ao_request()
+        {
+            // Arrange
+            var dto = new EditarRascunhoRelatorioRequestDto { Nota = 7.5m };
+
+            // Act
+            var request = dto.ParaRequest(OlheiroId, RelatorioId, expectedVersion: 4);
+
+            // Assert
+            Assert.Equal(4, request.ExpectedVersion);
+        }
+
+        [Fact]
+        public void A_resposta_traz_a_versao()
+        {
+            // Arrange
+            var result = Rascunho();
+
+            // Act
+            var response = result.ParaResponse();
+            var json = JsonSerializer.Serialize(response, OpcoesDaApi);
+
+            // Assert
+            Assert.Equal(4, response.Version);
+            Assert.Contains("\"version\":4", json);
+        }
+
         [Theory]
         [InlineData(ParecerDto.Contratar, Parecer.Contratar)]
         [InlineData(ParecerDto.Monitorar, Parecer.Monitorar)]
@@ -86,7 +115,7 @@ namespace APIFootballScout.Tests.Contracts
         {
             // Arrange & Act
             var request = new EditarRascunhoRelatorioRequestDto { Parecer = dto }
-                .ParaRequest(OlheiroId, RelatorioId);
+                .ParaRequest(OlheiroId, RelatorioId, expectedVersion: 4);
 
             // Assert
             Assert.Equal(esperado, request.Parecer);
@@ -187,7 +216,7 @@ namespace APIFootballScout.Tests.Contracts
             var dto = new EditarRascunhoRelatorioRequestDto { Parecer = (ParecerDto)99 };
 
             // Act
-            var erro = Assert.Throws<ValorInvalidoException>(() => dto.ParaRequest(OlheiroId, RelatorioId));
+            var erro = Assert.Throws<ValorInvalidoException>(() => dto.ParaRequest(OlheiroId, RelatorioId, expectedVersion: 4));
 
             // Assert
             Assert.Equal("relatorio.parecer_invalido", erro.Codigo);

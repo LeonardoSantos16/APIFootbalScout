@@ -66,10 +66,11 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<RelatorioResponseDto>> Editar(
             [FromRoute] Guid relatorioId,
             [FromBody] EditarRascunhoRelatorioRequestDto dto,
+            [FromHeader(Name = "If-Match")] long expectedVersion,
             CancellationToken cancellationToken)
         {
             var result = await editarRascunhoRelatorioUseCase.EditarRascunho(
-                dto.ParaRequest(OlheiroId, relatorioId), cancellationToken);
+                dto.ParaRequest(OlheiroId, relatorioId, expectedVersion), cancellationToken);
 
             return Ok(result.ParaResponse());
         }
@@ -77,10 +78,12 @@ namespace APIFootballScout.Controllers
         [HttpPut("{relatorioId:guid}/finalizar")]
         [ProducesResponseType<RelatorioResponseDto>(StatusCodes.Status200OK)]
         public async Task<ActionResult<RelatorioResponseDto>> Finalizar(
-            [FromRoute] Guid relatorioId, CancellationToken cancellationToken)
+            [FromRoute] Guid relatorioId,
+            [FromHeader(Name = "If-Match")] long expectedVersion,
+            CancellationToken cancellationToken)
         {
             var result = await finalizarRelatorioUseCase.FinalizarRelatorio(
-                new FinalizarRelatorioRequest(OlheiroId: OlheiroId, RelatorioId: relatorioId),
+                new FinalizarRelatorioRequest(OlheiroId: OlheiroId, RelatorioId: relatorioId, ExpectedVersion: expectedVersion),
                 cancellationToken);
 
             return Ok(result.ParaResponse());
