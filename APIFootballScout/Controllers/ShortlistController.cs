@@ -4,7 +4,6 @@ using APIFootballScout.Infrastructure.Security;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace APIFootballScout.Controllers
 {
@@ -33,7 +32,7 @@ namespace APIFootballScout.Controllers
             var shortlistCriada = await criarShortlistUseCase.CriarShortlist(
                 dto.ParaRequest(OlheiroId), cancellationToken);
 
-            DefinirETag(shortlistCriada.Version);
+            VersionETag.Set(Response, shortlistCriada.Version);
 
             return CreatedAtAction(
                 nameof(Obter),
@@ -49,7 +48,7 @@ namespace APIFootballScout.Controllers
             var shortlist = await obterShortlistUseCase.ObterShortlist(
                 ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId), cancellationToken);
 
-            DefinirETag(shortlist.Version);
+            VersionETag.Set(Response, shortlist.Version);
 
             return Ok(shortlist.ParaResponse());
         }
@@ -73,13 +72,13 @@ namespace APIFootballScout.Controllers
             [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
-            if (!TentarLerVersao(ifMatch, out var expectedVersion))
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
                 return VersaoAusente();
 
             var shortlist = await adicionarAlvoUseCase.AdicionarAlvo(
                 dto.ParaRequest(OlheiroId, shortlistId, expectedVersion), cancellationToken);
 
-            DefinirETag(shortlist.Version);
+            VersionETag.Set(Response, shortlist.Version);
 
             return CreatedAtAction(
                 nameof(Obter),
@@ -96,13 +95,13 @@ namespace APIFootballScout.Controllers
             [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
-            if (!TentarLerVersao(ifMatch, out var expectedVersion))
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
                 return VersaoAusente();
 
             var shortlist = await repriorizarAlvoUseCase.RepriorizarAlvo(
                 dto.ParaRequest(OlheiroId, shortlistId, jogadorId, expectedVersion), cancellationToken);
 
-            DefinirETag(shortlist.Version);
+            VersionETag.Set(Response, shortlist.Version);
 
             return Ok(shortlist.ParaResponse());
         }
@@ -115,27 +114,15 @@ namespace APIFootballScout.Controllers
             [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
-            if (!TentarLerVersao(ifMatch, out var expectedVersion))
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
                 return VersaoAusente();
 
             var shortlist = await removerAlvoUseCase.RemoverAlvo(
                 ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId, jogadorId, expectedVersion), cancellationToken);
 
-            DefinirETag(shortlist.Version);
+            VersionETag.Set(Response, shortlist.Version);
 
             return Ok(shortlist.ParaResponse());
-        }
-
-        private void DefinirETag(long version)
-            => Response.Headers.ETag = new EntityTagHeaderValue($"\"{version}\"").ToString();
-
-        private static bool TentarLerVersao(string? ifMatch, out long version)
-        {
-            version = 0;
-
-            return EntityTagHeaderValue.TryParse(ifMatch, out var etag)
-                && !etag.IsWeak
-                && long.TryParse(etag.Tag.Value?.Trim('"'), out version);
         }
 
         private ObjectResult VersaoAusente()

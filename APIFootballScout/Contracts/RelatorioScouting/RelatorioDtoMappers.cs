@@ -20,7 +20,7 @@ namespace APIFootballScout.Contracts.RelatorioScouting
             this EditarRascunhoRelatorioRequestDto dto, Guid olheiroId, Guid relatorioId, long expectedVersion) => (new EditarRascunhoRelatorioRequest(
                 OlheiroId: olheiroId,
                 RelatorioId: relatorioId,
-                ExpectedVersion: 0,
+                ExpectedVersion: expectedVersion,
                 Texto: dto.Texto,
                 Nota: dto.Nota,
                 PontosPositivos: dto.PontosPositivos,
@@ -81,7 +81,7 @@ namespace APIFootballScout.Contracts.RelatorioScouting
                 EscritoEm: result.EscritoEm,
                 PontosNegativos: result.PontosNegativos,
                 PontosPositivos: result.PontosPositivos,
-                Version: 0,
+                Version: result.Version,
                 Nota: result.Nota,
                 Parecer: result.Parecer.ParaDto(),
                 FinalizadoEm: result.FinalizadoEm,

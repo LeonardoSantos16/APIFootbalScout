@@ -14,7 +14,9 @@ namespace APIFootballScout.Controllers
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status412PreconditionFailed)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status428PreconditionRequired)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     public class RelatorioController(
         ObterRelatorioUseCase obterRelatorioUseCase,
@@ -34,6 +36,8 @@ namespace APIFootballScout.Controllers
             var result = await obterRelatorioUseCase.ObterRelatorio(
                 new ObterRelatorioRequest(OlheiroId: OlheiroId, RelatorioId: relatorioId),
                 cancellationToken);
+
+            VersionETag.Set(Response, result.Version);
 
             return Ok(result.ParaResponse());
         }
@@ -58,6 +62,8 @@ namespace APIFootballScout.Controllers
             var result = await abrirRascunhoRelatorioUseCase.AbrirRascunho(
                 dto.ParaRequest(OlheiroId), cancellationToken);
 
+            VersionETag.Set(Response, result.Version);
+
             return CreatedAtAction(nameof(Obter), new { relatorioId = result.RelatorioId }, result.ParaResponse());
         }
 
@@ -66,11 +72,16 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<RelatorioResponseDto>> Editar(
             [FromRoute] Guid relatorioId,
             [FromBody] EditarRascunhoRelatorioRequestDto dto,
-            [FromHeader(Name = "If-Match")] long expectedVersion,
+            [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
+                return VersaoAusente();
+
             var result = await editarRascunhoRelatorioUseCase.EditarRascunho(
                 dto.ParaRequest(OlheiroId, relatorioId, expectedVersion), cancellationToken);
+
+            VersionETag.Set(Response, result.Version);
 
             return Ok(result.ParaResponse());
         }
@@ -79,12 +90,17 @@ namespace APIFootballScout.Controllers
         [ProducesResponseType<RelatorioResponseDto>(StatusCodes.Status200OK)]
         public async Task<ActionResult<RelatorioResponseDto>> Finalizar(
             [FromRoute] Guid relatorioId,
-            [FromHeader(Name = "If-Match")] long expectedVersion,
+            [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
+                return VersaoAusente();
+
             var result = await finalizarRelatorioUseCase.FinalizarRelatorio(
                 new FinalizarRelatorioRequest(OlheiroId: OlheiroId, RelatorioId: relatorioId, ExpectedVersion: expectedVersion),
                 cancellationToken);
+
+            VersionETag.Set(Response, result.Version);
 
             return Ok(result.ParaResponse());
         }
@@ -99,7 +115,15 @@ namespace APIFootballScout.Controllers
             var result = await corrigirRelatorioUseCase.CorrigirRelatorio(
                 dto.ParaRequest(OlheiroId, relatorioId), cancellationToken);
 
+            VersionETag.Set(Response, result.Version);
+
             return CreatedAtAction(nameof(Obter), new { relatorioId = result.RelatorioId }, result.ParaResponse());
         }
+
+        private ObjectResult VersaoAusente()
+            => Problem(
+                statusCode: StatusCodes.Status428PreconditionRequired,
+                title: "Precondition required",
+                detail: "Envie o header If-Match com a versao do relatorio recebida no ETag.");
     }
 }
