@@ -25,7 +25,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
 
             shortlist.RemoverAlvo(request.JogadorId);
 
-            await _shortlistRepository.AtualizarAsync(shortlist, shortlist.Version, cancellationToken);
+            await _shortlistRepository.AtualizarAsync(shortlist, request.ExpectedVersion, cancellationToken);
 
             return shortlist.ParaResult();
         }

@@ -11,7 +11,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
             LimiteDeAlvos: shortlist.Limite.Valor,
             Alvos: shortlist.Alvos.Select(a => a.ParaResult()).ToList(),
             CustoTotal: shortlist.CustoTotal,
-            Version: 0);
+            Version: shortlist.Version);
 
         public static AlvoResult ParaResult(this Alvo alvo) => new(
             JogadorId: alvo.JogadorId,
