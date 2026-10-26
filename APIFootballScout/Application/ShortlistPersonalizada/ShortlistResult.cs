@@ -8,7 +8,8 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
         string Nome,
         int LimiteDeAlvos,
         IReadOnlyList<AlvoResult> Alvos,
-        Dinheiro? CustoTotal);
+        Dinheiro? CustoTotal,
+        long Version);
 
     public sealed record AlvoResult(int JogadorId, int Prioridade, Dinheiro CustoEstimado);
 }

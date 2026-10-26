@@ -63,10 +63,11 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<ShortlistResponseDto>> AdicionarAlvo(
             [FromRoute] Guid shortlistId,
             [FromBody] AdicionarAlvoRequestDto dto,
+            [FromHeader(Name = "If-Match")] long expectedVersion,
             CancellationToken cancellationToken)
         {
             var shortlist = await adicionarAlvoUseCase.AdicionarAlvo(
-                dto.ParaRequest(OlheiroId, shortlistId), cancellationToken);
+                dto.ParaRequest(OlheiroId, shortlistId, expectedVersion), cancellationToken);
 
             return CreatedAtAction(
                 nameof(Obter),
@@ -80,10 +81,11 @@ namespace APIFootballScout.Controllers
             [FromRoute] Guid shortlistId,
             [FromRoute] int jogadorId,
             [FromBody] RepriorizarAlvoRequestDto dto,
+            [FromHeader(Name = "If-Match")] long expectedVersion,
             CancellationToken cancellationToken)
         {
             var shortlist = await repriorizarAlvoUseCase.RepriorizarAlvo(
-                dto.ParaRequest(OlheiroId, shortlistId, jogadorId), cancellationToken);
+                dto.ParaRequest(OlheiroId, shortlistId, jogadorId, expectedVersion), cancellationToken);
 
             return Ok(shortlist.ParaResponse());
         }
@@ -93,10 +95,11 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<ShortlistResponseDto>> DeletarAlvo(
             [FromRoute] Guid shortlistId,
             [FromRoute] int jogadorId,
+            [FromHeader(Name = "If-Match")] long expectedVersion,
             CancellationToken cancellationToken)
         {
             var shortlist = await removerAlvoUseCase.RemoverAlvo(
-                ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId, jogadorId), cancellationToken);
+                ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId, jogadorId, expectedVersion), cancellationToken);
 
             return Ok(shortlist.ParaResponse());
         }

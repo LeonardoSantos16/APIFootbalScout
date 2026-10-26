@@ -11,8 +11,8 @@ namespace APIFootballScout.Contracts.ShortlistPersonalizada
             this CriarShortlistRequestDto dto, Guid olheiroId)
             => new(olheiroId, dto.Nome);
 
-        public static RemoverAlvoRequest ParaRequest(Guid olheiroId, Guid shortlistId, int jogadorId)
-            => new(olheiroId, shortlistId, jogadorId);
+        public static RemoverAlvoRequest ParaRequest(Guid olheiroId, Guid shortlistId, int jogadorId, long expectedVersion)
+            => new(olheiroId, shortlistId, jogadorId, 0);
 
         public static ObterShortlistRequest ParaRequest(Guid olheiroId, Guid shortlistId)
             => new(olheiroId, shortlistId);
@@ -21,15 +21,15 @@ namespace APIFootballScout.Contracts.ShortlistPersonalizada
             => new(olheiroId);
 
         public static AdicionarAlvoRequest ParaRequest(
-            this AdicionarAlvoRequestDto dto, Guid olheiroId, Guid shortlistId)
-            => new(olheiroId, shortlistId, dto.JogadorId, dto.Prioridade, new Dinheiro(dto.CustoEstimado.QuantiaEmCentavos, dto.CustoEstimado.Moeda));
+            this AdicionarAlvoRequestDto dto, Guid olheiroId, Guid shortlistId, long expectedVersion)
+            => new(olheiroId, shortlistId, dto.JogadorId, dto.Prioridade, new Dinheiro(dto.CustoEstimado.QuantiaEmCentavos, dto.CustoEstimado.Moeda), 0);
 
         public static RepriorizarAlvoRequest ParaRequest(
-            this RepriorizarAlvoRequestDto dto, Guid olheiroId, Guid shortlistId, int jogadorId)
-            => new(olheiroId, shortlistId, jogadorId, dto.Prioridade);
+            this RepriorizarAlvoRequestDto dto, Guid olheiroId, Guid shortlistId, int jogadorId, long expectedVersion)
+            => new(olheiroId, shortlistId, jogadorId, dto.Prioridade, 0);
 
         public static ShortlistResponseDto ParaResponse(this ShortlistResult result)
-            => new(result.ShortlistId, result.Nome, result.LimiteDeAlvos, ParaDto(result.Alvos), ParaDtoOuNulo(result.CustoTotal));
+            => new(result.ShortlistId, result.Nome, result.LimiteDeAlvos, ParaDto(result.Alvos), 0, ParaDtoOuNulo(result.CustoTotal));
 
         public static IReadOnlyList<ShortlistResponseDto> ParaResponse(
             this IEnumerable<ShortlistResult> resultados)

@@ -27,7 +27,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
 
             shortlist.AdicionarAlvo(request.JogadorId, new Prioridade(request.Prioridade), request.CustoEstimado);
 
-            await _shortlistRepository.AtualizarAsync(shortlist, cancellationToken);
+            await _shortlistRepository.AtualizarAsync(shortlist, shortlist.Version, cancellationToken);
 
             return shortlist.ParaResult();
         }

@@ -19,7 +19,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             await _colecaoShortlist.InsertOneAsync(shortlist.MapToEntity(), options: null, cancellationToken);
         }
 
-        public async Task AtualizarAsync(Shortlist shortlist, CancellationToken cancellationToken = default)
+        public async Task AtualizarAsync(Shortlist shortlist, long expectedVersion, CancellationToken cancellationToken = default)
         {
             var filter = Builders<ShortlistDocument>.Filter.Eq(s => s.Id, shortlist.Id) & Builders<ShortlistDocument>.Filter.Eq(s => s.OlheiroId, shortlist.OlheiroId);
             await _colecaoShortlist.ReplaceOneAsync(filter, shortlist.MapToEntity(), new ReplaceOptions { IsUpsert = false }, cancellationToken);

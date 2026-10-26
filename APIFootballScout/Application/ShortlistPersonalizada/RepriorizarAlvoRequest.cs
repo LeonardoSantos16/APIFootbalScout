@@ -4,5 +4,6 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
         Guid OlheiroId,
         Guid ShortlistId,
         int JogadorId,
-        int Prioridade);
+        int Prioridade,
+        long ExpectedVersion);
 }

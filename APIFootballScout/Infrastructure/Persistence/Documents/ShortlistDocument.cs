@@ -20,6 +20,9 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
 
         [BsonElement("alvos")]
         public AlvoDocument[] Alvos { get; set; } = [];
+
+        [BsonElement("version")]
+        public long Version { get; set; }
     }
 
     internal sealed class AlvoDocument

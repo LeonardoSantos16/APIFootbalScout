@@ -8,8 +8,13 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
     internal static class ShortlistMapper
     {
         public static Shortlist MapToDomain(this ShortlistDocument document)
-            => Shortlist.Restaurar(id: document.Id, nome: document.Nome, olheiroId: document.OlheiroId, limite: new LimiteDeAlvos(document.LimiteDeAlvos),
+        {
+            var shortlist = Shortlist.Restaurar(id: document.Id, nome: document.Nome, olheiroId: document.OlheiroId, limite: new LimiteDeAlvos(document.LimiteDeAlvos),
                 alvos: [.. document.Alvos.Select(alvo => MapAlvoToDomain(alvo))]);
+            shortlist.AtualizarVersao(document.Version);
+
+            return shortlist;
+        }
 
 
 
@@ -19,7 +24,8 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
             Nome = shortlist.Nome,
             LimiteDeAlvos = shortlist.Limite.Valor,
             Alvos = [.. shortlist.Alvos.Select(alvo => MapAlvoToEntity(alvo))],
-            OlheiroId = shortlist.OlheiroId
+            OlheiroId = shortlist.OlheiroId,
+            Version = shortlist.Version
         };
 
         private static AlvoDocument MapAlvoToEntity(Alvo alvo) => new()
