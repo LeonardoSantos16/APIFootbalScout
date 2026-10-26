@@ -12,7 +12,7 @@ namespace APIFootballScout.Contracts.ShortlistPersonalizada
             => new(olheiroId, dto.Nome);
 
         public static RemoverAlvoRequest ParaRequest(Guid olheiroId, Guid shortlistId, int jogadorId, long expectedVersion)
-            => new(olheiroId, shortlistId, jogadorId, 0);
+            => new(olheiroId, shortlistId, jogadorId, expectedVersion);
 
         public static ObterShortlistRequest ParaRequest(Guid olheiroId, Guid shortlistId)
             => new(olheiroId, shortlistId);
@@ -22,14 +22,14 @@ namespace APIFootballScout.Contracts.ShortlistPersonalizada
 
         public static AdicionarAlvoRequest ParaRequest(
             this AdicionarAlvoRequestDto dto, Guid olheiroId, Guid shortlistId, long expectedVersion)
-            => new(olheiroId, shortlistId, dto.JogadorId, dto.Prioridade, new Dinheiro(dto.CustoEstimado.QuantiaEmCentavos, dto.CustoEstimado.Moeda), 0);
+            => new(olheiroId, shortlistId, dto.JogadorId, dto.Prioridade, new Dinheiro(dto.CustoEstimado.QuantiaEmCentavos, dto.CustoEstimado.Moeda), expectedVersion);
 
         public static RepriorizarAlvoRequest ParaRequest(
             this RepriorizarAlvoRequestDto dto, Guid olheiroId, Guid shortlistId, int jogadorId, long expectedVersion)
-            => new(olheiroId, shortlistId, jogadorId, dto.Prioridade, 0);
+            => new(olheiroId, shortlistId, jogadorId, dto.Prioridade, expectedVersion);
 
         public static ShortlistResponseDto ParaResponse(this ShortlistResult result)
-            => new(result.ShortlistId, result.Nome, result.LimiteDeAlvos, ParaDto(result.Alvos), 0, ParaDtoOuNulo(result.CustoTotal));
+            => new(result.ShortlistId, result.Nome, result.LimiteDeAlvos, ParaDto(result.Alvos), result.Version, ParaDtoOuNulo(result.CustoTotal));
 
         public static IReadOnlyList<ShortlistResponseDto> ParaResponse(
             this IEnumerable<ShortlistResult> resultados)

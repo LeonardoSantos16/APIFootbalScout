@@ -59,6 +59,7 @@ namespace APIFootballScout
             NaoAutenticadoException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
             RecursoNaoEncontradoException => (StatusCodes.Status404NotFound, "Resource not found"),
             ConflitoDeDominioException => (StatusCodes.Status409Conflict, "Operation conflict"),
+            ConflitoDeConcorrenciaException => (StatusCodes.Status412PreconditionFailed, "Precondition failed"),
             RegraDeNegocioException => (StatusCodes.Status422UnprocessableEntity, "Business rule violation"),
             ValorInvalidoException => (StatusCodes.Status400BadRequest, "Invalid request"),
             FonteExternaIndisponivelException => (StatusCodes.Status502BadGateway, "External data source unavailable"),
