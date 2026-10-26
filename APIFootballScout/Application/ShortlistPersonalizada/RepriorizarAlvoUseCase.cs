@@ -21,7 +21,7 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
 
             shortlist.AtualizarPrioridade(request.JogadorId, new Prioridade(request.Prioridade));
 
-            await _shortlistRepository.AtualizarAsync(shortlist, cancellationToken);
+            await _shortlistRepository.AtualizarAsync(shortlist, request.ExpectedVersion, cancellationToken);
             return shortlist.ParaResult();
         }
     }

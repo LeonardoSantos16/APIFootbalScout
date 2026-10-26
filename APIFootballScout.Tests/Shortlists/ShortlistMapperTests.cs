@@ -64,6 +64,20 @@ namespace APIFootballScout.Tests.Shortlists
         }
 
         [Fact]
+        public void A_versao_sobrevive_ao_round_trip()
+        {
+            // Arrange
+            var original = ShortlistCom(25, 1001);
+            original.AtualizarVersao(7);
+
+            // Act
+            var restaurada = RoundTrip(original);
+
+            // Assert
+            Assert.Equal(7, restaurada.Version);
+        }
+
+        [Fact]
         public void O_limite_sobrevive_ao_round_trip()
         {
             // Arrange

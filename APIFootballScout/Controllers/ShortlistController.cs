@@ -14,7 +14,9 @@ namespace APIFootballScout.Controllers
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status412PreconditionFailed)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status428PreconditionRequired)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     public class ShortlistController(AdicionarAlvoUseCase adicionarAlvoUseCase, CriarShortlistUseCase criarShortlistUseCase,
         ListarShortlistsDoOlheiroUseCase listarShortlistDoOlheiroUseCase, ObterShortlistUseCase obterShortlistUseCase,
@@ -30,6 +32,8 @@ namespace APIFootballScout.Controllers
             var shortlistCriada = await criarShortlistUseCase.CriarShortlist(
                 dto.ParaRequest(OlheiroId), cancellationToken);
 
+            VersionETag.Set(Response, shortlistCriada.Version);
+
             return CreatedAtAction(
                 nameof(Obter),
                 new { shortlistId = shortlistCriada.ShortlistId },
@@ -43,6 +47,8 @@ namespace APIFootballScout.Controllers
         {
             var shortlist = await obterShortlistUseCase.ObterShortlist(
                 ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId), cancellationToken);
+
+            VersionETag.Set(Response, shortlist.Version);
 
             return Ok(shortlist.ParaResponse());
         }
@@ -63,10 +69,16 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<ShortlistResponseDto>> AdicionarAlvo(
             [FromRoute] Guid shortlistId,
             [FromBody] AdicionarAlvoRequestDto dto,
+            [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
+                return VersaoAusente();
+
             var shortlist = await adicionarAlvoUseCase.AdicionarAlvo(
-                dto.ParaRequest(OlheiroId, shortlistId), cancellationToken);
+                dto.ParaRequest(OlheiroId, shortlistId, expectedVersion), cancellationToken);
+
+            VersionETag.Set(Response, shortlist.Version);
 
             return CreatedAtAction(
                 nameof(Obter),
@@ -80,10 +92,16 @@ namespace APIFootballScout.Controllers
             [FromRoute] Guid shortlistId,
             [FromRoute] int jogadorId,
             [FromBody] RepriorizarAlvoRequestDto dto,
+            [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
+                return VersaoAusente();
+
             var shortlist = await repriorizarAlvoUseCase.RepriorizarAlvo(
-                dto.ParaRequest(OlheiroId, shortlistId, jogadorId), cancellationToken);
+                dto.ParaRequest(OlheiroId, shortlistId, jogadorId, expectedVersion), cancellationToken);
+
+            VersionETag.Set(Response, shortlist.Version);
 
             return Ok(shortlist.ParaResponse());
         }
@@ -93,12 +111,24 @@ namespace APIFootballScout.Controllers
         public async Task<ActionResult<ShortlistResponseDto>> DeletarAlvo(
             [FromRoute] Guid shortlistId,
             [FromRoute] int jogadorId,
+            [FromHeader(Name = "If-Match")] string? ifMatch,
             CancellationToken cancellationToken)
         {
+            if (!VersionETag.TryParse(ifMatch, out var expectedVersion))
+                return VersaoAusente();
+
             var shortlist = await removerAlvoUseCase.RemoverAlvo(
-                ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId, jogadorId), cancellationToken);
+                ShortlistDtoMappers.ParaRequest(OlheiroId, shortlistId, jogadorId, expectedVersion), cancellationToken);
+
+            VersionETag.Set(Response, shortlist.Version);
 
             return Ok(shortlist.ParaResponse());
         }
+
+        private ObjectResult VersaoAusente()
+            => Problem(
+                statusCode: StatusCodes.Status428PreconditionRequired,
+                title: "Precondition required",
+                detail: "Envie o header If-Match com a versao da shortlist recebida no ETag.");
     }
 }

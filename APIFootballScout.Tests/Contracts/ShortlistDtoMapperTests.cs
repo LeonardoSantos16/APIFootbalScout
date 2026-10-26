@@ -25,7 +25,8 @@ namespace APIFootballScout.Tests.Contracts
                 Alvos: alvos,
                 CustoTotal: alvos.Length == 0
                     ? null
-                    : alvos.Select(a => a.CustoEstimado).Aggregate((a, b) => a.Somar(b)));
+                    : alvos.Select(a => a.CustoEstimado).Aggregate((a, b) => a.Somar(b)),
+                Version: 4);
 
         private static AlvoResult Alvo(int jogadorId, int prioridade, long milhoes)
             => new(JogadorId: jogadorId, Prioridade: prioridade, CustoEstimado: Euros(milhoes));
@@ -56,7 +57,7 @@ namespace APIFootballScout.Tests.Contracts
             };
 
             // Act
-            var request = dto.ParaRequest(OlheiroId, ShortlistId);
+            var request = dto.ParaRequest(OlheiroId, ShortlistId, expectedVersion: 4);
 
             // Assert
             Assert.Equal(OlheiroId, request.OlheiroId);
@@ -73,13 +74,72 @@ namespace APIFootballScout.Tests.Contracts
             var dto = new RepriorizarAlvoRequestDto { Prioridade = 3 };
 
             // Act
-            var request = dto.ParaRequest(OlheiroId, ShortlistId, jogadorId: 1001);
+            var request = dto.ParaRequest(OlheiroId, ShortlistId, jogadorId: 1001, expectedVersion: 4);
 
             // Assert
             Assert.Equal(OlheiroId, request.OlheiroId);
             Assert.Equal(ShortlistId, request.ShortlistId);
             Assert.Equal(1001, request.JogadorId);
             Assert.Equal(3, request.Prioridade);
+        }
+
+        [Fact]
+        public void A_adicao_leva_a_versao_esperada_ao_request()
+        {
+            // Arrange
+            var dto = new AdicionarAlvoRequestDto
+            {
+                JogadorId = 1001,
+                Prioridade = 1,
+                CustoEstimado = new DinheiroDto(QuantiaEmCentavos: 500_000_000, Moeda: "EUR")
+            };
+
+            // Act
+            var request = dto.ParaRequest(OlheiroId, ShortlistId, expectedVersion: 4);
+
+            // Assert
+            Assert.Equal(4, request.ExpectedVersion);
+        }
+
+        [Fact]
+        public void A_repriorizacao_leva_a_versao_esperada_ao_request()
+        {
+            // Arrange
+            var dto = new RepriorizarAlvoRequestDto { Prioridade = 3 };
+
+            // Act
+            var request = dto.ParaRequest(OlheiroId, ShortlistId, jogadorId: 1001, expectedVersion: 4);
+
+            // Assert
+            Assert.Equal(4, request.ExpectedVersion);
+        }
+
+        [Fact]
+        public void A_remocao_leva_a_versao_esperada_ao_request()
+        {
+            // Act
+            var request = ShortlistDtoMappers.ParaRequest(OlheiroId, ShortlistId, jogadorId: 1001, expectedVersion: 4);
+
+            // Assert
+            Assert.Equal(OlheiroId, request.OlheiroId);
+            Assert.Equal(ShortlistId, request.ShortlistId);
+            Assert.Equal(1001, request.JogadorId);
+            Assert.Equal(4, request.ExpectedVersion);
+        }
+
+        [Fact]
+        public void A_resposta_traz_a_versao()
+        {
+            // Arrange
+            var result = Shortlist(Alvo(1001, 1, 4));
+
+            // Act
+            var response = result.ParaResponse();
+            var json = JsonSerializer.Serialize(response, OpcoesDaApi);
+
+            // Assert
+            Assert.Equal(4, response.Version);
+            Assert.Contains("\"version\":4", json);
         }
 
         [Fact]

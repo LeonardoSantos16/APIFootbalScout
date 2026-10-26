@@ -146,6 +146,7 @@ O push da tag roda os testes de novo e publica a imagem com as tags semver e `la
 - [x] **Relatório de scouting** (F5).
 - [x] **Shortlist priorizada** (F7).
 - [x] **Métricas por 90 minutos e comparação direta** (F9 e F10).
+- [ ] **Política de CORS para o front:** a API ainda não configura CORS. Ao configurar, expor o header `ETag` (`WithExposedHeaders("ETag")`): sem isso o navegador o esconde de uma origem diferente, e o front não consegue enviar o `If-Match` que as escritas de shortlist e relatório exigem ([ADR 0005](docs/adr/0005-concorrencia-otimista-com-etag-e-if-match.md)).
 - [ ] **Histórico de jogadores consultados:** registro dos últimos jogadores vistos por olheiro. Hoje só existe a gravação do jogador na primeira consulta do perfil, sem limite e sem leitura.
 
 ---

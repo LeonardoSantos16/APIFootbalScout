@@ -39,5 +39,6 @@ namespace APIFootballScout.Contracts.ShortlistPersonalizada
         string Nome,
         int LimiteDeAlvos,
         IReadOnlyList<AlvoResponseDto> Alvos,
+        long Version,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DinheiroDto? CustoTotal = null);
 }

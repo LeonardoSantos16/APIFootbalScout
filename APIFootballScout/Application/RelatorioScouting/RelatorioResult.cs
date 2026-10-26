@@ -16,5 +16,6 @@ namespace APIFootballScout.Application.RelatorioScouting
         DateTimeOffset ObservadoEm,
         DateTimeOffset EscritoEm,
         DateTimeOffset? FinalizadoEm,
-        Guid? CorrigeRelatorioId);
+        Guid? CorrigeRelatorioId,
+        long Version);
 }

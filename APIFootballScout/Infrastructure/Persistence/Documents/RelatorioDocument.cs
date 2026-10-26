@@ -33,5 +33,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Documents
         [BsonElement("corrige_relatorio_id")]
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Guid? CorrigeRelatorioId { get; set; }
+        [BsonElement("version")]
+        public long Version { get; set; }
     }
 }

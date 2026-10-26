@@ -57,6 +57,7 @@ namespace APIFootballScout.Contracts.RelatorioScouting
         DateTimeOffset EscritoEm,
         IReadOnlyList<string> PontosPositivos,
         IReadOnlyList<string> PontosNegativos,
+        long Version,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] decimal? Nota = null,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParecerDto? Parecer = null,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTimeOffset? FinalizadoEm = null,

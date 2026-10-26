@@ -8,7 +8,7 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
     {
         public static Relatorio MapToDomain(RelatorioDocument document)
         {
-            return Relatorio.Restaurar(
+            var relatorio = Relatorio.Restaurar(
                 id: document.Id,
                 jogadorId: document.JogadorId,
                 olheiroId: document.OlheiroId,
@@ -23,6 +23,9 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
                 finalizadoEm: document.FinalizadoEm,
                 corrigeRelatorioId: document.CorrigeRelatorioId
                 );
+            relatorio.AtualizarVersao(document.Version);
+
+            return relatorio;
         }
 
         public static RelatorioDocument MapToEntity(Relatorio relatorio) => new()
@@ -39,7 +42,8 @@ namespace APIFootballScout.Infrastructure.Persistence.Mappers
             Nota = relatorio.Nota?.Valor,
             Parecer = relatorio.Parecer?.ToString(),
             FinalizadoEm = relatorio.FinalizadoEm?.UtcDateTime,
-            CorrigeRelatorioId = relatorio.CorrigeRelatorioId
+            CorrigeRelatorioId = relatorio.CorrigeRelatorioId,
+            Version = relatorio.Version
         };
 
         private static T ParseOuFalhar<T>(string valor, Guid documentoId) where T : struct, Enum

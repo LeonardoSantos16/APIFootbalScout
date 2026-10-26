@@ -43,28 +43,32 @@ namespace APIFootballScout.Tests.Shortlists
             int jogadorId = 1001,
             int prioridade = 1,
             Guid? olheiroId = null,
-            Dinheiro? custoEstimado = null)
+            Dinheiro? custoEstimado = null,
+            long? versao = null)
             => new(
                 OlheiroId: olheiroId ?? OlheiroId,
                 ShortlistId: shortlistId,
                 JogadorId: jogadorId,
                 Prioridade: prioridade,
-                CustoEstimado: custoEstimado ?? Euros(5));
+                CustoEstimado: custoEstimado ?? Euros(5),
+                ExpectedVersion: versao ?? Shortlists.VersaoDe(shortlistId));
 
         public RemoverAlvoRequest PedidoDeRemocao(
-            Guid shortlistId, int jogadorId, Guid? olheiroId = null)
-            => new(
-                OlheiroId: olheiroId ?? OlheiroId,
-                ShortlistId: shortlistId,
-                JogadorId: jogadorId);
-
-        public RepriorizarAlvoRequest PedidoDeRepriorizacao(
-            Guid shortlistId, int jogadorId, int prioridade, Guid? olheiroId = null)
+            Guid shortlistId, int jogadorId, Guid? olheiroId = null, long? versao = null)
             => new(
                 OlheiroId: olheiroId ?? OlheiroId,
                 ShortlistId: shortlistId,
                 JogadorId: jogadorId,
-                Prioridade: prioridade);
+                ExpectedVersion: versao ?? Shortlists.VersaoDe(shortlistId));
+
+        public RepriorizarAlvoRequest PedidoDeRepriorizacao(
+            Guid shortlistId, int jogadorId, int prioridade, Guid? olheiroId = null, long? versao = null)
+            => new(
+                OlheiroId: olheiroId ?? OlheiroId,
+                ShortlistId: shortlistId,
+                JogadorId: jogadorId,
+                Prioridade: prioridade,
+                ExpectedVersion: versao ?? Shortlists.VersaoDe(shortlistId));
 
         public ObterShortlistRequest PedidoDeConsulta(Guid shortlistId, Guid? olheiroId = null)
             => new(OlheiroId: olheiroId ?? OlheiroId, ShortlistId: shortlistId);

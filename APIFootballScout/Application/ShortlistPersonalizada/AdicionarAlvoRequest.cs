@@ -7,5 +7,6 @@ namespace APIFootballScout.Application.ShortlistPersonalizada
         Guid ShortlistId,
         int JogadorId,
         int Prioridade,
-        Dinheiro CustoEstimado);
+        Dinheiro CustoEstimado,
+        long ExpectedVersion);
 }

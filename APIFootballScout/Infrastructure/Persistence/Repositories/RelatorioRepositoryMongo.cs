@@ -1,4 +1,5 @@
-﻿using APIFootballScout.Domain.RelatorioScouting.Aggregate;
+﻿using APIFootballScout.Domain.Base.Exceptions;
+using APIFootballScout.Domain.RelatorioScouting.Aggregate;
 using APIFootballScout.Domain.Repository;
 using APIFootballScout.Infrastructure.Persistence.Documents;
 using APIFootballScout.Infrastructure.Persistence.Mappers;
@@ -18,15 +19,25 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
 
         public async Task AdicionarAsync(Relatorio relatorio, CancellationToken cancellationToken = default)
         {
+            relatorio.AtualizarVersao(1);
             var relatorioDocument = RelatorioMapper.MapToEntity(relatorio);
             await _colecaoRelatorio.InsertOneAsync(relatorioDocument, options: null, cancellationToken);
         }
 
-        public async Task AtualizarAsync(Relatorio relatorio, CancellationToken cancellationToken = default)
+        public async Task AtualizarAsync(Relatorio relatorio, long expectedVersion, CancellationToken cancellationToken = default)
         {
+            var filter = Builders<RelatorioDocument>.Filter.Eq(r => r.Id, relatorio.Id)
+                & Builders<RelatorioDocument>.Filter.Eq(r => r.Version, expectedVersion);
+            relatorio.AtualizarVersao(expectedVersion + 1);
             var relatorioDocument = RelatorioMapper.MapToEntity(relatorio);
-            var filter = Builders<RelatorioDocument>.Filter.Eq(r => r.Id, relatorioDocument.Id);
-            await _colecaoRelatorio.ReplaceOneAsync(filter, relatorioDocument, new ReplaceOptions { IsUpsert = false }, cancellationToken);
+            var relatorioBd = await _colecaoRelatorio.ReplaceOneAsync(filter, relatorioDocument, new ReplaceOptions { IsUpsert = false }, cancellationToken);
+
+            if (relatorioBd.MatchedCount == 0)
+            {
+                throw new ConflitoDeConcorrenciaException(
+                   "relatorio.alterado_por_outra_requisicao",
+                   "O relatorio foi alterado por outra requisição. Recarregue e tente novamente.");
+            }
         }
 
         public async Task<IReadOnlyList<Relatorio>> ListarPorJogadorAsync(int jogadorId, Guid olheiroId, CancellationToken cancellationToken = default)

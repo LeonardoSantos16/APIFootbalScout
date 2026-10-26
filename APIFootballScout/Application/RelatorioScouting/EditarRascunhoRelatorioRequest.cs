@@ -5,6 +5,7 @@ namespace APIFootballScout.Application.RelatorioScouting
     public sealed record EditarRascunhoRelatorioRequest(
         Guid OlheiroId,
         Guid RelatorioId,
+        long ExpectedVersion,
         string? Texto = null,
         decimal? Nota = null,
         IReadOnlyList<string>? PontosPositivos = null,
