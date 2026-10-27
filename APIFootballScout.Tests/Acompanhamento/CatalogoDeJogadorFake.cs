@@ -9,12 +9,19 @@ namespace APIFootballScout.Tests.Acompanhamento
         public ConjuntoDeEstatisticas? Estatisticas { get; set; }
         public Recorte? UltimoRecorte { get; private set; }
         public int Chamadas { get; private set; }
+        public Task? Bloqueio { get; set; }
 
-        public Task<PerfilDoJogador?> ObterPerfilDoJogador(int jogadorId, Recorte recorte, CancellationToken ct = default)
+        public async Task<PerfilDoJogador?> ObterPerfilDoJogador(int jogadorId, Recorte recorte, CancellationToken ct = default)
         {
             Chamadas++;
             UltimoRecorte = recorte;
-            return Task.FromResult(Perfil);
+
+            if (Bloqueio is not null)
+            {
+                await Bloqueio;
+            }
+
+            return Perfil;
         }
 
         public Task<ConjuntoDeEstatisticas?> ObterEstatisticas(int jogadorId, Recorte recorte, CancellationToken ct = default)

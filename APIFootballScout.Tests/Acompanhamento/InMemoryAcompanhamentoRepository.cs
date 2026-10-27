@@ -6,11 +6,20 @@ namespace APIFootballScout.Tests.Acompanhamento
     internal sealed class InMemoryAcompanhamentoRepository : IAcompanhamentoRepository
     {
         private readonly List<Dossie> _dossies = [];
+        private readonly Dictionary<Guid, int> _vagasOcupadas = [];
         public IReadOnlyList<Dossie> Todos => _dossies;
         public int Atualizacoes { get; private set; }
+        public Exception? FalhaNaInsercao { get; set; }
+
+        public int VagasOcupadas(Guid olheiroId) => _vagasOcupadas.GetValueOrDefault(olheiroId);
 
         public Task AdicionarAsync(Dossie dossie, CancellationToken cancellationToken = default)
         {
+            if (FalhaNaInsercao is not null)
+            {
+                throw FalhaNaInsercao;
+            }
+
             _dossies.Add(dossie);
             return Task.CompletedTask;
         }
@@ -29,11 +38,31 @@ namespace APIFootballScout.Tests.Acompanhamento
             return Task.CompletedTask;
         }
 
-        public Task<int> ContarDossiesAtivosAsync(Guid olheiroId, CancellationToken cancellationToken = default)
+        public Task<bool> ReservarVagaDeAcompanhamentoAsync(Guid olheiroId, int limite, CancellationToken cancellationToken = default)
         {
-            var contDossie = _dossies.Count(d => d.OlheiroId == olheiroId && d.Status == StatusDossie.Ativo);
+            if (!_vagasOcupadas.TryGetValue(olheiroId, out var ocupadas))
+            {
+                ocupadas = _dossies.Count(d => d.OlheiroId == olheiroId && d.Status == StatusDossie.Ativo);
+            }
 
-            return Task.FromResult(contDossie);
+            if (ocupadas >= limite)
+            {
+                _vagasOcupadas[olheiroId] = ocupadas;
+                return Task.FromResult(false);
+            }
+
+            _vagasOcupadas[olheiroId] = ocupadas + 1;
+            return Task.FromResult(true);
+        }
+
+        public Task LiberarVagaDeAcompanhamentoAsync(Guid olheiroId, CancellationToken cancellationToken = default)
+        {
+            if (_vagasOcupadas.GetValueOrDefault(olheiroId) > 0)
+            {
+                _vagasOcupadas[olheiroId]--;
+            }
+
+            return Task.CompletedTask;
         }
 
         public Task<List<Dossie>> ObterPorIdAsync(Guid olheiroId, int jogadorId, CancellationToken cancellationToken = default)
@@ -46,6 +75,7 @@ namespace APIFootballScout.Tests.Acompanhamento
         public Task RemoverTodosDoOlheiroAsync(Guid olheiroId, CancellationToken cancellationToken = default)
         {
             _dossies.RemoveAll(d => d.OlheiroId == olheiroId);
+            _vagasOcupadas.Remove(olheiroId);
 
             return Task.CompletedTask;
         }
