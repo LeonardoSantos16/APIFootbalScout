@@ -196,6 +196,7 @@ using (var scope = app.Services.CreateScope())
     await AcompanhamentoRepositoryMongo.GarantirIndicesAsync(mongoClient);
     await UserRepositoryMongo.GarantirIndicesAsync(mongoClient);
     await RefreshTokenRepositoryMongo.GarantirIndicesAsync(mongoClient);
+    await RefreshTokenRepositoryMongo.GarantirIndicesTtlParaTokensVencidosAsync(mongoClient);
 }
 
 app.MapControllers();

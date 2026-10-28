@@ -13,6 +13,17 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             _colecaoTokens = HelperObterColecao.ObterColecao<RefreshTokenDocument>(mongoClient, "refresh_tokens");
         }
 
+        public static Task GarantirIndicesTtlParaTokensVencidosAsync(IMongoClient mongoClient, CancellationToken cancellationToken = default)
+        {
+            var colecao = HelperObterColecao.ObterColecao<RefreshTokenDocument>(mongoClient, "refresh_tokens");
+
+            var opcoes = new CreateIndexOptions { Name = "ttl_expires_at_utc", ExpireAfter = TimeSpan.FromDays(7) };
+
+            return colecao.Indexes.CreateOneAsync(
+                new CreateIndexModel<RefreshTokenDocument>(Builders<RefreshTokenDocument>.IndexKeys.Ascending(t => t.ExpiresAtUtc), opcoes),
+                cancellationToken: cancellationToken);
+        }
+
         public static Task GarantirIndicesAsync(IMongoClient mongoClient, CancellationToken cancellationToken = default)
         {
             var colecao = HelperObterColecao.ObterColecao<RefreshTokenDocument>(mongoClient, "refresh_tokens");
