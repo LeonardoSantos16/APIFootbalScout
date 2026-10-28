@@ -83,5 +83,61 @@ namespace APIFootballScout.Tests.Auth
             Assert.Null(ctx.Tokens.PorToken(outroDispositivo.RefreshToken)!.RevokedAtUtc);
             Assert.Equal(2, ctx.Tokens.Ativos.Count());
         }
+
+        [Fact]
+        public async Task Execute_simultaneo_com_o_mesmo_token_emite_uma_unica_sessao()
+        {
+            // Arrange
+            var ctx = new AuthTestContext();
+            var (usuario, sessao) = await ctx.SeedUsuarioAsync();
+            var outroDispositivo = await ctx.Issuer.EmitirAsync(usuario);
+            var leituraLiberada = new TaskCompletionSource();
+            ctx.Tokens.Bloqueio = leituraLiberada.Task;
+
+            // Act
+            Task[] refreshes =
+            [
+                ctx.NovoRefresh().Execute(sessao.RefreshToken),
+                ctx.NovoRefresh().Execute(sessao.RefreshToken)
+            ];
+            leituraLiberada.SetResult();
+
+            // Assert
+            var excecao = await Assert.ThrowsAsync<NaoAutenticadoException>(() => Task.WhenAll(refreshes));
+            Assert.Equal("usuario.refresh_token_invalido", excecao.Codigo);
+            Assert.Contains(refreshes, r => r.IsCompletedSuccessfully);
+            Assert.Contains(refreshes, r => r.IsFaulted);
+
+            Assert.Equal(3, ctx.Tokens.Todos.Count);
+            Assert.NotNull(ctx.Tokens.PorToken(sessao.RefreshToken)!.RevokedAtUtc);
+            Assert.Null(ctx.Tokens.PorToken(outroDispositivo.RefreshToken)!.RevokedAtUtc);
+            Assert.Equal(2, ctx.Tokens.Ativos.Count());
+        }
+
+        [Fact]
+        public async Task Execute_com_token_revogado_durante_o_refresh_lanca_sem_emitir_sessao()
+        {
+            // Arrange
+            var ctx = new AuthTestContext();
+            var (usuario, sessao) = await ctx.SeedUsuarioAsync();
+            var outroDispositivo = await ctx.Issuer.EmitirAsync(usuario);
+            var leituraLiberada = new TaskCompletionSource();
+            ctx.Tokens.Bloqueio = leituraLiberada.Task;
+
+            var refresh = ctx.NovoRefresh().Execute(sessao.RefreshToken);
+            ctx.Tokens.Bloqueio = null;
+            await ctx.NovoSignOut().Execute(usuario.Id, sessao.RefreshToken);
+
+            // Act
+            leituraLiberada.SetResult();
+
+            // Assert
+            var excecao = await Assert.ThrowsAsync<NaoAutenticadoException>(() => refresh);
+            Assert.Equal("usuario.refresh_token_invalido", excecao.Codigo);
+
+            Assert.Equal(2, ctx.Tokens.Todos.Count);
+            Assert.Null(ctx.Tokens.PorToken(sessao.RefreshToken)!.ReplacedByHash);
+            Assert.Null(ctx.Tokens.PorToken(outroDispositivo.RefreshToken)!.RevokedAtUtc);
+        }
     }
 }

@@ -194,6 +194,9 @@ using (var scope = app.Services.CreateScope())
     // R1.2 - indice unico parcial em (olheiro_id, jogador_id) restrito a status Ativo.
     var mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
     await AcompanhamentoRepositoryMongo.GarantirIndicesAsync(mongoClient);
+    await UserRepositoryMongo.GarantirIndicesAsync(mongoClient);
+    await RefreshTokenRepositoryMongo.GarantirIndicesAsync(mongoClient);
+    await RefreshTokenRepositoryMongo.GarantirIndicesTtlParaTokensVencidosAsync(mongoClient);
 }
 
 app.MapControllers();

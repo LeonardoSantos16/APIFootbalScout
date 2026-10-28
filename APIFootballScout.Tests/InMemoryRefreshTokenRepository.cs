@@ -12,6 +12,8 @@ namespace APIFootballScout.Tests
         public IEnumerable<RefreshTokenDocument> Ativos =>
             _tokens.Values.Where(t => t.RevokedAtUtc is null);
 
+        public Task? Bloqueio { get; set; }
+
         public RefreshTokenDocument? PorToken(string refreshToken) =>
             _tokens.Values.FirstOrDefault(t => t.TokenHash == RefreshTokenHasher.Hash(refreshToken));
 
@@ -21,18 +23,40 @@ namespace APIFootballScout.Tests
             return Task.CompletedTask;
         }
 
-        public Task<RefreshTokenDocument?> ObterPorHashAsync(string tokenHash, CancellationToken cancellationToken = default)
-            => Task.FromResult(_tokens.Values.FirstOrDefault(t => t.TokenHash == tokenHash));
+        public async Task<RefreshTokenDocument?> ObterPorHashAsync(string tokenHash, CancellationToken cancellationToken = default)
+        {
+            var token = _tokens.Values.FirstOrDefault(t => t.TokenHash == tokenHash);
+            var lido = token is null ? null : Copiar(token);
 
-        public Task RevogarAsync(Guid id, DateTime revogadoEmUtc, string? substituidoPorHash, CancellationToken cancellationToken = default)
+            if (Bloqueio is not null)
+            {
+                await Bloqueio;
+            }
+
+            return lido;
+        }
+
+        private static RefreshTokenDocument Copiar(RefreshTokenDocument token) => new()
+        {
+            Id = token.Id,
+            UserId = token.UserId,
+            TokenHash = token.TokenHash,
+            ExpiresAtUtc = token.ExpiresAtUtc,
+            CreatedAtUtc = token.CreatedAtUtc,
+            RevokedAtUtc = token.RevokedAtUtc,
+            ReplacedByHash = token.ReplacedByHash
+        };
+
+        public Task<bool> RevogarAsync(Guid id, DateTime revogadoEmUtc, string? substituidoPorHash, CancellationToken cancellationToken = default)
         {
             if (_tokens.TryGetValue(id, out var token) && token.RevokedAtUtc is null)
             {
                 token.RevokedAtUtc = revogadoEmUtc;
                 token.ReplacedByHash = substituidoPorHash;
+                return Task.FromResult(true);
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
 
         public Task RevogarTodosDoUsuarioAsync(Guid userId, DateTime revogadoEmUtc, CancellationToken cancellationToken = default)
