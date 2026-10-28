@@ -42,15 +42,18 @@ namespace APIFootballScout.Application.User
                 throw TokenInvalido();
             }
 
-            var novaSessao = await sessionIssuer.EmitirAsync(user, cancellationToken);
+            var tokens = sessionIssuer.GerarTokens(user);
 
-            await refreshTokenRepository.RevogarAsync(
+            var revogado = await refreshTokenRepository.RevogarAsync(
                 armazenado.Id,
                 agora,
-                RefreshTokenHasher.Hash(novaSessao.RefreshToken),
+                RefreshTokenHasher.Hash(tokens.RefreshToken),
                 cancellationToken);
 
-            return novaSessao;
+            if (!revogado)
+                throw TokenInvalido();
+
+            return await sessionIssuer.GravarAsync(user, tokens, cancellationToken);
         }
 
         private static readonly Action<ILogger, Guid, Exception?> LogReusoDeTokenRotacionado =

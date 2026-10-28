@@ -9,14 +9,18 @@ namespace APIFootballScout.Application.User
         IRefreshTokenRepository refreshTokenRepository,
         TimeProvider timeProvider)
     {
-        public async Task<AuthResult> EmitirAsync(UserDocument user, CancellationToken cancellationToken = default)
-        {
-            var tokens = tokenService.GenerateTokens(new TokenSubject(
+        public Task<AuthResult> EmitirAsync(UserDocument user, CancellationToken cancellationToken = default)
+            => GravarAsync(user, GerarTokens(user), cancellationToken);
+
+        public TokenResult GerarTokens(UserDocument user)
+            => tokenService.GenerateTokens(new TokenSubject(
                 user.Id,
                 user.Email,
                 user.SecurityStamp,
                 user.Roles));
 
+        public async Task<AuthResult> GravarAsync(UserDocument user, TokenResult tokens, CancellationToken cancellationToken = default)
+        {
             await refreshTokenRepository.AdicionarAsync(new RefreshTokenDocument
             {
                 Id = Guid.NewGuid(),

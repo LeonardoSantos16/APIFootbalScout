@@ -47,15 +47,16 @@ namespace APIFootballScout.Tests
             ReplacedByHash = token.ReplacedByHash
         };
 
-        public Task RevogarAsync(Guid id, DateTime revogadoEmUtc, string? substituidoPorHash, CancellationToken cancellationToken = default)
+        public Task<bool> RevogarAsync(Guid id, DateTime revogadoEmUtc, string? substituidoPorHash, CancellationToken cancellationToken = default)
         {
             if (_tokens.TryGetValue(id, out var token) && token.RevokedAtUtc is null)
             {
                 token.RevokedAtUtc = revogadoEmUtc;
                 token.ReplacedByHash = substituidoPorHash;
+                return Task.FromResult(true);
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
 
         public Task RevogarTodosDoUsuarioAsync(Guid userId, DateTime revogadoEmUtc, CancellationToken cancellationToken = default)

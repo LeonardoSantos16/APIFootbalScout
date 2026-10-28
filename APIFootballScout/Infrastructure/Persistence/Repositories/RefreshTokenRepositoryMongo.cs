@@ -19,14 +19,18 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
         public Task<RefreshTokenDocument?> ObterPorHashAsync(string tokenHash, CancellationToken cancellationToken = default)
             => _colecaoTokens.Find(t => t.TokenHash == tokenHash).FirstOrDefaultAsync(cancellationToken)!;
 
-        public Task RevogarAsync(Guid id, DateTime revogadoEmUtc, string? substituidoPorHash, CancellationToken cancellationToken = default)
-            => _colecaoTokens.UpdateOneAsync(
+        public async Task<bool> RevogarAsync(Guid id, DateTime revogadoEmUtc, string? substituidoPorHash, CancellationToken cancellationToken = default)
+        {
+            var resultado = await _colecaoTokens.UpdateOneAsync(
                 t => t.Id == id && t.RevokedAtUtc == null,
                 Builders<RefreshTokenDocument>.Update
                     .Set(t => t.RevokedAtUtc, revogadoEmUtc)
                     .Set(t => t.ReplacedByHash, substituidoPorHash),
                 options: null,
                 cancellationToken);
+
+            return resultado.ModifiedCount == 1;
+        }
 
         public Task RevogarTodosDoUsuarioAsync(Guid userId, DateTime revogadoEmUtc, CancellationToken cancellationToken = default)
             => _colecaoTokens.UpdateManyAsync(
