@@ -41,16 +41,29 @@ namespace APIFootballScout.Application.Acompanhamento
                     "The player is already being tracked by this scout.");
             }
 
-            var limiteAtingido = await _acompanhamentoService.VerificarLimiteDeAcompanhamentosAsync(
+            var vagaReservada = await _acompanhamentoRepository.ReservarVagaDeAcompanhamentoAsync(
                 request.OlheiroId, _limiteObservacoes, cancellationToken);
 
-            if (limiteAtingido)
+            if (!vagaReservada)
             {
                 throw new RegraDeNegocioException(
                     "acompanhamento.limite_atingido",
                     "The scout has reached the maximum number of players under observation.");
             }
 
+            try
+            {
+                return await AbrirComVagaReservada(request, cancellationToken);
+            }
+            catch
+            {
+                await _acompanhamentoRepository.LiberarVagaDeAcompanhamentoAsync(request.OlheiroId, CancellationToken.None);
+                throw;
+            }
+        }
+
+        private async Task<AbrirAcompanhamentoResult> AbrirComVagaReservada(AbrirAcompanhamentoRequest request, CancellationToken cancellationToken)
+        {
             var recorte = new Recorte(request.CompeticaoId, request.TemporadaId, request.Contexto);
 
             var perfilDoJogador = await _catalogoDeJogador.ObterPerfilDoJogador(request.JogadorId, recorte, cancellationToken);

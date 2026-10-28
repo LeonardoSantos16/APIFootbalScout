@@ -15,11 +15,5 @@ namespace APIFootballScout.Domain.Acompanhamento.Services
         {
             return await _acompanhamentoRepository.VerificarAcompanhamentoJogador(olheiroId, jogadorId, cancellationToken);
         }
-
-        public async Task<bool> VerificarLimiteDeAcompanhamentosAsync(Guid olheiroId, int limiteObservacoes, CancellationToken cancellationToken)
-        {
-            var dossiesAtivos = await _acompanhamentoRepository.ContarDossiesAtivosAsync(olheiroId, cancellationToken);
-            return dossiesAtivos >= limiteObservacoes;
-        }
     }
 }

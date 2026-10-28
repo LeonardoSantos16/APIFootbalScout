@@ -26,7 +26,7 @@ Regras que se decompõem recebem mais de uma categoria.
 | R1.4 | A linha de base registra a data em que foi medida | Invariante |
 | R1.5 | O encerramento do acompanhamento é uma transição de estado do dossiê | Decisão de modelagem |
 | R1.6 | Reacompanhar um jogador cria uma nova linha de base, sem restaurar a anterior | Decisão de modelagem |
-| R1.7 | Um olheiro tem limite de jogadores acompanhados simultaneamente | Política + Domain service |
+| R1.7 | Um olheiro tem limite de jogadores acompanhados simultaneamente | Política + contador atômico na persistência |
 | R1.8 | Um dossiê encerrado não aceita nova leitura nem nova comparação | Invariante |
 | R1.9 | Não se encerra um dossiê já encerrado | Invariante |
 | R1.10 | A data de encerramento é posterior à data de abertura | Invariante |
@@ -34,10 +34,10 @@ Regras que se decompõem recebem mais de uma categoria.
 **Notas**
 
 - R1.1 — o predicado responde se um jogador é acompanhável. É aplicado como guarda na abertura do dossiê e reaproveitável na exibição do resultado de busca.
-- R1.2 — unicidade que abrange múltiplas instâncias do agregado não pode ser garantida por nenhuma delas isoladamente. O mapeamento definiu que o olheiro não é raiz de agregado sobre os dossiês, o que mantém a classificação como domain service.
+- R1.2 — unicidade que abrange múltiplas instâncias do agregado não pode ser garantida por nenhuma delas isoladamente. O mapeamento definiu que o olheiro não é raiz de agregado sobre os dossiês, o que mantém a classificação como domain service. Sob concorrência, quem garante a regra é o índice único parcial de dossiês ativos por olheiro e jogador; a verificação do domain service só antecipa o erro.
 - R1.3 — a imutabilidade é obtida modelando a linha de base como value object, sem operação de alteração exposta. Não há verificação em tempo de execução.
 - R1.5 — a regra restringe o conjunto de operações existentes, não o estado. Encerrado é um estado do dossiê, e não existe operação de exclusão. As invariantes R1.8 a R1.10 decorrem dessa decisão.
-- R1.7 — mesma forma de R1.2: a condição abrange todos os dossiês do olheiro e nenhuma instância do agregado consegue verificá-la sozinha. Como o olheiro não é raiz de agregado, a verificação é domain service. O valor do limite é política.
+- R1.7 — mesma forma de R1.2: a condição abrange todos os dossiês do olheiro e nenhuma instância do agregado consegue verificá-la sozinha. Contar e depois inserir deixava duas aberturas simultâneas ultrapassarem o limite, então a abertura reserva uma vaga num contador por olheiro, com a condição no próprio update, e devolve a vaga se falhar (ver [ADR 0006](adr/0006-limite-de-acompanhamentos-com-contador-atomico.md)). O valor do limite é política.
 - R1.8 — o dossiê encerrado preserva a linha de base e permanece consultável, mas deixa de ser alimentado.
 
 ## F2 — Detecção de mudança
