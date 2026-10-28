@@ -13,6 +13,17 @@ namespace APIFootballScout.Infrastructure.Persistence.Repositories
             _colecaoTokens = HelperObterColecao.ObterColecao<RefreshTokenDocument>(mongoClient, "refresh_tokens");
         }
 
+        public static Task GarantirIndicesAsync(IMongoClient mongoClient, CancellationToken cancellationToken = default)
+        {
+            var colecao = HelperObterColecao.ObterColecao<RefreshTokenDocument>(mongoClient, "refresh_tokens");
+
+            var opcoes = new CreateIndexOptions { Name = "uniq_token_hash", Unique = true };
+
+            return colecao.Indexes.CreateOneAsync(
+                new CreateIndexModel<RefreshTokenDocument>(Builders<RefreshTokenDocument>.IndexKeys.Ascending(t => t.TokenHash), opcoes),
+                cancellationToken: cancellationToken);
+        }
+
         public Task AdicionarAsync(RefreshTokenDocument token, CancellationToken cancellationToken = default)
             => _colecaoTokens.InsertOneAsync(token, options: null, cancellationToken);
 

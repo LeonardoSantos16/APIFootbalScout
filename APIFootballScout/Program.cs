@@ -195,6 +195,7 @@ using (var scope = app.Services.CreateScope())
     var mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
     await AcompanhamentoRepositoryMongo.GarantirIndicesAsync(mongoClient);
     await UserRepositoryMongo.GarantirIndicesAsync(mongoClient);
+    await RefreshTokenRepositoryMongo.GarantirIndicesAsync(mongoClient);
 }
 
 app.MapControllers();
